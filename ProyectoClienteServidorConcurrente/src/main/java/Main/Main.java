@@ -2,13 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
 
-package com.mycompany.proyectoclienteservidorconcurrente;
+package Main;
 
 /**
  *
  * @author braya
  */
-public class ProyectoClienteServidorConcurrente {
+public class Main {
 
     public static void main(String[] args) {
         System.out.println("Hello World!");
