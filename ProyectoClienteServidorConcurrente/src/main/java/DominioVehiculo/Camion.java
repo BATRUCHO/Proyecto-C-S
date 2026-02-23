@@ -1,14 +1,20 @@
-package DominioVehiculo;
+package Proyectos.Curso_Cliente_Servidor;
+import java.time.LocalDateTime;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+public class Camion extends Vehiculo {
 
-/**
- *
- * @author braya
- */
-public class Camion {
+    public Camion(int idVehiculo, String placa, TipoVehiculo tipovehiculo, LocalDateTime fechacreacion, EstadoVehiculo estado, boolean activo, LocalDateTime ultimoReporte, String ubicacionActual) {
+        super(idVehiculo, tipovehiculo, placa, fechacreacion, estado, activo, ultimoReporte, ubicacionActual);
+    }
+
+    @Override
+    public double getCapacidadMaximaKG() {
+        return 2000.0; // Capacidad máxima para un camión
+    }
+
+    @Override
+    public double getVelocidadPromedioKmH() {
+        return 70.0; // Velocidad promedio para un camión
+    }
     
 }

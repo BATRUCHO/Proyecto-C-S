@@ -1,13 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package EstadosEnums;
+package Proyectos.Curso_Cliente_Servidor;
 
-/**
- *
- * @author braya
- */
-public class EstadoPermiso {
-    
+public enum EstadoPermiso {
+    CREAR_USUARIO,
+    EDITAR_USUARIO,
+    ELIMINAR_USUARIO,
+    VER_USUARIO,
 }
+
