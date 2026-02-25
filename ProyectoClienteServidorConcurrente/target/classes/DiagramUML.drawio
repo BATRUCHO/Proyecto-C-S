@@ -1,97 +1,53 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" version="29.5.2">
   <diagram name="Page-1" id="c4acf3e9-155e-7222-9cf6-157b1a14988f">
-    <mxGraphModel dx="2683" dy="1636" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" background="none" math="0" shadow="0">
+    <mxGraphModel dx="2620" dy="1601" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" background="none" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="H7S1QWpQ7A07wiiPGVRy-10" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;shadow=0;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;x&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;Paquete&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- idPaquete : int&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;-&amp;nbsp;fechaCreacion : LocalDateTime&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- direccionOrigen : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;-&amp;nbsp;direccionDestino : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;-&amp;nbsp;pesoKg : double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;-&amp;nbsp;costoEnvio : double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;-&amp;nbsp;estado : EstadoPaquete&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- VehiculoAsignado : Vehiculo&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;-&amp;nbsp;fechaEntrega : LocalDateTime&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;-&amp;nbsp;contenido : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- distanciaKm : double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- costoTotal : double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ calcularCosto() : void&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getIdPaquete() : int&lt;br&gt;+ getFechaCreacion() : LocalDateTime&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getDireccionOrigen() : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getDireccionDestino() : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getPesoKg() : double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getCostoEnvio() : double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getEstado() : EstadoPaquete&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getIdVehiculoAsignado() : Integer&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getFechaEntrega() : LocalDateTime&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getContenido() : String&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;asignarVehiculo(idVehiculo : int) : void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;cambiarEstado(nuevoEstado : EstadoPaquete) : void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;registrarEntrega(fecha : LocalDateTime) : void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;estadoAsignado() : boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;estadoEnTransito() : boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;estadoEntregado() : boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ validarConsistencia() : boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
+        <mxCell id="H7S1QWpQ7A07wiiPGVRy-10" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;shadow=0;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;x&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;Paquete&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- idPaquete : int&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;-&amp;nbsp;fechaCreacion : LocalDateTime&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- direccionOrigen : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;-&amp;nbsp;direccionDestino : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;-&amp;nbsp;pesoKg : double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;-&amp;nbsp;costoEnvio : double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;-&amp;nbsp;estado : EstadoPaquete&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- VehiculoAsignado : Vehiculo&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;-&amp;nbsp;fechaEntrega : LocalDateTime&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;-&amp;nbsp;contenido : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- distanciaKm : double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- costoTotal : double&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getIdPaquete() : int&lt;br&gt;+ getFechaCreacion() : LocalDateTime&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getDireccionOrigen() : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getDireccionDestino() : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getPesoKg() : double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getCostoEnvio() : double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getEstado() : EstadoPaquete&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getIdVehiculoAsignado() : Integer&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getFechaEntrega() : LocalDateTime&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getContenido() : String&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;asignarVehiculo(idVehiculo : int) : void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;cambiarEstado(nuevoEstado : EstadoPaquete) : void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;registrarEntrega(fecha : LocalDateTime) : void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;estadoAsignado() : boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;estadoEnTransito() : boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;estadoEntregado() : boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ validarConsistencia() : boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ calcularCosto() : void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
           <mxGeometry height="530" width="345" x="-437.5" y="420" as="geometry" />
         </mxCell>
         <mxCell id="H7S1QWpQ7A07wiiPGVRy-11" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;shadow=0;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Enum&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;EstadoPaquete&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ PENDIENTE&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ ASIGNADO&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ EN_TRANSITO&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ ENTREGADO&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ INCIDENTE&lt;/p&gt;" vertex="1">
-          <mxGeometry height="140" width="190" x="-20" y="615" as="geometry" />
+          <mxGeometry height="140" width="190" x="10" y="615" as="geometry" />
         </mxCell>
         <mxCell id="H7S1QWpQ7A07wiiPGVRy-12" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;shadow=0;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Enum&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;EstadoVehiculo&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;+ DISPONIBLE&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;+ EN_RUTA&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;+ MANTENIMIENTO&lt;/p&gt;" vertex="1">
           <mxGeometry height="100" width="190" x="-360" y="-130" as="geometry" />
         </mxCell>
-        <mxCell id="H7S1QWpQ7A07wiiPGVRy-14" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;shadow=0;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;abstracta&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;Vehiculo&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# idVehiculo : int&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# placa : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# ipOrigen : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# fechaCreacion : LocalDateTime&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# estado : EstadoVehiculo&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# activo : boolean&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# ultimoReporte : LocalDateTime&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# ubicacionActual : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# tipoVehiculo : TipoVehiculo&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# consumoPorKm : double&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getIdVehiculo() : int&lt;br&gt;+ getPlaca() : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getFechaCreacion() : LocalDateTime&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getEstadoVehiculo() : EstadoVehiculo&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getActivo() : boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getUltimoReporte() : LocalDateTime&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getUbicacionActual() : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getTipoVehiculo() : TipoVehiculo&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ estaDisponible() : boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;puedeTransportar(pesoKg : double) : boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ calcularTiempoEstimado(distancia : double) : double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ realizarEntrega() : boolean&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# getCapacidadMaximaKG() : double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# getVelocidadPromedioKmH() : double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
+        <mxCell id="H7S1QWpQ7A07wiiPGVRy-14" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;shadow=0;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;abstracta&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;Vehiculo&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# idVehiculo : int&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# placa : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# ipOrigen : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# fechaCreacion : LocalDateTime&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# estado : EstadoVehiculo&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# activo : boolean&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# ultimoReporte : LocalDateTime&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# ubicacionActual : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# tipoVehiculo : TipoVehiculo&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# consumoPorKm : double&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getIdVehiculo() : int&lt;br&gt;+ getPlaca() : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getFechaCreacion() : LocalDateTime&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getEstadoVehiculo() : EstadoVehiculo&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getActivo() : boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getUltimoReporte() : LocalDateTime&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getUbicacionActual() : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;getTipoVehiculo() : TipoVehiculo&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ estaDisponible() : boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;puedeTransportar(pesoKg : double) : boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ calcularTiempoEstimado(distancia : double) : double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ realizarEntrega() : boolean&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# getCapacidadMaximaKG() : double --italica&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# getVelocidadPromedioKmH() : double --italica&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
           <mxGeometry height="450" width="290" x="82.5" y="110" as="geometry" />
         </mxCell>
         <mxCell id="H7S1QWpQ7A07wiiPGVRy-16" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fontStyle=1;shadow=0;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Herencia&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;Bicicleta&lt;/i&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp; super()&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;font-weight: 400; margin: 0px 0px 0px 4px;&quot;&gt;#&amp;nbsp; getCapacidadMaximaKG() : double&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;(ValorConstante)&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;font-weight: 400; margin: 0px 0px 0px 4px;&quot;&gt;#&amp;nbsp; getVelocidadPromedioKmH() : double&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;(ValorConstante)&lt;/span&gt;&lt;/p&gt;" vertex="1">
           <mxGeometry height="120" width="320" x="470" y="-120" as="geometry" />
         </mxCell>
         <mxCell id="H7S1QWpQ7A07wiiPGVRy-19" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fontStyle=1;shadow=0;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Herencia&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;Carro&lt;/i&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp; super()&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;font-weight: 400; margin: 0px 0px 0px 4px;&quot;&gt;#&amp;nbsp; getCapacidadMaximaKG() : double&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;(ValorConstante)&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;font-weight: 400; margin: 0px 0px 0px 4px;&quot;&gt;#&amp;nbsp; getVelocidadPromedioKmH() : double&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;(ValorConstante)&lt;/span&gt;&lt;/p&gt;" vertex="1">
-          <mxGeometry height="120" width="320" x="440" y="470" as="geometry" />
+          <mxGeometry height="120" width="320" x="440" y="460" as="geometry" />
         </mxCell>
         <mxCell id="H7S1QWpQ7A07wiiPGVRy-20" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fontStyle=1;shadow=0;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Herencia&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;Camion&lt;/i&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp; super()&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;font-weight: 400; margin: 0px 0px 0px 4px;&quot;&gt;#&amp;nbsp; getCapacidadMaximaKG() : double (ValorConstante)&lt;/p&gt;&lt;p style=&quot;font-weight: 400; margin: 0px 0px 0px 4px;&quot;&gt;#&amp;nbsp; getVelocidadPromedioKmH() : double&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;(ValorConstante)&lt;/span&gt;&lt;/p&gt;" vertex="1">
           <mxGeometry height="120" width="330" x="440" y="780" as="geometry" />
         </mxCell>
-        <mxCell id="H7S1QWpQ7A07wiiPGVRy-25" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-14" style="endArrow=block;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.542;entryY=1.019;entryDx=0;entryDy=0;shadow=0;entryPerimeter=0;" target="UPvTF-cA_mwCb3qjNlbF-1" value="">
+        <mxCell id="H7S1QWpQ7A07wiiPGVRy-25" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-14" style="endArrow=none;endFill=0;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.542;entryY=1.019;entryDx=0;entryDy=0;shadow=0;entryPerimeter=0;strokeWidth=1;startArrow=block;startFill=1;" target="UPvTF-cA_mwCb3qjNlbF-1" value="">
           <mxGeometry relative="1" x="-1" as="geometry">
             <mxPoint x="190" y="50" as="sourcePoint" />
             <mxPoint x="170.00000000000045" y="-50" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="H7S1QWpQ7A07wiiPGVRy-26" connectable="0" parent="H7S1QWpQ7A07wiiPGVRy-25" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;shadow=0;" value="1" vertex="1">
-          <mxGeometry relative="1" x="-1" as="geometry" />
-        </mxCell>
-        <mxCell id="H7S1QWpQ7A07wiiPGVRy-29" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-14" style="endArrow=block;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=1.009;exitY=0.127;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;shadow=0;" target="H7S1QWpQ7A07wiiPGVRy-16" value="">
+        <mxCell id="H7S1QWpQ7A07wiiPGVRy-29" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-14" style="endArrow=none;endFill=0;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=1.009;exitY=0.127;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;shadow=0;startArrow=classic;startFill=1;" target="H7S1QWpQ7A07wiiPGVRy-16" value="">
           <mxGeometry relative="1" x="-1" as="geometry">
             <Array as="points">
-              <mxPoint x="620" y="160" />
+              <mxPoint x="630" y="167" />
             </Array>
             <mxPoint x="340" y="80" as="sourcePoint" />
             <mxPoint x="579" y="-20" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="H7S1QWpQ7A07wiiPGVRy-30" connectable="0" parent="H7S1QWpQ7A07wiiPGVRy-29" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;shadow=0;" value="1" vertex="1">
-          <mxGeometry relative="1" x="-1" as="geometry" />
-        </mxCell>
-        <mxCell id="H7S1QWpQ7A07wiiPGVRy-31" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-14" style="endArrow=block;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=0.998;exitY=0.386;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;shadow=0;" target="H7S1QWpQ7A07wiiPGVRy-19" value="">
-          <mxGeometry relative="1" x="-1" as="geometry">
-            <Array as="points">
-              <mxPoint x="420" y="284" />
-              <mxPoint x="600" y="284" />
-            </Array>
-            <mxPoint x="460" y="294.47" as="sourcePoint" />
-            <mxPoint x="620" y="294.47" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="H7S1QWpQ7A07wiiPGVRy-32" connectable="0" parent="H7S1QWpQ7A07wiiPGVRy-31" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;shadow=0;" value="1" vertex="1">
-          <mxGeometry relative="1" x="-1" as="geometry" />
-        </mxCell>
-        <mxCell id="H7S1QWpQ7A07wiiPGVRy-33" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-14" style="endArrow=block;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1.005;exitY=0.644;exitDx=0;exitDy=0;exitPerimeter=0;shadow=0;" target="H7S1QWpQ7A07wiiPGVRy-20" value="">
+        <mxCell id="H7S1QWpQ7A07wiiPGVRy-33" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-14" style="endArrow=none;endFill=0;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1.005;exitY=0.644;exitDx=0;exitDy=0;exitPerimeter=0;shadow=0;startArrow=block;startFill=1;" target="H7S1QWpQ7A07wiiPGVRy-20" value="">
           <mxGeometry relative="1" x="-1" as="geometry">
             <mxPoint x="315" y="350" as="sourcePoint" />
             <mxPoint x="475" y="350" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="H7S1QWpQ7A07wiiPGVRy-34" connectable="0" parent="H7S1QWpQ7A07wiiPGVRy-33" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;shadow=0;" value="1" vertex="1">
-          <mxGeometry relative="1" x="-1" as="geometry" />
-        </mxCell>
         <mxCell id="H7S1QWpQ7A07wiiPGVRy-38" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;shadow=0;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Enum&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;TipoVehiculo&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ CARRO&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ MOTO&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ BICICLETA&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ CAMION&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
-          <mxGeometry height="120" width="190" x="-370" y="130" as="geometry" />
-        </mxCell>
-        <mxCell id="xk8U36LgUs8G2MoCenJM-1" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-12" style="endArrow=none;html=1;rounded=0;entryX=0.007;entryY=0.048;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.997;exitY=0.145;exitDx=0;exitDy=0;exitPerimeter=0;shadow=0;" target="H7S1QWpQ7A07wiiPGVRy-14" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <Array as="points">
-              <mxPoint x="-80" y="-115" />
-              <mxPoint x="-80" y="130" />
-            </Array>
-            <mxPoint x="-150" y="70" as="sourcePoint" />
-            <mxPoint x="-100" y="20" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="xk8U36LgUs8G2MoCenJM-2" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-38" style="endArrow=none;html=1;rounded=0;exitX=1.002;exitY=0.419;exitDx=0;exitDy=0;exitPerimeter=0;entryX=-0.01;entryY=0.155;entryDx=0;entryDy=0;entryPerimeter=0;shadow=0;" target="H7S1QWpQ7A07wiiPGVRy-14" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="-180" y="140" as="sourcePoint" />
-            <mxPoint x="-130" y="90" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="xk8U36LgUs8G2MoCenJM-3" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-11" style="endArrow=none;html=1;rounded=0;exitX=0.002;exitY=0.413;exitDx=0;exitDy=0;exitPerimeter=0;shadow=0;entryX=1.002;entryY=0.477;entryDx=0;entryDy=0;entryPerimeter=0;" target="H7S1QWpQ7A07wiiPGVRy-10" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="-9.740000000000009" y="658.83" as="sourcePoint" />
-            <mxPoint x="-70" y="668" as="targetPoint" />
-          </mxGeometry>
+          <mxGeometry height="120" width="190" x="-300" y="230" as="geometry" />
         </mxCell>
         <mxCell id="xk8U36LgUs8G2MoCenJM-5" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;shadow=0;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;abstracta&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;Persona&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# dni : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# fechaNacimiento : LocalDate&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# nombre : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# apellido : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# email : String&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;# telefono : String&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getDni () : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getFechaNacimiento() : LocalDate&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getNombre() : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getApellido() : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getEmail() : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getTelefono() : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
           <mxGeometry height="240" width="290" x="-1175" y="-40" as="geometry" />
@@ -105,21 +61,11 @@
         <mxCell id="xk8U36LgUs8G2MoCenJM-14" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fontStyle=1;shadow=0;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Herencia&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;Usuario&lt;/i&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp; super ()&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- id : int&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- password : String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- contadorUsuario : int {static}&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- rol : Rol&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;font-weight: 400; margin: 0px 0px 0px 4px;&quot;&gt;+ getPassword () : String&lt;/p&gt;&lt;p style=&quot;font-weight: 400; margin: 0px 0px 0px 4px;&quot;&gt;+ getId() : int&lt;/p&gt;&lt;p style=&quot;font-weight: 400; margin: 0px 0px 0px 4px;&quot;&gt;+ getContadorUsuarios : int {static}&lt;/p&gt;&lt;p style=&quot;font-weight: 400; margin: 0px 0px 0px 4px;&quot;&gt;+ getRol : Rol&lt;/p&gt;&lt;hr&gt;&amp;nbsp;+ setPassword ( String password ) : void&lt;div&gt;&amp;nbsp;+ setRol (Rol rol) : void&lt;/div&gt;" vertex="1">
           <mxGeometry height="260" width="300" x="-1140" y="480" as="geometry" />
         </mxCell>
-        <mxCell id="xk8U36LgUs8G2MoCenJM-19" edge="1" parent="1" source="xk8U36LgUs8G2MoCenJM-8" style="endArrow=none;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;shadow=0;" target="xk8U36LgUs8G2MoCenJM-7" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <Array as="points" />
-            <mxPoint x="-590" y="272.5" as="sourcePoint" />
-            <mxPoint x="-322" y="436.5" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
         <mxCell id="xk8U36LgUs8G2MoCenJM-21" edge="1" parent="1" source="xk8U36LgUs8G2MoCenJM-14" style="endArrow=block;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=0.368;exitY=-0.005;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitPerimeter=0;shadow=0;" target="xk8U36LgUs8G2MoCenJM-5" value="">
           <mxGeometry relative="1" x="-1" as="geometry">
             <mxPoint x="-1070" y="200" as="sourcePoint" />
             <mxPoint x="-1080" y="100" as="targetPoint" />
           </mxGeometry>
-        </mxCell>
-        <mxCell id="xk8U36LgUs8G2MoCenJM-22" connectable="0" parent="xk8U36LgUs8G2MoCenJM-21" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;shadow=0;" value="1" vertex="1">
-          <mxGeometry relative="1" x="-1" as="geometry" />
         </mxCell>
         <mxCell id="sUrkWojeIHAyi4zJ-Pvj-2" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;" value="Dominio" vertex="1">
           <mxGeometry height="1310" width="2020" x="-1210" y="-240" as="geometry" />
@@ -128,10 +74,10 @@
           <mxGeometry height="850" width="1610" x="-800" y="1105" as="geometry" />
         </mxCell>
         <mxCell id="sUrkWojeIHAyi4zJ-Pvj-4" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=70;height=40;" value="Excepciones&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="620" width="1000" x="-1425" y="2340" as="geometry" />
+          <mxGeometry height="260" width="850" x="-1670" y="1700" as="geometry" />
         </mxCell>
         <mxCell id="sUrkWojeIHAyi4zJ-Pvj-8" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;abstracta&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;ErrorSistema&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
-          <mxGeometry height="140" width="190" x="-1345" y="2360" as="geometry" />
+          <mxGeometry height="140" width="190" x="-1550" y="1740" as="geometry" />
         </mxCell>
         <mxCell id="sUrkWojeIHAyi4zJ-Pvj-16" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;GestorPaquetes&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ procesarEnvio(paquete : Paquete) : boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ asignarVehiculoAutomatico(paquete : Paquete) : void&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ actualizarSeguimiento(idPaquete : int, nuevaUbicacion : String) : void&lt;/p&gt;" vertex="1">
           <mxGeometry height="110" width="390" x="60" y="1810" as="geometry" />
@@ -148,16 +94,13 @@
         <mxCell id="njyBIpidreis0AKdRQ73-18" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;shadow=0;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&lt;/i&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); text-align: left;&quot;&gt;&amp;lt;Interface&amp;gt;&amp;gt;&amp;nbsp;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;&amp;nbsp;Serializable&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;Import java.oi.Serializable&lt;/p&gt;" vertex="1">
           <mxGeometry height="80" width="245" x="-790" y="-210" as="geometry" />
         </mxCell>
-        <mxCell id="njyBIpidreis0AKdRQ73-19" edge="1" parent="1" source="xk8U36LgUs8G2MoCenJM-5" style="endArrow=block;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0.183;entryY=1.012;entryDx=0;entryDy=0;shadow=0;entryPerimeter=0;" target="njyBIpidreis0AKdRQ73-18" value="">
+        <mxCell id="njyBIpidreis0AKdRQ73-19" edge="1" parent="1" source="xk8U36LgUs8G2MoCenJM-5" style="endArrow=block;endFill=0;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0.183;entryY=1.012;entryDx=0;entryDy=0;shadow=0;entryPerimeter=0;dashed=1;" target="njyBIpidreis0AKdRQ73-18" value="">
           <mxGeometry relative="1" x="-1" as="geometry">
             <mxPoint x="-720" y="179" as="sourcePoint" />
             <mxPoint x="-720" y="-100" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="njyBIpidreis0AKdRQ73-20" connectable="0" parent="njyBIpidreis0AKdRQ73-19" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;shadow=0;" value="1" vertex="1">
-          <mxGeometry relative="1" x="-1" as="geometry" />
-        </mxCell>
-        <mxCell id="njyBIpidreis0AKdRQ73-21" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-14" style="endArrow=block;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=0.001;exitY=0.085;exitDx=0;exitDy=0;shadow=0;exitPerimeter=0;entryX=0.839;entryY=1.011;entryDx=0;entryDy=0;entryPerimeter=0;" target="njyBIpidreis0AKdRQ73-18" value="">
+        <mxCell id="njyBIpidreis0AKdRQ73-21" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-14" style="endArrow=block;endFill=0;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=0.001;exitY=0.085;exitDx=0;exitDy=0;shadow=0;exitPerimeter=0;entryX=0.839;entryY=1.011;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;" target="njyBIpidreis0AKdRQ73-18" value="">
           <mxGeometry relative="1" x="-1" as="geometry">
             <Array as="points">
               <mxPoint x="65" y="148" />
@@ -169,7 +112,7 @@
             <mxPoint x="-580" y="-120" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="njyBIpidreis0AKdRQ73-25" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-10" style="endArrow=block;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=0.121;exitY=0.001;exitDx=0;exitDy=0;shadow=0;exitPerimeter=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="njyBIpidreis0AKdRQ73-18" value="">
+        <mxCell id="njyBIpidreis0AKdRQ73-25" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-10" style="endArrow=block;endFill=0;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=0.121;exitY=0.001;exitDx=0;exitDy=0;shadow=0;exitPerimeter=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;dashed=1;" target="njyBIpidreis0AKdRQ73-18" value="">
           <mxGeometry relative="1" x="-1" as="geometry">
             <Array as="points">
               <mxPoint x="-396" y="180" />
@@ -264,15 +207,6 @@
         <mxCell id="VMws05nuU23EO0_Tcp5A-20" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;shadow=0;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Enum&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;TipoOperacion&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+SOLICITAR_LOGUEO&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+REPORTAR_UBICACION&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+NOTIFICAR_ENTREGA&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+DESCONEXION&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
           <mxGeometry height="110" width="190" x="-1185" y="1250" as="geometry" />
         </mxCell>
-        <mxCell id="VMws05nuU23EO0_Tcp5A-21" edge="1" parent="1" source="VMws05nuU23EO0_Tcp5A-20" style="endArrow=none;html=1;rounded=0;shadow=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;exitX=0.346;exitY=0.049;exitDx=0;exitDy=0;exitPerimeter=0;" target="VMws05nuU23EO0_Tcp5A-19" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <Array as="points">
-              <mxPoint x="-1120" y="1158" />
-            </Array>
-            <mxPoint x="-818" y="1280" as="sourcePoint" />
-            <mxPoint x="-890" y="1280" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
         <mxCell id="VMws05nuU23EO0_Tcp5A-26" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;ServicioCostos&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;li&gt;&lt;p data-path-to-node=&quot;12,0,1,0,0&quot;&gt;&lt;code data-path-to-node=&quot;12,0,1,0,0&quot; data-index-in-node=&quot;0&quot;&gt;&amp;nbsp;+ aplicarTarifaEspecial(costoBase : double, porcentaje : double) : double&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p data-path-to-node=&quot;12,0,1,1,0&quot;&gt;&lt;code data-path-to-node=&quot;12,0,1,1,0&quot; data-index-in-node=&quot;0&quot;&gt;&amp;nbsp;+ generarPresupuesto(p : Paquete) : void&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;" vertex="1">
           <mxGeometry height="110" width="290" x="-760" y="1420" as="geometry" />
         </mxCell>
@@ -298,15 +232,6 @@
             </Array>
             <mxPoint x="690" y="1350" as="sourcePoint" />
             <mxPoint x="1420" y="1290" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="VMws05nuU23EO0_Tcp5A-40" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-10" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;entryX=-0.002;entryY=0.848;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.996;exitY=0.132;exitDx=0;exitDy=0;exitPerimeter=0;" target="H7S1QWpQ7A07wiiPGVRy-14" value="">
-          <mxGeometry relative="1" width="160" as="geometry">
-            <Array as="points">
-              <mxPoint x="-39" y="490" />
-            </Array>
-            <mxPoint x="-80" y="650" as="sourcePoint" />
-            <mxPoint x="1" y="370" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="VMws05nuU23EO0_Tcp5A-42" edge="1" parent="1" source="VMws05nuU23EO0_Tcp5A-17" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;entryX=0;entryY=0.394;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.428;exitY=0.998;exitDx=0;exitDy=0;exitPerimeter=0;" target="sUrkWojeIHAyi4zJ-Pvj-16" value="">
@@ -391,6 +316,71 @@
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="-1275" y="1750" as="sourcePoint" />
             <mxPoint x="-1115" y="1750" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VMws05nuU23EO0_Tcp5A-64" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-14" style="endArrow=none;endFill=0;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=0.999;exitY=0.403;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;shadow=0;startArrow=classic;startFill=1;" target="H7S1QWpQ7A07wiiPGVRy-19" value="">
+          <mxGeometry relative="1" x="-1" as="geometry">
+            <Array as="points">
+              <mxPoint x="610" y="291" />
+              <mxPoint x="610" y="460" />
+            </Array>
+            <mxPoint x="590" y="337" as="sourcePoint" />
+            <mxPoint x="845" y="170" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VMws05nuU23EO0_Tcp5A-65" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-14" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.127;exitY=0.005;exitDx=0;exitDy=0;exitPerimeter=0;" target="H7S1QWpQ7A07wiiPGVRy-12" value="">
+          <mxGeometry relative="1" width="160" as="geometry">
+            <Array as="points">
+              <mxPoint x="120" y="40" />
+              <mxPoint y="40" />
+              <mxPoint y="-80" />
+            </Array>
+            <mxPoint x="-30" y="-10" as="sourcePoint" />
+            <mxPoint x="146" y="-8" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VMws05nuU23EO0_Tcp5A-68" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-14" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;entryX=0.996;entryY=0.56;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.003;exitY=0.418;exitDx=0;exitDy=0;exitPerimeter=0;" target="H7S1QWpQ7A07wiiPGVRy-38" value="">
+          <mxGeometry relative="1" x="0.0457" y="-19" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="40" y="290" as="sourcePoint" />
+            <mxPoint x="-40" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VMws05nuU23EO0_Tcp5A-70" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-10" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;exitX=1;exitY=0.485;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.001;entryY=0.451;entryDx=0;entryDy=0;entryPerimeter=0;" target="H7S1QWpQ7A07wiiPGVRy-11" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-180" y="680" as="sourcePoint" />
+            <mxPoint x="-260" y="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VMws05nuU23EO0_Tcp5A-71" edge="1" parent="1" source="VMws05nuU23EO0_Tcp5A-19" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;entryX=0.557;entryY=-0.013;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.995;exitY=0.128;exitDx=0;exitDy=0;exitPerimeter=0;" target="VMws05nuU23EO0_Tcp5A-20" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-1079" y="1144" />
+            </Array>
+            <mxPoint x="-1220" y="1250" as="sourcePoint" />
+            <mxPoint x="-1300" y="1250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VMws05nuU23EO0_Tcp5A-72" edge="1" parent="1" source="H7S1QWpQ7A07wiiPGVRy-10" style="endArrow=open;endFill=1;endSize=12;html=1;rounded=0;exitX=0.997;exitY=0.303;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.006;entryY=0.463;entryDx=0;entryDy=0;entryPerimeter=0;" target="H7S1QWpQ7A07wiiPGVRy-14" value="">
+          <mxGeometry relative="1" width="160" as="geometry">
+            <Array as="points">
+              <mxPoint y="580" />
+              <mxPoint x="1" y="440" />
+              <mxPoint y="320" />
+            </Array>
+            <mxPoint x="-130.00500000000008" y="594.6699999999996" as="sourcePoint" />
+            <mxPoint x="43.269999999999996" y="349.9999999999999" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VMws05nuU23EO0_Tcp5A-74" edge="1" parent="1" source="xk8U36LgUs8G2MoCenJM-7" style="endArrow=diamondThin;endFill=0;endSize=24;html=1;rounded=0;entryX=0.537;entryY=1.001;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.553;exitY=0.004;exitDx=0;exitDy=0;exitPerimeter=0;" target="xk8U36LgUs8G2MoCenJM-8" value="">
+          <mxGeometry relative="1" width="160" as="geometry">
+            <mxPoint x="-740" y="530" as="sourcePoint" />
+            <mxPoint x="-580" y="530" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VMws05nuU23EO0_Tcp5A-75" connectable="0" parent="VMws05nuU23EO0_Tcp5A-74" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="*" vertex="1">
+          <mxGeometry relative="1" x="-0.9514" as="geometry">
+            <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
       </root>
