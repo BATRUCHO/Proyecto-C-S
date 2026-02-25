@@ -318,7 +318,7 @@
           <mxGeometry height="110" width="310" x="-800" y="1130" as="geometry" />
         </mxCell>
         <mxCell id="VMws05nuU23EO0_Tcp5A-20" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;shadow=0;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Enum&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;TipoOperacion&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+SOLICITAR_LOGUEO&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+REPORTAR_UBICACION&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+NOTIFICAR_ENTREGA&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+DESCONEXION&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
-          <mxGeometry height="110" width="190" x="-660" y="1310" as="geometry" />
+          <mxGeometry height="110" width="190" x="-660" y="1350" as="geometry" />
         </mxCell>
         <mxCell id="VMws05nuU23EO0_Tcp5A-21" edge="1" parent="1" source="VMws05nuU23EO0_Tcp5A-20" style="endArrow=none;html=1;rounded=0;exitX=0.655;exitY=-0.014;exitDx=0;exitDy=0;exitPerimeter=0;shadow=0;entryX=0.852;entryY=1.014;entryDx=0;entryDy=0;entryPerimeter=0;" target="VMws05nuU23EO0_Tcp5A-19" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
