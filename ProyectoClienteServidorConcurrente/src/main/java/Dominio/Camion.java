@@ -1,4 +1,4 @@
-package Proyectos.Curso_Cliente_Servidor;
+package Dominio;
 import java.time.LocalDateTime;
 
 public class Camion extends Vehiculo {

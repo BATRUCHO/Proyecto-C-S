@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Proyectos.Curso_Cliente_Servidor;
+package Dominio;
 
 import java.util.EnumSet;
 import java.util.Set;

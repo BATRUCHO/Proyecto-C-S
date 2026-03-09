@@ -1,7 +1,7 @@
-package Proyectos.Curso_Cliente_Servidor;
+package Dominio;
 
-import java.util.Objects;
 import java.sql.Date;
+import java.util.Objects;
 
 public class Usuario extends Persona {
 

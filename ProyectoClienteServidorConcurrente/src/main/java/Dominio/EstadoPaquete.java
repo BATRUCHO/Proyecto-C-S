@@ -1,4 +1,4 @@
-package Proyectos.Curso_Cliente_Servidor;
+package Dominio;
 
     public enum EstadoPaquete {
         PENDIENTE(1,"El paquete está pendiente de ser recogido"), 

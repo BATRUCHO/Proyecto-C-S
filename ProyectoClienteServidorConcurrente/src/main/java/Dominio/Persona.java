@@ -1,4 +1,4 @@
-package Proyectos.Curso_Cliente_Servidor;
+package Dominio;
 
 import java.sql.Date;
 import java.util.Objects;

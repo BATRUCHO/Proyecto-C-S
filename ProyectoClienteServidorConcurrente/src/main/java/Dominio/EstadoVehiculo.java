@@ -1,4 +1,4 @@
-package Proyectos.Curso_Cliente_Servidor;
+package Dominio;
 
     public enum EstadoVehiculo {
         DISPONIBLE,
