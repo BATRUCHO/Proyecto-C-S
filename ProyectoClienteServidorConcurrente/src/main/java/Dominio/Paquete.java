@@ -1,5 +1,4 @@
-package Proyectos.Curso_Cliente_Servidor;
-
+package Dominio;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
