@@ -258,3 +258,15 @@ public class TablaVehiculos extends javax.swing.JFrame {
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
     // End of variables declaration//GEN-END:variables
 }
+
+public javax.swing.JButton getBtnCrear() {
+    return jButton1;
+}
+
+public javax.swing.JButton getBtnCargar() {
+    return jButton2;
+}
+
+public javax.swing.JButton getBtnEliminar() {
+    return jButton3;
+}
