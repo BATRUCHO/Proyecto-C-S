@@ -15,5 +15,5 @@ public abstract class ErrorSistema {
         this.causa = causa;
         this.causa.initCause(causa);
     }
-    "XD estoy pendejo yo"
+  
 }
