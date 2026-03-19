@@ -1,30 +1,36 @@
 package Dominio;
 
-import java.sql.Date;
+import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 
-public abstract class Persona {
+public abstract class Persona implements Serializable {
+    private static final long serialVersionUID = 1L;
     protected final String dni;
-    protected final Date fechaNacimiento;
+    protected final LocalDate fechaNacimiento;
     protected String nombre;
     protected String apellido;
     protected String email;
     protected String telefono;
 
-    protected Persona(String dni, Date fechaNacimiento, String nombre, String apellido, String email, String telefono) {
+    protected Persona(String dni, LocalDate fechaNacimiento, String nombre, String apellido, String email, String telefono) {
         this.dni = Objects.requireNonNull(dni,"Error: DNI no puede ser nulo");
         this.fechaNacimiento = Objects.requireNonNull(fechaNacimiento,"Error: Fecha de nacimiento no puede ser nula");
         this.nombre = Objects.requireNonNull(nombre,"Error: Nombre no puede ser nulo");
         this.apellido = Objects.requireNonNull(apellido,"Error: Apellido no puede ser nulo");
-        this.email = Objects.requireNonNull(email,"Error: Email no puede ser nulo");
-        this.telefono = Objects.requireNonNull(telefono,"Error: Teléfono no puede ser nulo");
+        this.email = email; 
+        this.telefono = telefono;
     }
 
     // Getters
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
     public String getDni() {
         return dni;
     }
-    public Date getFechaNacimiento() {
+    public LocalDate getFechaNacimiento() {
         return fechaNacimiento;
     }
     public String getNombre() {
@@ -39,5 +45,4 @@ public abstract class Persona {
     public String getTelefono() {
         return telefono;
     } 
-
 }

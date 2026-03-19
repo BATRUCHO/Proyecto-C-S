@@ -4,22 +4,26 @@
  */
 package Dominio;
 
+import java.io.Serializable;
 import java.util.EnumSet;
 import java.util.Set;
 
-public class Rol {
+public class Rol implements Serializable {
 
     private final String nombreRol;
-    private String descripcion;  // descripcion podría ser final (si decides que no cambia)
-    private boolean activo; // activo podría usarse para soft-disable de roles
-    private final Set<EstadoPermiso> permisosAsignados; // Podrías validar permisosAsignados ≠ null (más adelante)
+    private final String descripcion;  
+    private boolean activo; 
+    private final Set<Permiso> permisosAsignados; 
 
-    public Rol(String nombreRol, String descripcion, boolean activo, Set<EstadoPermiso> permisosAsignados) {
+    public Rol(String nombreRol, String descripcion, boolean activo, Set<Permiso> permisosAsignados) {
         this.nombreRol = nombreRol;
         this.descripcion = descripcion;
         this.activo = activo;
         this.permisosAsignados = EnumSet.copyOf(permisosAsignados);
     }
+
+    // Getters
+    
     public String getNombreRol() {
         return nombreRol;
     }
@@ -29,7 +33,7 @@ public class Rol {
     public boolean isActivo() {
         return activo;
     }
-    public Set<EstadoPermiso> getPermisosAsignados() {
+    public Set<Permiso> getPermisosAsignados() {
         return EnumSet.copyOf(permisosAsignados);
     }
 }

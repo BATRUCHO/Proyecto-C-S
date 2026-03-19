@@ -1,85 +1,88 @@
 package Dominio;
-import java.time.LocalDateTime;
-import java.util.Objects;
 
- public class Paquete {
- 
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+public class Paquete implements Serializable {
     private final int idPaquete;
     private final LocalDateTime fechaCreacion;
-
-    private String direccionOrigen;
-    private String direccionDestino;
-    private double pesoKg;
-    private double costoEnvio;
-    private EstadoPaquete estado;
-    private Integer idVehiculoAsignado; // Puede ser null si no está asignado
-    private LocalDateTime fechaEntrega; // Puede ser null si no ha sido entregado
-    private String contenido;
+    private LocalDateTime fechaEntrega; // No final, cambia al entregar
     
+    private Provincia provinciaOrigen; // Valor único, no Set
+    private Provincia provinciaDestino; 
+    private Integer idVehiculoAsignado; // Cambiado de Set a Integer para FK
 
-    public Paquete(int idPaquete, String direccionOrigen, String direccionDestino, double pesoKg, double costoEnvio, String contenido) {
+    private double pesoKg;
+    private double costoTotal;
+    private EstadoPaquete estado;
+    private String contenido;
+
+    public Paquete(int idPaquete, Provincia origen, Provincia destino, double pesoKg, String contenido) {
+        this.idPaquete = idPaquete;
+        this.provinciaOrigen = origen;
+        this.provinciaDestino = destino;
+        this.pesoKg = pesoKg;
+        this.contenido = contenido;
         this.fechaCreacion = LocalDateTime.now();
         this.estado = EstadoPaquete.PENDIENTE;
-        this.idVehiculoAsignado = null;
-        this.fechaEntrega = null;
-
-        // Validaciones de campos obligatorios //
-        this.direccionOrigen = Objects.requireNonNull(direccionOrigen, "La dirección de origen no puede ser nula");
-        this.direccionDestino = Objects.requireNonNull(direccionDestino, "La dirección de destino no puede ser nula");
-        this.contenido = Objects.requireNonNull(contenido, "El contenido del paquete no puede ser nulo");
-
-        // Validaciones de peso y costo de envío y ID del paquete //
-        if (pesoKg <= 0) {
-            throw new IllegalArgumentException("El peso del paquete debe ser mayor que cero");
-        } else {
-            this.pesoKg = pesoKg;   
-        }       
-        if (costoEnvio < 0) {
-            throw new IllegalArgumentException("El costo de envío no puede ser negativo");
-        } else {
-            this.costoEnvio = costoEnvio;
-        }
-        if (idPaquete <= 0) {
-            throw new IllegalArgumentException("El ID del paquete debe ser un número positivo");
-        }else {
-            this.idPaquete = idPaquete;
-        }
     }
 
-    // getters // 
-
-    public int getIdPaquete() {
+       public int getIdPaquete() {
         return idPaquete;
     }
+
     public LocalDateTime getFechaCreacion() {
         return fechaCreacion;
     }
-    public String getDireccionOrigen() {
-        return direccionOrigen;
-    }
-    public String getDireccionDestino() {
-        return direccionDestino;
-    }
-    public double getPesoKg() {
-        return pesoKg;
-    }
-    public double getCostoEnvio() {
-        return costoEnvio;
-    }
-    public EstadoPaquete getEstado() {
-        return estado;
-    }
-    public Integer getIdVehiculoAsignado() {
-        return idVehiculoAsignado;
-    }
+
     public LocalDateTime getFechaEntrega() {
         return fechaEntrega;
     }
+
+    public Provincia getProvinciaOrigen() {
+        return provinciaOrigen;
+    }
+
+    public Provincia getProvinciaDestino() {
+        return provinciaDestino;
+    }
+
+    public Integer getIdVehiculoAsignado() {
+        return idVehiculoAsignado;
+    }
+
+    public double getPesoKg() {
+        return pesoKg;
+    }
+
+    public double getCostoTotal() {
+        return costoTotal;
+    }
+
+    public EstadoPaquete getEstado() {
+        return estado;
+    }
+
     public String getContenido() {
         return contenido;
     }
 
-    //metodos//
+
+    // Método de cálculo financiero real
+    public void calcularCostoTotal() {
+        double costoBase = 5.0;
+        double factorDistancia = (provinciaOrigen == provinciaDestino) ? 1.0 : 1.5;
+        this.costoTotal = (costoBase + (pesoKg * 2.0)) * factorDistancia;
+    }
+
+    public void asignarVehiculo(int idVehiculo) {
+        if (!estado.puedeCambiarA(EstadoPaquete.ASIGNADO)) {
+            throw new IllegalStateException("Transición de estado no permitida");
+        }
+        this.idVehiculoAsignado = idVehiculo;
+        this.estado = EstadoPaquete.ASIGNADO;
+    }
 
     public void cambiarEstado(EstadoPaquete nuevoEstado) {
         if (nuevoEstado == null) {
@@ -92,20 +95,6 @@ import java.util.Objects;
             throw new IllegalStateException("No se puede cambiar el estado a ENTREGADO sin una fecha de entrega registrada");
         } 
         this.estado = nuevoEstado;
-    }
-
-    public void asignarVehiculo(int idVehiculo) {
-        if (this.estado != EstadoPaquete.PENDIENTE) {
-            throw new IllegalStateException("El paquete no está en estado PENDIENTE y no se le puede asignar un vehículo");
-        }
-        if (this.idVehiculoAsignado != null) {
-            throw new IllegalStateException("El paquete ya tiene un vehículo asignado");
-        }
-        if (idVehiculo <= 0 ) {
-            throw new IllegalArgumentException("El ID del vehículo no es válido");
-        }
-        this.idVehiculoAsignado = idVehiculo;
-        cambiarEstado(EstadoPaquete.ASIGNADO);  
     }
 
     public void registrarEntrega(LocalDateTime fechaEntrega) {
@@ -132,6 +121,8 @@ import java.util.Objects;
     public boolean estadoEntregado() {
         return this.estado == EstadoPaquete.ENTREGADO;
     }
+
+  
 
 }
     

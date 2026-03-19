@@ -1,34 +1,38 @@
 package Dominio;
 
-import java.sql.Date;
-import java.util.Objects;
+import java.time.LocalDate;
+import java.util.concurrent.atomic.AtomicInteger;
+
 
 public class Usuario extends Persona {
 
-    private final int id;
-    private String password;
-    private static int contadorUsuarios; 
-    private Rol rol;
-
-    public Usuario(String dni, Date fechaNacimiento, String nombre, String apellido, String email, String telefono, String password, Rol rol) {
-
-        super(dni, fechaNacimiento, nombre, apellido, email, telefono);
-        this.password = Objects.requireNonNull(password, "La contraseña no puede ser nula");
-        this.id = ++contadorUsuarios; // arreglar despues para que no sea un thread unsafe // multihilo
-        this.rol = Objects.requireNonNull(rol, "El rol no puede ser nulo");
+    public static AtomicInteger getContadorUsuarios() {
+        return contadorUsuarios;
     }
 
-    ////////GETTERS/////////
+    private final int id;
+    private String password;
+    private static final AtomicInteger contadorUsuarios = new AtomicInteger(0);
+    private Rol rol;
+
+public Usuario(String dni, LocalDate fechaNacimiento, String nombre, String apellido, String email, String telefono, String password, Rol rol) {
+    super(dni, fechaNacimiento, nombre, apellido, email, telefono);
+    this.id = contadorUsuarios.incrementAndGet(); // Thread-safe
+    this.password = password;
+    this.rol = rol;
+    }
+
+    // Getters
+
+       public int getId() {
+        return id;
+    }
+
     public String getPassword() {
         return password;
     }
-    public int getId() {
-        return id;
-    }
-    public static int getContadorUsuarios() {
-        return contadorUsuarios;
-    }
-     public Rol getRol() {
+
+    public Rol getRol() {
         return rol;
     }
 

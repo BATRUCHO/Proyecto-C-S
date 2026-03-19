@@ -1,9 +1,9 @@
 package Dominio;
 
-public enum EstadoPermiso {
+public enum Permiso {
     CREAR_USUARIO,
     EDITAR_USUARIO,
     ELIMINAR_USUARIO,
-    VER_USUARIO,
+    VER_USUARIO, 
 }
 

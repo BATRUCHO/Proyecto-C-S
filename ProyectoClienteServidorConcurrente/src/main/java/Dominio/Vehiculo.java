@@ -1,53 +1,53 @@
 package Dominio;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 
-public abstract class Vehiculo {
+public abstract class Vehiculo implements Serializable {
+
     protected final int idVehiculo;
     protected final String placa;
-    protected final LocalDateTime fechacreacion;
+    protected EstadoVehiculo estado; // Quitar 'final' para poder cambiarlo
     protected boolean activo;
     protected LocalDateTime ultimoReporte;
-    protected String ubicacionActual;
-    protected final TipoVehiculo tipovehiculo;
-    protected final EstadoVehiculo estado;
-
-    protected Vehiculo(int idVehiculo,TipoVehiculo tipovehiculo, String placa, LocalDateTime fechacreacion, EstadoVehiculo estado, boolean activo, LocalDateTime ultimoReporte, String ubicacionActual) {
+    protected final TipoVehiculo tipo;
+   
+    protected Vehiculo(int idVehiculo, String placa, TipoVehiculo tipo) {
         this.idVehiculo = idVehiculo;
-        this.tipovehiculo = tipovehiculo;
         this.placa = placa;
-        this.fechacreacion = fechacreacion;
-        this.estado = estado;
-        this.ubicacionActual = ubicacionActual;
-        this.activo = activo;
-        this.ultimoReporte = ultimoReporte;
+        this.tipo = tipo;
+        this.estado = EstadoVehiculo.DISPONIBLE;
+        this.activo = true;
+        this.ultimoReporte = LocalDateTime.now();
     }
-
-     //getters//
+   
+ // Getters
+    
     public int getIdVehiculo() {
         return idVehiculo;
     }
+
     public String getPlaca() {
         return placa;
     }
-    public LocalDateTime getFechacreacion() {
-        return fechacreacion;
-    }
-    public EstadoVehiculo getEstadoVehiculo() {
+
+    public EstadoVehiculo getEstado() {
         return estado;
     }
-    public boolean getActivo() {
+
+    public boolean isActivo() {
         return activo;
     }
+
     public LocalDateTime getUltimoReporte() {
-        return ultimoReporte;                                   
+        return ultimoReporte;
     }
-    public String getUbicacionActual() {
-        return ubicacionActual;
+
+    public TipoVehiculo getTipo() {
+        return tipo;
     }
-    public TipoVehiculo getTipovehiculo() {
-        return tipovehiculo;
-    }
+
 
     //Metodos //
 
@@ -58,6 +58,16 @@ public abstract class Vehiculo {
     public boolean estaDisponible() {
         return this.estado == EstadoVehiculo.DISPONIBLE;     
     }
+
+    public boolean realizarEntrega(EstadoVehiculo nuevoEstadoVehiculo) {
+        if (!estaDisponible()) {
+            return false;
+        }
+        this.estado = nuevoEstadoVehiculo;
+        this.ultimoReporte = LocalDateTime.now();
+        return true;
+    }
+
     public boolean puedeTransportar(double pesoCargaKg) { //pendiente definir el tipo de carga double pesoCargaKg)
         if (!this.estaDisponible()) {
             return false;
