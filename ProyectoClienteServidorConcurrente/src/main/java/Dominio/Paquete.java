@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class Paquete implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final int idPaquete;
     private final LocalDateTime fechaCreacion;
     private LocalDateTime fechaEntrega; // No final, cambia al entregar
@@ -14,7 +15,6 @@ public class Paquete implements Serializable {
     private Integer idVehiculoAsignado; // Cambiado de Set a Integer para FK
 
     private double pesoKg;
-    private double costoTotal;
     private EstadoPaquete estado;
     private String contenido;
 
@@ -56,10 +56,6 @@ public class Paquete implements Serializable {
         return pesoKg;
     }
 
-    public double getCostoTotal() {
-        return costoTotal;
-    }
-
     public EstadoPaquete getEstado() {
         return estado;
     }
@@ -70,11 +66,6 @@ public class Paquete implements Serializable {
 
 
     // Método de cálculo financiero real
-    public void calcularCostoTotal() {
-        double costoBase = 5.0;
-        double factorDistancia = (provinciaOrigen == provinciaDestino) ? 1.0 : 1.5;
-        this.costoTotal = (costoBase + (pesoKg * 2.0)) * factorDistancia;
-    }
 
     public void asignarVehiculo(int idVehiculo) {
         if (!estado.puedeCambiarA(EstadoPaquete.ASIGNADO)) {
