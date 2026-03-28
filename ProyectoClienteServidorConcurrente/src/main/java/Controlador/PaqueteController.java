@@ -1,13 +1,26 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Controlador;
 
-/**
- *
- * @author ELITEBOOK
- */
+import com.hbatrucho.proyecto.modelo.Paquete;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class PaqueteController {
-    
+
+    private final List<Paquete> paquetes = new ArrayList<>();
+
+    public void addPaquete(Paquete p) {
+        if (p != null) {
+            paquetes.add(p);
+        }
+    }
+
+    public List<Paquete> getPaquetes() {
+        return Collections.unmodifiableList(paquetes);
+    }
+
+    public void clearPaquetes() {
+        paquetes.clear();
+    }
 }

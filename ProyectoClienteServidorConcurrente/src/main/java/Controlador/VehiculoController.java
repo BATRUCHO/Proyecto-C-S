@@ -1,13 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Controlador;
 
-/**
- *
- * @author ELITEBOOK
- */
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class VehiculoController {
-    
+
+    private final List<Vehiculo> vehiculos = new ArrayList<>();
+
+    public void addVehiculo(Vehiculo v) {
+        if (v != null) {
+            vehiculos.add(v);
+        }
+    }
+
+    public List<Vehiculo> getVehiculos() {
+        return Collections.unmodifiableList(vehiculos);
+    }
+
+    public void clearVehiculos() {
+        vehiculos.clear();
+    }
 }

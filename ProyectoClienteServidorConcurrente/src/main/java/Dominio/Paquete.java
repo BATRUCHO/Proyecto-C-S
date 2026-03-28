@@ -28,6 +28,10 @@ public class Paquete implements Serializable {
         this.estado = EstadoPaquete.PENDIENTE;
     }
 
+    public Paquete(String id, String destino) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
        public int getIdPaquete() {
         return idPaquete;
     }

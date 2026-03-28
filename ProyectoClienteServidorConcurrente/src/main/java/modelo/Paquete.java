@@ -1,13 +1,37 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo;
 
-/**
- *
- * @author ELITEBOOK
- */
 public class Paquete {
-    
+    private String id;
+    private String destino;
+
+    public Paquete() { }
+
+    public Paquete(String id, String destino) {
+        this.id = id;
+        this.destino = destino;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDestino() {
+        return destino;
+    }
+
+    public void setDestino(String destino) {
+        this.destino = destino;
+    }
+
+    @Override
+    public String toString() {
+        return "Paquete{" +
+                "id='" + id + '\'' +
+                ", destino='" + destino + '\'' +
+                '}';
+    }
 }

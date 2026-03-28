@@ -1,6 +1,5 @@
 package vista;
 
-import com.hbatrucho.proyecto.controlador.MonitorController;
 
 import javax.swing.*;
 import java.awt.*;

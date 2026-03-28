@@ -1,13 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Controlador;
 
-/**
- *
- * @author ELITEBOOK
- */
 public class LoginController {
-    
+
+    // Validación mock (no se conectará a ningún socket)
+    public boolean login(String username, String password) {
+        // Ejemplo simple: usuario/contraseña válidos
+        if (username == null || password == null) return false;
+        return ("admin".equalsIgnoreCase(username) && "admin".equals(password)) ||
+               ("user".equalsIgnoreCase(username) && "user".equals(password));
+    }
 }
