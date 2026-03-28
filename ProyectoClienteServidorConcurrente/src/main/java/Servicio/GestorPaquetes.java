@@ -7,6 +7,12 @@ import Dominio.Paquete;
 import Dominio.Vehiculo;
 
 public class GestorPaquetes {
+
+    private void atributoDaoProvicionalPaquete;
+    private void atributoDaoProvicionalVehiculo;
+    pri
+
+
     
     // Aquí inyectarás el PaqueteDAO cuando el compañero de DB lo termine
     // private IPaqueteDAO paqueteDAO; 
