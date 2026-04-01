@@ -1,5 +1,0 @@
-networking\ClienteSocket.class
-networking\ClienteHandler.class
-protocolo\MensajeProtocolo$TipoOperacion.class
-protocolo\MensajeProtocolo.class
-networking\ServidorLogistica.class

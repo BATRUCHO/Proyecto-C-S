@@ -1,10 +1,6 @@
 package Servicio;
 
-import java.util.List;
-import java.util.Map;
 import Dominio.Paquete;
-import Dominio.Provincia;
-import Dominio.TipoVehiculo;
 
 public class CalculadoraLogistica {
     
@@ -34,15 +30,9 @@ public class CalculadoraLogistica {
         this.costoTotal = tarifaBase + (distanciaRecorrida * precioPorKm);
         return costoTotal;
     }
-
     
-
-
-
 }
 
-
-
-
+ 
 
 

@@ -1,4 +1,6 @@
-package Conexion;
+package DAO;
+
+import Conexion.Usuario;
 import Dominio.EstadoVehiculo;
 import Dominio.TipoVehiculo;
 import Dominio.Vehiculo;

@@ -1,4 +1,4 @@
-package Conexion;
+package DAO;
 
 /**
  *
@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import Dominio.EstadoPaquete;
 
 public class PaqueteDAOImpl implements PaqueteDAO {
 
@@ -17,10 +18,8 @@ public class PaqueteDAOImpl implements PaqueteDAO {
     public boolean guardarPaquete(Paquete paquete) {
         String sql = "INSERT INTO PAQUETE (ID_PAQUETE, FECHA_CREACION, DIRECCION_ORIGEN, DIRECCION_DESTINO, PESO_KG, COSTO_ENVIO, ESTADO, ID_VEHICULO_ASIGNADO, FECHA_ENTREGA, CONTENIDO) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try {
-            Connection conexion = ConexionDB.getInstance().getConnection();
-            PreparedStatement ps = conexion.prepareStatement(sql);
-
+        try (Connection conexion = ConexionDB.getInstance().getConnection();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setInt(1, paquete.getIdPaquete());
             ps.setTimestamp(2, Timestamp.valueOf(paquete.getFechaCreacion()));
             ps.setString(3, paquete.getDireccionOrigen());
@@ -60,24 +59,29 @@ public class PaqueteDAOImpl implements PaqueteDAO {
     @Override
     public Paquete buscarPaquetePorId(int idPaquete) {
         String sql = "SELECT * FROM PAQUETE WHERE ID_PAQUETE = ?";
-
-        try {
-            Connection conexion = ConexionDB.getInstance().getConnection();
-            PreparedStatement ps = conexion.prepareStatement(sql);
+        try (Connection conexion = ConexionDB.getInstance().getConnection();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setInt(1, idPaquete);
-
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                Paquete paquete = new Paquete(
-                        rs.getInt("ID_PAQUETE"),
-                        rs.getString("DIRECCION_ORIGEN"),
-                        rs.getString("DIRECCION_DESTINO"),
-                        rs.getDouble("PESO_KG"),
-                        rs.getDouble("COSTO_ENVIO"),
-                        rs.getString("CONTENIDO")
-                );
-
+                // Hidratación completa para que el Servicio tenga todos los datos
+                Paquete paquete = new Paquete();
+                paquete.setIdPaquete(rs.getInt("ID_PAQUETE"));
+                paquete.setFechaCreacion(rs.getTimestamp("FECHA_CREACION").toLocalDateTime());
+                paquete.setDireccionOrigen(rs.getString("DIRECCION_ORIGEN"));
+                paquete.setDireccionDestino(rs.getString("DIRECCION_DESTINO"));
+                paquete.setPesoKg(rs.getDouble("PESO_KG"));
+                paquete.setCostoEnvio(rs.getDouble("COSTO_ENVIO"));
+                paquete.setEstado(EstadoPaquete.valueOf(rs.getString("ESTADO")));
+                paquete.setContenido(rs.getString("CONTENIDO"));
+                
+                int idVehiculo = rs.getInt("ID_VEHICULO_ASIGNADO");
+                if (!rs.wasNull()) paquete.setIdVehiculoAsignado(idVehiculo);
+                
+                Timestamp fechaEnt = rs.getTimestamp("FECHA_ENTREGA");
+                if (fechaEnt != null) paquete.setFechaEntrega(fechaEnt.toLocalDateTime());
+                
                 return paquete;
             }
 

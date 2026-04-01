@@ -1,8 +1,9 @@
-package Conexion;
+package DAO;
 
 import Dominio.EstadoVehiculo;
 import Dominio.TipoVehiculo;
 import Dominio.Vehiculo;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

@@ -1,5 +1,5 @@
 
-package Conexion;
+package DAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,12 +11,10 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     
     public boolean guardarUsuario(Usuario usuario) {
         String sql = "INSERT INTO USUARIO (NOMBRE, CORREO, CLAVE, ROL) VALUES (?, ?, ?, ?)";
-
-        try {
-            Connection conexion;
-            conexion = ConexionDB.getInstance().getConnection();
-            PreparedStatement ps = conexion.prepareStatement(sql);
-
+        // Usar try-with-resources para cerrar PreparedStatement automáticamente
+        try (Connection conexion = ConexionDB.getInstance().getConnection();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+            
             ps.setString(1, usuario.getNombre());
             ps.setString(2, usuario.getCorreo());
             ps.setString(3, usuario.getClave());
@@ -39,13 +37,11 @@ public class UsuarioDAOImpl implements UsuarioDAO {
    
     public Usuario buscarUsuarioPorId(int idUsuario) {
         String sql = "SELECT * FROM USUARIO WHERE ID_USUARIO = ?";
-
-        try {
-            Connection conexion = ConexionDB.getInstance().getConnection();
-            PreparedStatement ps = conexion.prepareStatement(sql);
+        try (Connection conexion = ConexionDB.getInstance().getConnection();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+            
             ps.setInt(1, idUsuario);
-
-            ResultSet rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery(); // Idealmente también en try-with-resources
 
             if (rs.next()) {
                 Usuario usuario = new Usuario();
