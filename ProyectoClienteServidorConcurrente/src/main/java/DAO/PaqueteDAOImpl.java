@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import Dominio.EstadoPaquete;
 
 public class PaqueteDAOImpl implements PaqueteDAO {
@@ -121,5 +123,53 @@ public class PaqueteDAOImpl implements PaqueteDAO {
         }
 
         return null;
-    } 
+    }
+
+    @Override
+    public List<Paquete> listarPaquetes() {
+        List<Paquete> lista = new ArrayList<>();
+        String sql = "SELECT * FROM PAQUETE";
+        try (Connection conexion = ConexionDB.getInstance().getConnection();
+             PreparedStatement ps = conexion.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Paquete p = new Paquete();
+                p.setIdPaquete(rs.getInt("ID_PAQUETE"));
+                p.setContenido(rs.getString("CONTENIDO"));
+                p.setEstado(EstadoPaquete.valueOf(rs.getString("ESTADO")));
+                p.setPesoKg(rs.getDouble("PESO_KG"));
+                lista.add(p);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar paquetes: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    @Override
+    public void actualizarEstado(int id, EstadoPaquete estado) {
+        String sql = "UPDATE PAQUETE SET ESTADO = ? WHERE ID_PAQUETE = ?";
+        try (Connection conexion = ConexionDB.getInstance().getConnection();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setString(1, estado.name());
+            ps.setInt(2, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar estado: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void asignarVehiculo(int idPaquete, int idVehiculo) {
+        String sql = "UPDATE PAQUETE SET ID_VEHICULO_ASIGNADO = ?, ESTADO = ? WHERE ID_PAQUETE = ?";
+        try (Connection conexion = ConexionDB.getInstance().getConnection();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, idVehiculo);
+            ps.setString(2, EstadoPaquete.ASIGNADO.name());
+            ps.setInt(3, idPaquete);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error al asignar vehículo: " + e.getMessage());
+        }
+    }
 }

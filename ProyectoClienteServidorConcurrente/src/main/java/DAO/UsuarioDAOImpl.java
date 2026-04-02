@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import Conexion.Usuario;
+import java.util.List;
+
+import Dominio.Usuario;
 
 public class UsuarioDAOImpl implements UsuarioDAO {
 
@@ -16,6 +18,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
              PreparedStatement ps = conexion.prepareStatement(sql)) {
             
             ps.setString(1, usuario.getNombre());
+            
             ps.setString(2, usuario.getCorreo());
             ps.setString(3, usuario.getClave());
             ps.setString(4, usuario.getRol());
@@ -86,5 +89,26 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         }
 
         return null;
+    }
+
+
+    @Override
+    public boolean guardarUsuario(Dominio.Usuario usuario) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'guardarUsuario'");
+    }
+
+
+    @Override
+    public Dominio.Usuario eliminUsuario(int idUsuario) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'eliminUsuario'");
+    }
+
+
+    @Override
+    public List<Dominio.Usuario> listarUsuarios() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'listarUsuarios'");
     }
 }

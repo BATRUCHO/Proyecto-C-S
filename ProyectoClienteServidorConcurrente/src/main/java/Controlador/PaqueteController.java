@@ -1,10 +1,10 @@
 package Controlador;
 
-import com.hbatrucho.proyecto.modelo.Paquete;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import Dominio.Paquete;
 
 public class PaqueteController {
 

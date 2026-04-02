@@ -9,7 +9,7 @@ public abstract class Vehiculo implements Serializable {
     private static final long serialVersionUID = 1L;
     protected final int idVehiculo;
     protected final String placa;
-    protected EstadoVehiculo estado; // Quitar 'final' para poder cambiarlo
+    protected EstadoVehiculo estado; 
     protected boolean activo;
     protected LocalDateTime ultimoReporte;
     protected final TipoVehiculo tipo;
@@ -48,7 +48,6 @@ public abstract class Vehiculo implements Serializable {
     public TipoVehiculo getTipo() {
         return tipo;
     }
-
 
     //Metodos //
 
