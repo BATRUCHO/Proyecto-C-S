@@ -12,8 +12,23 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>23</maven.compiler.release>
+        <maven.compiler.release>21</maven.compiler.release>
         <exec.mainClass>com.mycompany.proyectoclienteservidorconcurrente.Main</exec.mainClass>
     </properties>
 
+</project>
+<dependencies>
+
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>21.9.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.tiagompalte</groupId>
+            <artifactId>tcc-porta-servico</artifactId>
+            <version>1.0.14</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
 </project>
