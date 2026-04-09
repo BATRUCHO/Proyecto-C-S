@@ -20,20 +20,36 @@ import Dominio.Provincia;
 
 public class PaqueteDAOImpl implements PaqueteDAO {
 
-   private Paquete mapearPaquete(ResultSet rs) throws SQLException {
-        int id = rs.getInt("ID_PAQUETE");
-        LocalDateTime fechaCreacion = rs.getTimestamp("FECHA_CREACION").toLocalDateTime();
-        Provincia origen = Provincia.valueOf(rs.getString("DIRECCION_ORIGEN"));
-        Provincia destino = Provincia.valueOf(rs.getString("DIRECCION_DESTINO"));
-        double pesoKg = rs.getDouble("PESO_KG");
-        EstadoPaquete estado = EstadoPaquete.valueOf(rs.getString("ESTADO"));
-        String contenido = rs.getString("CONTENIDO");
-        Integer idVehiculoAsignado = rs.getInt("ID_VEHICULO_ASIGNADO");
-        LocalDateTime fechaEntrega = rs.getTimestamp("FECHA_ENTREGA") != null ? rs.getTimestamp("FECHA_ENTREGA").toLocalDateTime()  : null;
-
-        return new Paquete(id, origen, destino, pesoKg, contenido);
+  private Paquete mapearPaquete(ResultSet rs) throws SQLException {
+    // 1. Datos obligatorios
+    int id = rs.getInt("ID_PAQUETE");
+    double pesoKg = rs.getDouble("PESO_KG"); // OJO: Verifica si en la DB es PESO_KG o PESO_KILOS
+    String contenido = rs.getString("CONTENIDO");
     
+    // 2. Enums y Fechas obligatorias
+    Provincia origen = Provincia.valueOf(rs.getString("DIRECCION_ORIGEN"));
+    Provincia destino = Provincia.valueOf(rs.getString("DIRECCION_DESTINO"));
+    EstadoPaquete estado = EstadoPaquete.valueOf(rs.getString("ESTADO"));
+    
+    LocalDateTime fechaCreacion = rs.getTimestamp("FECHA_CREACION").toLocalDateTime();
+
+    // 3. Manejo de Opcionales (Vehículo)
+    Integer idVehiculo = null;
+    int idVehiculoRaw = rs.getInt("ID_VEHICULO_ASIGNADO");
+    if (!rs.wasNull()) {
+        idVehiculo = idVehiculoRaw;
     }
+
+    // 4. Manejo de Opcionales (Fecha Entrega) - Tu corrección aplicada
+    LocalDateTime fechaEntrega = null;
+    Timestamp tsEntrega = rs.getTimestamp("FECHA_ENTREGA");
+    if (tsEntrega != null) {
+        fechaEntrega = tsEntrega.toLocalDateTime();
+    }
+
+    // 5. Retorno usando el constructor de "reconstitución"
+    return new Paquete(id, fechaCreacion, origen, destino, pesoKg, estado, contenido, idVehiculo, fechaEntrega);
+}
 
     @Override
     public boolean guardarPaquete(Paquete paquete) {

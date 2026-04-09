@@ -4,10 +4,11 @@ package Dominio;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+
 public class Paquete implements Serializable {
     private static final long serialVersionUID = 1L;
     private final int idPaquete;
-    private final LocalDateTime fechaCreacion;
+    private LocalDateTime fechaCreacion;
     private LocalDateTime fechaEntrega;
     
     private Provincia provinciaOrigen; 
@@ -118,17 +119,8 @@ public class Paquete implements Serializable {
         this.fechaEntrega = fechaEntrega;
         cambiarEstado(EstadoPaquete.ENTREGADO);       
     }
-
-    public void  FechaCreacion(LocalDateTime fechaCreacion) {
-        if (fechaCreacion == null) {
-            throw new IllegalArgumentException("La fecha de creación no puede ser nula");
-        }
-        return fechaCreacion;
-        
-    }
-
-    public void FechaUltimaModificacion(LocalDateTime fechaUltimaModificacion) {
-        
+    public boolean estadoPendiente() {
+        return this.estado == EstadoPaquete.PENDIENTE;
     }
 
     public boolean estadoAsignado() {
