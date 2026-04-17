@@ -2,42 +2,41 @@ package Servicio;
 
 import java.util.List;
 
-import Dominio.EstadoPaquete;
-import Dominio.Paquete;
-import Dominio.Vehiculo;
+import DAO.PaqueteDAO;
+import DAO.VehiculoDAO;
+import Servicio.CalculadoraLogistica;
+import Servicio.MonitorSistema;
+
 
 public class GestorPaquetes {
-
-    private void atributoDaoProvicionalPaquete;
-    private void atributoDaoProvicionalVehiculo;
-    pri
-
-
-    
-    // Aquí inyectarás el PaqueteDAO cuando el compañero de DB lo termine
-    // private IPaqueteDAO paqueteDAO; 
+   
+    private PaqueteDAO paqueteDAO;
+    private VehiculoDAO vehiculoDAO;
+    private CalculadoraLogistica calculadoraLogistica;
+    private MonitorSistema monitorSistema;
 
     public GestorPaquetes() {
         // Constructor, quizás inicializar DAO o MonitorSistema
+        this.paqueteDAO = new PaqueteDAO();
+        this.vehiculoDAO = new VehiculoDAO();
+        this.calculadoraLogistica = new CalculadoraLogistica();
+        this.monitorSistema = new MonitorSistema();
     }
 
-    /**
-     * Mapeado al método: + procesarEnvio(paquete : Paquete) : boolean
-     * del UML.
-     */
-   public void registrarPaquete(Paquete paquete){
-     
+   public void registrarPaquete(IPaqueteDAO paqueteDAO){
+ 
    }
 
-   public void asignarVehiculo(Paquete paquete, Vehiculo vehiculo){
+
+   public void asignarVehiculo(){
 
    }
 
-   public double calcularCostoEnvio(Paquete paquete){
+   public double calcularCostoEnvio(){
        return 0.0; 
    }
 
-   public void  actualizarEstado(Paquete paquete, EstadoPaquete estado){
+   public void  actualizarEstado(){
 
    }
 

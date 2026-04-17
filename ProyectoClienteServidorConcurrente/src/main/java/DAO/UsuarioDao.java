@@ -1,14 +1,22 @@
-package Conexion;
+package DAO;
 
-import Conexion.Usuario;
+import java.util.List;
 
-/**
- *
- * @author Asus Vivobook
- */
+import Dominio.Usuario;
+
+
+
+
 public interface UsuarioDAO {
    
     boolean guardarUsuario(Usuario usuario);
+
     Usuario buscarUsuarioPorId(int idUsuario);
+
     Usuario buscarUsuarioPorCorreo(String correo);
+
+    Usuario eliminarUsuario(int idUsuario);
+
+    List<Usuario> listarUsuarios();
+
 }

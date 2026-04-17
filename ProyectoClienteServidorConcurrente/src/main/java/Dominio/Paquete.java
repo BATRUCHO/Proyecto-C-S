@@ -4,15 +4,16 @@ package Dominio;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+
 public class Paquete implements Serializable {
     private static final long serialVersionUID = 1L;
     private final int idPaquete;
-    private final LocalDateTime fechaCreacion;
-    private LocalDateTime fechaEntrega; // No final, cambia al entregar
+    private LocalDateTime fechaCreacion;
+    private LocalDateTime fechaEntrega;
     
-    private Provincia provinciaOrigen; // Valor único, no Set
+    private Provincia provinciaOrigen; 
     private Provincia provinciaDestino; 
-    private Integer idVehiculoAsignado; // Cambiado de Set a Integer para FK
+    private Integer idVehiculoAsignado; 
 
     private double pesoKg;
     private EstadoPaquete estado;
@@ -26,13 +27,29 @@ public class Paquete implements Serializable {
         this.contenido = contenido;
         this.fechaCreacion = LocalDateTime.now();
         this.estado = EstadoPaquete.PENDIENTE;
+        this.idVehiculoAsignado = null;
+        this.fechaEntrega = null;
+    }
+    //Sobrecarga de constructores
+
+    public Paquete(int idPaquete, LocalDateTime fechaCreacion, Provincia provinciaOrigen, Provincia provinciaDestino, double pesoKg, EstadoPaquete estado, String contenido, Integer idVehiculoAsignado, LocalDateTime fechaEntrega) {
+      this.idPaquete = idPaquete;
+      this.fechaCreacion = fechaCreacion;
+      this.provinciaOrigen = provinciaOrigen;
+      this.provinciaDestino = provinciaDestino;
+      this.pesoKg = pesoKg;
+      this.estado = estado;
+      this.contenido = contenido;
+      this.idVehiculoAsignado = idVehiculoAsignado;
+      this.fechaEntrega = fechaEntrega;
+
     }
 
     public Paquete(String id, String destino) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-       public int getIdPaquete() {
+    public int getIdPaquete() {
         return idPaquete;
     }
 
@@ -69,9 +86,7 @@ public class Paquete implements Serializable {
     }
 
 
-    // Método de cálculo financiero real
-
-    public void asignarVehiculo(int idVehiculo) {
+    public void asignarVehiculo(int idVehiculo) { //good
         if (!estado.puedeCambiarA(EstadoPaquete.ASIGNADO)) {
             throw new IllegalStateException("Transición de estado no permitida");
         }
@@ -79,7 +94,7 @@ public class Paquete implements Serializable {
         this.estado = EstadoPaquete.ASIGNADO;
     }
 
-    public void cambiarEstado(EstadoPaquete nuevoEstado) {
+    public void cambiarEstado(EstadoPaquete nuevoEstado) { //good
         if (nuevoEstado == null) {
             throw new IllegalArgumentException("El nuevo estado no puede ser nulo");
         }if (this.estado == EstadoPaquete.ENTREGADO) {
@@ -92,7 +107,7 @@ public class Paquete implements Serializable {
         this.estado = nuevoEstado;
     }
 
-    public void registrarEntrega(LocalDateTime fechaEntrega) {
+    public void fechaEntrega(LocalDateTime fechaEntrega) {
         if (fechaEntrega == null) {
             throw new IllegalArgumentException("La fecha de entrega no puede ser nula");
         }
@@ -103,6 +118,9 @@ public class Paquete implements Serializable {
         } 
         this.fechaEntrega = fechaEntrega;
         cambiarEstado(EstadoPaquete.ENTREGADO);       
+    }
+    public boolean estadoPendiente() {
+        return this.estado == EstadoPaquete.PENDIENTE;
     }
 
     public boolean estadoAsignado() {
@@ -116,8 +134,6 @@ public class Paquete implements Serializable {
     public boolean estadoEntregado() {
         return this.estado == EstadoPaquete.ENTREGADO;
     }
-
-  
 
 }
     

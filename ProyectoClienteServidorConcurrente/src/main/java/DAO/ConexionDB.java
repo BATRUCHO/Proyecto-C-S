@@ -1,4 +1,5 @@
-package Conexion;
+package DAO;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -32,7 +33,16 @@ private static ConexionDB instancia;
         return instancia;
     }
 
-    public Connection getConnection() {
+    public Connection getConnection() throws SQLException {
+        if (conexion == null || conexion.isClosed()) {
+            conexion = DriverManager.getConnection(URL, USUARIO, CLAVE);
+        }
         return conexion;
+    }
+
+    public void cerrarConexion() throws SQLException {
+        if (conexion != null && !conexion.isClosed()) {
+            conexion.close();
+        }
     }
 }

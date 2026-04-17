@@ -1,48 +1,39 @@
 package Servicio;
 
-import java.util.List;
-import java.util.Map;
-import Dominio.Paquete;
 import Dominio.Provincia;
 import Dominio.TipoVehiculo;
 
 public class CalculadoraLogistica {
     
-    private double tarifaBase; 
-    private double precioPorKm = 50.0; // Precio estándar por kilómetro
-    private double costoTotal;
+    private final  double tarifaBase; 
+    private final double PRECIO_POR_KM = 50.0;
+    private final double PRECIO_POR_KG = 10.0;
 
-    public CalculadoraLogistica(Double tarifaBase) {
-        this.tarifaBase = (tarifaBase != null) ? tarifaBase : 1500.0;
-        this.costoTotal = 0;
+    public CalculadoraLogistica(double tarifaBase) {
+        this.tarifaBase = tarifaBase;
     }
 
-    /**
-     * Calcula el costo total basado en la diferencia de distancia entre provincias.
-     * @param paquete El paquete a evaluar.
-     * @return El costo total del envío.
-     */
-    public double calcularCostoEnvio(Paquete paquete) {
-        if (paquete == null) return 0.0;
+    public double calcularCosto(double peso, Provincia origen, Provincia destino) {
+        if (origen == null || destino == null) return 0.0;
 
-        int kmOrigen = paquete.getProvinciaOrigen().getDistanciaKm();
-        int kmDestino = paquete.getProvinciaDestino().getDistanciaKm();
-        
-        // Calculamos la distancia absoluta recorrida
+        int kmOrigen = origen.getDistanciaKm();
+        int kmDestino = destino.getDistanciaKm();
         int distanciaRecorrida = Math.abs(kmDestino - kmOrigen);
         
-        this.costoTotal = tarifaBase + (distanciaRecorrida * precioPorKm);
-        return costoTotal;
+        return tarifaBase + (distanciaRecorrida * PRECIO_POR_KM) + (peso * PRECIO_POR_KG);
     }
 
-    
-
-
-
+    public double calcularTiempoEntrega(TipoVehiculo tipo, int distancia) {
+        double velocidad = switch (tipo) {
+            case BICICLETA -> 15.0;
+            case MOTO -> 40.0;
+            case CARRO -> 60.0;
+            case CAMION -> 50.0;
+            default -> 30.0;
+        };
+        
+        return distancia / velocidad;
+    }
 }
 
-
-
-
-
-
+ 
