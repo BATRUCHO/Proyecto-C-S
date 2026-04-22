@@ -1,0 +1,120 @@
+DROP DATABASE quick_delivery_db;
+ 
+-- 1. Creación de la Base de Datos
+CREATE DATABASE IF NOT EXISTS quick_delivery_db;
+USE quick_delivery_db;
+
+-- 2. Gestión de Seguridad y Roles
+CREATE TABLE roles (
+    id_rol INT AUTO_INCREMENT PRIMARY KEY, -- Agregado AUTO_INCREMENT
+    nombre VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE usuarios (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL, 
+    apellido VARCHAR(50) NOT NULL, 
+    fechaNacimiento DATE,
+    dni VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(50) NOT NULL UNIQUE,
+    telefono VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    id_rol INT,
+    FOREIGN KEY (id_rol) REFERENCES roles(id_rol)
+);
+
+-- 3. Gestión de Flota
+CREATE TABLE tipos_vehiculo (
+    id_tipo INT AUTO_INCREMENT PRIMARY KEY,
+    descripcion VARCHAR(50) NOT NULL -- Ej: 'Camión', 'Motocicleta'
+);
+
+CREATE TABLE vehiculos (
+    id_vehiculo INT AUTO_INCREMENT PRIMARY KEY,
+    placa VARCHAR(20) NOT NULL UNIQUE,
+    marca VARCHAR(50),
+    modelo VARCHAR(50),
+    id_tipo INT,
+    estado VARCHAR(20) DEFAULT 'Disponible', -- Ej: 'En Ruta', 'Mantenimiento'
+    FOREIGN KEY (id_tipo) REFERENCES tipos_vehiculo(id_tipo)
+);
+
+-- 4. Personal Operativo
+CREATE TABLE conductores (
+    id_conductor INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    cedula VARCHAR(20) UNIQUE NOT NULL,
+    id_usuario INT UNIQUE,
+    id_vehiculo_asignado INT UNIQUE,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
+    FOREIGN KEY (id_vehiculo_asignado) REFERENCES vehiculos(id_vehiculo)
+);
+
+-- 5. Gestión de Entregas y Paquetes
+CREATE TABLE estados_paquete (
+    id_estado INT AUTO_INCREMENT PRIMARY KEY,
+    descripcion VARCHAR(50) NOT NULL -- Ej: 'En Bodega', 'En Tránsito', 'Entregado'
+);
+
+CREATE TABLE paquetes (
+    id_paquete INT AUTO_INCREMENT PRIMARY KEY,
+    descripcion TEXT,
+    remitente VARCHAR(100),
+    destinatario VARCHAR(100),
+    direccion_entrega TEXT NOT NULL,
+    id_estado INT,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_estado) REFERENCES estados_paquete(id_estado)
+);
+
+CREATE TABLE asignaciones (
+    id_asignacion INT AUTO_INCREMENT PRIMARY KEY,
+    id_paquete INT,
+    id_conductor INT,
+    fecha_asignacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_paquete) REFERENCES paquetes(id_paquete),
+    FOREIGN KEY (id_conductor) REFERENCES conductores(id_conductor)
+);
+
+-- 6. Monitoreo y Trazabilidad (Requerimientos Críticos)
+CREATE TABLE ubicaciones_vehiculos (
+    id_ubicacion INT AUTO_INCREMENT PRIMARY KEY,
+    id_vehiculo INT,
+    latitud DECIMAL(10, 8),
+    longitud DECIMAL(11, 8),
+    fecha_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_vehiculo) REFERENCES vehiculos(id_vehiculo)
+);
+
+CREATE TABLE incidencias (
+    id_incidencia INT AUTO_INCREMENT PRIMARY KEY,
+    id_paquete INT,
+    id_conductor INT,
+    descripcion TEXT NOT NULL,
+    fecha_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_paquete) REFERENCES paquetes(id_paquete),
+    FOREIGN KEY (id_conductor) REFERENCES conductores(id_conductor)
+);
+
+-- 7. Auditoría del Sistema
+CREATE TABLE logs_sistema (
+    id_log INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT,
+    accion TEXT NOT NULL, -- Ej: 'Inicio de sesión', 'Creación de paquete'
+    fecha_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
+);
+
+-----------------------------------------------------------------------
+
+
+-- Asegúrate de que los roles existan (según tu script SQL)
+INSERT INTO roles (nombre) VALUES ('Administrador'), ('Conductor');
+
+-- Insertar un usuario administrador de prueba (password: admin123)
+INSERT INTO usuarios (nombre, apellido, fechaNacimiento, dni, email, telefono, password, id_rol) 
+VALUES ('Admin', 'Sistema', '1990-01-01', '12345678', 'admin@mail.com', '88888888', 'admin123', 1);
+
+-- Insertar un conductor de prueba (password: cond123)
+INSERT INTO usuarios (nombre, apellido, fechaNacimiento, dni, email, telefono, password, id_rol) 
+VALUES ('Juan', 'Conductor', '1992-05-15', '87654321', 'juan@mail.com', '77777777', 'cond123', 2);

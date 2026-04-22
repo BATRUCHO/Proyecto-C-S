@@ -1,81 +1,81 @@
 package Dominio;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
-
-public abstract class Vehiculo implements Serializable {
+public class Vehiculo implements Serializable {
     
-    private static final long serialVersionUID = 1L;
-    protected final int idVehiculo;
-    protected final String placa;
-    protected EstadoVehiculo estado; 
-    protected boolean activo;
-    protected LocalDateTime ultimoReporte;
-    protected final TipoVehiculo tipo;
-   
-    protected Vehiculo(int idVehiculo, String placa, TipoVehiculo tipo) {
-        this.idVehiculo = idVehiculo;
+    private int id_vehiculo;
+    private String placa;
+    private String marca;
+    private String modelo;
+    private int id_tipo;
+    private String estado;
+
+    public Vehiculo(int id_vehiculo, String placa, String marca, String modelo, int id_tipo, String estado) {
+        this.id_vehiculo = id_vehiculo;
         this.placa = placa;
-        this.tipo = tipo;
-        this.estado = EstadoVehiculo.DISPONIBLE;
-        this.activo = true;
-        this.ultimoReporte = LocalDateTime.now();
+        this.marca = marca;
+        this.modelo = modelo;
+        this.id_tipo = id_tipo;
+        this.estado = estado;
     }
-   
- // Getters
-    
-    public int getIdVehiculo() {
-        return idVehiculo;
+
+    public int getId_vehiculo() {
+        return id_vehiculo;
+    }
+
+    public void setId_vehiculo(int id_vehiculo) {
+        this.id_vehiculo = id_vehiculo;
     }
 
     public String getPlaca() {
         return placa;
     }
 
-    public EstadoVehiculo getEstado() {
+    public void setPlaca(String placa) {
+        this.placa = placa;
+    }
+
+    public String getMarca() {
+        return marca;
+    }
+
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
+    }
+
+    public int getId_tipo() {
+        return id_tipo;
+    }
+
+    public void setId_tipo(int id_tipo) {
+        this.id_tipo = id_tipo;
+    }
+
+    public String getEstado() {
         return estado;
     }
 
-    public boolean isActivo() {
-        return activo;
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
-    public LocalDateTime getUltimoReporte() {
-        return ultimoReporte;
-    }
-
-    public TipoVehiculo getTipo() {
-        return tipo;
-    }
-
-    //Metodos //
-
-    public abstract double getCapacidadMaximaKG();
-
-    public abstract double getVelocidadPromedioKmH();
     
-    public boolean estaDisponible() {
-        return this.estado == EstadoVehiculo.DISPONIBLE;     
-    }
 
-    public boolean realizarEntrega(EstadoVehiculo nuevoEstadoVehiculo) {
-        if (!estaDisponible()) {
-            return false;
-        }
-        this.estado = nuevoEstadoVehiculo;
-        this.ultimoReporte = LocalDateTime.now();
-        return true;
-    }
+    
+    
 
-    public boolean puedeTransportar(double pesoCargaKg) { //pendiente definir el tipo de carga double pesoCargaKg)
-        if (!this.estaDisponible()) {
-            return false;
-        }
-        if (!this.activo) {
-            return false;
-        }
-        return pesoCargaKg <= getCapacidadMaximaKG();
-    }
+    
+   
+ 
+    
       
 }

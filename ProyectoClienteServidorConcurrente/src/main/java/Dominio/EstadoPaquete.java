@@ -1,39 +1,18 @@
 package Dominio;
 
-    public enum EstadoPaquete {
-        PENDIENTE(1,"El paquete está pendiente de ser recogido"), 
-        ASIGNADO(2,"El paquete ha sido asignado a un repartidor"),
-        EN_TRANSITO(3,"El paquete está en tránsito"),
-        INCIDENCIA(4,"El paquete tiene una incidencia"),
-        ENTREGADO(5,"El paquete ha sido entregado");
+public enum EstadoPaquete {
+    EN_BODEGA(1),
+    EN_TRANSITO(2),
+    ENTREGADO(3),
+    CON_INCIDENCIA(4);
 
-    private final int codigo;
-    private final String descripcion;
+    private final int id;
 
-    EstadoPaquete(int codigo, String descripcion) {
-        this.codigo = codigo;
-        this.descripcion = descripcion;
-
-    }
-    public int getCodigo() {
-        return codigo;
-    }
-    public String getDescripcion() {
-        return descripcion;
-
+    EstadoPaquete(int id) {
+        this.id = id;
     }
 
-    public boolean puedeCambiarA(EstadoPaquete destinEstadoPaquete) {
-        if (this == ENTREGADO) {
-            return false;
-        }
-        return switch (this) {
-            case PENDIENTE -> destinEstadoPaquete == ASIGNADO || destinEstadoPaquete == INCIDENCIA;  // -> operador lambda, usado en expresiones switch expresivas
-            case ASIGNADO -> destinEstadoPaquete == EN_TRANSITO || destinEstadoPaquete == INCIDENCIA;
-            case EN_TRANSITO -> destinEstadoPaquete == ENTREGADO || destinEstadoPaquete == INCIDENCIA;
-            case INCIDENCIA -> destinEstadoPaquete == PENDIENTE || destinEstadoPaquete == ASIGNADO;
-            default -> false;
-        
-        };
+    public int getId() {
+        return id;
     }
 }
