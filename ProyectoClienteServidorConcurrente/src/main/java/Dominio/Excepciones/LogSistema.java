@@ -7,19 +7,18 @@ public class LogSistema implements Serializable {
     private int idLog;
     private int idUsuario;
     private String accion;
+    private String detalle;
     private Timestamp fechaHora;
 
 
-    public LogSistema(int idLog, int idUsuario, String accion, Timestamp fechaHora) {
+    public LogSistema(int idLog, int idUsuario, String accion,String detalle,Timestamp fechaHora) {
         this.idLog = idLog;
         this.idUsuario = idUsuario;
         this.accion = accion;
+        this.detalle = detalle;
         this.fechaHora = fechaHora;
     }
 
-    public LogSistema(int i, int idUsuarioActual, String string, String string2, Object object) {
-        //TODO Auto-generated constructor stub
-    }
 
     public int getIdLog() {
         return idLog;
@@ -43,6 +42,12 @@ public class LogSistema implements Serializable {
 
     public void setAccion(String accion) {
         this.accion = accion;
+    }
+    public String getDetalle() {
+        return detalle;
+    }
+    public void setDetalle(String detalle) {
+        this.detalle = detalle;
     }
 
     public Timestamp getFechaHora() {

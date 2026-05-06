@@ -28,7 +28,7 @@ private Usuario mapearUsuario(ResultSet rs) throws SQLException {
     );
 }
 
-    public boolean guardarUsuario(Usuario usuario) {
+    public boolean registrarUsuario(Usuario usuario) {
 
     String sql = "INSERT INTO usuarios (nombre, apellido, fechaNacimiento, dni, email, telefono, password, id_rol) " +
                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -47,12 +47,72 @@ private Usuario mapearUsuario(ResultSet rs) throws SQLException {
         
         return ps.executeUpdate() > 0;
     } catch (SQLException e) {
-        e.printStackTrace();
+        System.err.println("Error al registrar usuario: " + e.getMessage());
         return false;
     }
-}
+    
+    }
+
+    public Usuario eliminarUsuario(int idUsuario) {
+            String sql = "UPDATE usuarios SET activo = 0 WHERE id_usuario = ?";
+
+            try (Connection conexion = ConexionMySQL.getConexion();
+                    PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+                    ps.setInt(1, idUsuario);
+                    int filasAfectadas = ps.executeUpdate();
+                    
+                    if (filasAfectadas > 0) {
+                        return buscarUsuarioPorId(idUsuario);
+                    }
+
+            } catch (SQLException e) {
+                System.err.println("Error al eliminar usuario: " + e.getMessage());
+            }
+            return null;
+        }
    
-  
+    public List<Usuario> listarUsuarios() {
+        List<Usuario> listaUsuarios= new ArrayList<>();
+        String sql = "SELECT * FROM usuarios WHERE ";
+
+        try (Connection conexion = ConexionMySQL.getConexion();
+            PreparedStatement ps = conexion.prepareStatement(sql);  
+            ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+            Usuario u = mapearUsuario(rs);
+            listaUsuarios.add(u);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar usuarios: " + e.getMessage());
+        }
+        return listaUsuarios;
+        }
+
+
+    public Usuario validarLogin(String email, String password) {
+        String sql = "SELECT * FROM usuarios WHERE email = ? AND password = ? ";
+
+        try (Connection conexion = ConexionMySQL.getConexion();
+            PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ps.setString(2, password);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapearUsuario(rs);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al validar login: " + e.getMessage());
+        }
+        return null;
+    }
+
+
+        // ------------------SQL Secundarios------------------- //
+
     public Usuario buscarUsuarioPorId(int idUsuario) {
         String sql = "SELECT * FROM usuarios WHERE id_usuario = ?";
 
@@ -65,7 +125,7 @@ private Usuario mapearUsuario(ResultSet rs) throws SQLException {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error al buscar usuario por ID: " + e.getMessage());
         }
         return null;
     }
@@ -83,71 +143,12 @@ private Usuario mapearUsuario(ResultSet rs) throws SQLException {
                 }            
             } 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error al buscar usuario por correo: " + e.getMessage());
         }
         return null;
     }        
 
-   
-    public Usuario eliminarUsuario(int idUsuario) {
-        String sql = "UPDATE usuarios SET activo = 0 WHERE id_usuario = ?";
 
-        try (Connection conexion = ConexionMySQL.getConexion();
-                PreparedStatement ps = conexion.prepareStatement(sql)) {
-
-                ps.setInt(1, idUsuario);
-                int filasAfectadas = ps.executeUpdate();
-                
-                if (filasAfectadas > 0) {
-                    return buscarUsuarioPorId(idUsuario);
-                }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-   
-    public List<Usuario> listarUsuarios() {
-        List<Usuario> listaUsuarios= new ArrayList<>();
-        String sql = "SELECT * FROM usuarios WHERE ";
-
-        try (Connection conexion = ConexionMySQL.getConexion();
-            PreparedStatement ps = conexion.prepareStatement(sql);  
-            ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-            Usuario u = mapearUsuario(rs);
-            listaUsuarios.add(u);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return listaUsuarios;
-        }
-
-  
-    public Usuario validarLogin(String email, String password) {
-        String sql = "SELECT * FROM usuarios WHERE email = ? AND password = ? ";
-
-        try (Connection conexion = ConexionMySQL.getConexion();
-            PreparedStatement ps = conexion.prepareStatement(sql)) {
-            ps.setString(1, email);
-            ps.setString(2, password);
-            
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapearUsuario(rs);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-}
-
-    
     public Conductores obtenerConductorPorUsuario(int id_usuario) {
     String sql = "SELECT id_conductor, nombre, cedula, id_usuario, id_vehiculo_asignado FROM conductores WHERE id_usuario = ?";
 
@@ -168,8 +169,8 @@ private Usuario mapearUsuario(ResultSet rs) throws SQLException {
             }
         }
     } catch (SQLException e) {
-        e.printStackTrace();
+        System.err.println("Error al obtener conductor por usuario: " + e.getMessage());
     }
     return null;
-}
+    }
 }
