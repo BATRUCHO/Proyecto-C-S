@@ -100,7 +100,8 @@ CREATE TABLE incidencias (
 CREATE TABLE logs_sistema (
     id_log INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT,
-    accion TEXT NOT NULL, -- Ej: 'Inicio de sesión', 'Creación de paquete'
+    accion TEXT NOT NULL, 
+    detalles TEXT,
     fecha_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
 );
@@ -118,3 +119,7 @@ VALUES ('Admin', 'Sistema', '1990-01-01', '12345678', 'admin@mail.com', '8888888
 -- Insertar un conductor de prueba (password: cond123)
 INSERT INTO usuarios (nombre, apellido, fechaNacimiento, dni, email, telefono, password, id_rol) 
 VALUES ('Juan', 'Conductor', '1992-05-15', '87654321', 'juan@mail.com', '77777777', 'cond123', 2);
+
+INSERT INTO usuario(nombre, apellido, fechaNacimiento, dni, email, telefono, password, id_rol)
+VALUES('Jose', 'Perez', '1990-09-17', '87895645','josep@mail.com', '66666666', 'jose123', 3);
+
