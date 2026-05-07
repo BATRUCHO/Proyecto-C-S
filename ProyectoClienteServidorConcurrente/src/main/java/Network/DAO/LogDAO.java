@@ -1,14 +1,27 @@
 package Network.DAO;
 
-    import java.sql.Connection;
-    import java.sql.PreparedStatement;
-    import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-    import Dominio.Excepciones.LogSistema;
-    import Network.BD.ConexionMySQL;
+import Dominio.Excepciones.LogSistema;
+import Network.BD.ConexionMySQL;
 
 
 public class LogDAO {
+
+    private LogSistema mapearLogs(ResultSet rs) throws SQLException {
+        return new LogSistema(
+            rs.getInt("id_log"),
+            rs.getInt("id_usuario"),
+            rs.getString("accion"),
+            rs.getString("detalle"),
+            rs.getTimestamp("fecha_hora")
+        );
+    }
 
    public void registrarEvento(int idUsuario, String accion, String detalle) {
     String sql = "INSERT INTO logs_sistema (id_usuario, accion, detalle, fecha_hora) VALUES (?, ?, ?, NOW())";
@@ -22,5 +35,24 @@ public class LogDAO {
     } catch (Exception e) {
         System.err.println("Error persistiendo en DB: " + e.getMessage());
     }
-}
+    }
+
+    public List<LogSistema> listarEventosSistema() {
+        List<LogSistema> listarEventosSistema = new ArrayList<>();
+        String sql = "SELECT * FROM logs_sistema ";
+
+        try (Connection conexion = ConexionMySQL.getConexion();
+            PreparedStatement ps = conexion.prepareStatement(sql);  
+            ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+            LogSistema l = mapearLogs(rs);
+            listarEventosSistema.add(l);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar paquetes: " + e.getMessage());
+        }
+        return listarEventosSistema;
+
+        }
 }

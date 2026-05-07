@@ -6,12 +6,11 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
 
-import Dominio.Excepciones.LogSistema;
 import Dominio.Excepciones.MensajeRed;
-import LoggerFile.LoggerManager;
 import Dominio.Paquete;
 import Dominio.UbicacionVehiculo;
 import Dominio.Usuario;
+import LoggerFile.LoggerManager;
 import Network.DAO.LogDAO;
 import Network.DAO.PaqueteDAO;
 import Network.DAO.UsuarioDAO;
@@ -139,8 +138,7 @@ public class HiloCliente extends Thread{
                         boolean exito = paqueteDAO.asignarPaquete(idPkg, idCond);
                         
                         if(exito) {
-                            logDAO.registrarEvento(new LogSistema(0, idUsuarioActual, 
-                                "Asignación: Pkg " + idPkg + " a Cond " + idCond, null, null));
+                            logDAO.registrarEvento(idUsuarioActual, "ASIGNACION", "Asignación: Pkg " + idPkg + " a Cond " + idCond);
                         }
                         
                         return new MensajeRed("ASIGNACION_RESPUESTA", exito, exito, 
@@ -157,7 +155,7 @@ public class HiloCliente extends Thread{
                         boolean exito = true;
                         
                         if(exito) {
-                            logDAO.registrarEvento(new LogSistema(0, idUsuarioActual, "CAMBIO_ESTADO: Paquete " + idPkg + " a estado " + estado, null, null));
+                            logDAO.registrarEvento(idUsuarioActual, "CAMBIO_ESTADO", "Paquete " + idPkg + " a estado " + estado);
                         }
                         return new MensajeRed("ESTADO_RES", exito, exito, exito ? "Estado actualizado" : "Error");
 
@@ -198,7 +196,12 @@ public class HiloCliente extends Thread{
 
         private void cerrarConexiones() {
             try {
-                if(socketCliente != null) socketCliente.close();
+                if(idUsuarioActual != 0){
+                    LoggerManager.log(idUsuarioActual,"DESCONEXION","El usuario ha cerrado la sesión o perdió conexión.");
+                }
+                if (socketCliente != null) socketCliente.close();
+                if (entrada != null) entrada.close();
+                if (salida != null) salida.close();
             }catch (IOException e) {
                 System.err.println("Error al cerrar conexiones: " + e.getMessage());
             }

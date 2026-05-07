@@ -44,17 +44,17 @@ public class FrmLogin extends JFrame {
         // 1. Panel Superior para el Logo
         JPanel panelSuperior = new JPanel(new BorderLayout());
         panelSuperior.setBackground(Color.WHITE);
-        panelSuperior.setPreferredSize(new Dimension(400, 200));
+        panelSuperior.setPreferredSize(new Dimension(400, 180));
+        panelSuperior.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 10, 10, 10));
 
         lblLogo = new JLabel("", SwingConstants.CENTER);
-        // Aquí cargamos tu foto. Asegúrate de que la ruta sea correcta.
-        cargarLogo("src/resources/logo.png"); 
+        cargarLogo("logo.png");
         
         panelSuperior.add(lblLogo, BorderLayout.CENTER);
 
         // 2. Panel Central para el Formulario
         JPanel panelFormulario = new JPanel();
-        panelFormulario.setLayout(null); // Layout libre para posicionar exacto
+        panelFormulario.setLayout(null); 
         panelFormulario.setBackground(new Color(245, 245, 245));
 
         JLabel lblTitulo = new JLabel("INICIAR SESIÓN");
@@ -94,17 +94,44 @@ public class FrmLogin extends JFrame {
         add(panelFormulario, BorderLayout.CENTER);
     }
 
-    private void cargarLogo(String ruta) {
+    private void cargarLogo(String nombreRecurso) {
         try {
-            ImageIcon icon = new ImageIcon(ruta);
-            // Redimensionar imagen para que quepa en el espacio (200x150)
-            Image img = icon.getImage().getScaledInstance(180, 130, Image.SCALE_SMOOTH);
-            lblLogo.setIcon(new ImageIcon(img));
+            // Se llama el recurso desde la carpeta resources
+            java.net.URL imgURL = getClass().getResource("/" + nombreRecurso);
+            
+            if (imgURL == null) {
+                imgURL = getClass().getResource("/resources/" + nombreRecurso);
+            }
+
+            if (imgURL != null) {
+                ImageIcon icon = new ImageIcon(imgURL);
+                
+                int anchoOriginal = icon.getIconWidth();
+                int altoOriginal = icon.getIconHeight();
+                
+                // Lógica de escalado proporcional
+                int nuevoAncho = 300; // Un poco más pequeño para dejar aire
+                int nuevoAlto = (nuevoAncho * altoOriginal) / anchoOriginal;
+                
+                // Si después de calcular, el alto es demasiado para el panel, ajustamos por alto
+                if (nuevoAlto > 230) {
+                    nuevoAlto = 230;
+                    nuevoAncho = (nuevoAlto * anchoOriginal) / altoOriginal;
+                }
+
+                Image imgEscalada = icon.getImage().getScaledInstance(nuevoAncho, nuevoAlto, Image.SCALE_SMOOTH);
+                lblLogo.setIcon(new ImageIcon(imgEscalada));
+                lblLogo.setText(""); 
+            } else {
+                lblLogo.setText("No se halló: " + nombreRecurso);
+                lblLogo.setForeground(Color.RED);
+            }
         } catch (Exception e) {
-            lblLogo.setText("LOGO NO ENCONTRADO");
+            lblLogo.setText("Error: " + e.getMessage());
         }
     }
-
+    
+//Mejorar el nivel de seguridad
     private void configurarEventos() {
         btnIngresar.addActionListener(e -> {
             String email = txtEmail.getText().trim();
@@ -115,7 +142,6 @@ public class FrmLogin extends JFrame {
                 return;
             }
 
-            // Llamamos al controlador de autenticación que ya definimos
             AutenticacionControlador auth = new AutenticacionControlador();
             auth.iniciarSesion(email, pass, this);
         });

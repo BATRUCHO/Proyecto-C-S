@@ -26,9 +26,6 @@ public class AdminControlador {
         }
     }
 
-    /**
-     * Método para asignar un paquete a un conductor específico.
-     */
     public boolean asignarPaquete(int idPaquete, int idConductor) {
 
         String datosAsignacion = idPaquete + ":" + idConductor;
@@ -53,7 +50,6 @@ public class AdminControlador {
     public boolean registrarUsuario(String nombre, String apellido, Date fechaNac, 
                                 String dni, String email, String telefono, 
                                 String password, int idRol) {
-    
     
         Usuario nuevoUsuario = new Usuario(0, dni, fechaNac, nombre, apellido, email, telefono, password, idRol);
 

@@ -33,7 +33,7 @@ public class AutenticacionControlador {
     }
 
     private void redirigirPorRol(Usuario user, JFrame vistaLogin) {
-        vistaLogin.dispose(); // Cerramos el login
+        vistaLogin.dispose(); 
         
         switch (user.getIdRol()) {
             case 1: // Administrador

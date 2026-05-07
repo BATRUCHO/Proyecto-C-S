@@ -48,9 +48,6 @@ public class PaqueteDAO  {
         }
     }
 
-   
-  @SuppressWarnings("CallToPrintStackTrace")
-
    public boolean asignarPaquete(int idPaquete, int idConductor) {
         String sqlAsignacion = "INSERT INTO asignaciones (id_paquete, id_conductor) VALUES (?, ?)";
         String sqlPaquete = "UPDATE paquetes SET id_estado = ? WHERE id_paquete = ?";
@@ -66,7 +63,6 @@ public class PaqueteDAO  {
                 psAsig.setInt(2, idConductor);
                 psAsig.executeUpdate();
             }
-
             // Ejecutar actualización en paquetes
             try (PreparedStatement psPkg = conexion.prepareStatement(sqlPaquete)) {
                 psPkg.setInt(1, 2); // Estado: En Tránsito
