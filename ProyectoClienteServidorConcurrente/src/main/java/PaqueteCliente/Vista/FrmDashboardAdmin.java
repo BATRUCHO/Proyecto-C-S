@@ -75,7 +75,7 @@ public class FrmDashboardAdmin extends JFrame {
     add(pestañas, BorderLayout.CENTER);
     add(btnCerrarSesion, BorderLayout.EAST);
 
-}
+    }
 
     private JPanel crearPanelPaquetes() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -92,13 +92,13 @@ public class FrmDashboardAdmin extends JFrame {
 
         // Botones de acción
         JPanel panelBotones = new JPanel();
-        JButton btnRefrescar = new JButton("Actualizar Estado Paquetes");
+        JButton btnActualizarPaquetes = new JButton("Actualizar Estado Paquetes");
         JButton btnNuevoPaquete = new JButton("Registrar Paquete");
         JButton btnEliminar = new JButton("Eliminar Paquete");
         JButton btnEditar = new JButton("Editar Paquete");
 
         // Se agregan al panel los botones
-        panelBotones.add(btnRefrescar);
+        panelBotones.add(btnActualizarPaquetes);
         panelBotones.add(btnNuevoPaquete);
         panelBotones.add(btnEliminar);
         panelBotones.add(btnEditar);
@@ -106,23 +106,29 @@ public class FrmDashboardAdmin extends JFrame {
         panel.add(panelBotones, BorderLayout.SOUTH);
 
         
-        // --- EVENTOS USANDO EL CONTROLADOR ---
+        //--------------BotonesEventos----------------//
         
-        btnRefrescar.addActionListener(e -> refrescarTablaPaquetes());
+        // BotonActualizarPaquetes actualiza la tabla
+        btnActualizarPaquetes.addActionListener(e -> refrescarTablaPaquetes());
 
+        // BottonNuevoPaquete abre la ventana de nuevo paquete
         btnNuevoPaquete.addActionListener(e -> {
             FrmNuevoPaquete ventanaNuevo = new FrmNuevoPaquete(this);
             ventanaNuevo.setVisible(true);
-            
             
             if (ventanaNuevo.isExito()) {
                 refrescarTablaPaquetes();
             }
         });
 
+        // BotonEliminar elimina el paquete seleccionado
+        btnEliminar.addActionListener(e -> {
+            
+        });
+            
+
         return panel;
     }
-
 
     private JPanel crearPanelUsuarios() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -161,8 +167,8 @@ public class FrmDashboardAdmin extends JFrame {
 }
 
 
-// Cambiar esta logica//
-
+    //--------------MetodosAuxiliares----------------//
+    
     public void refrescarTablaPaquetes() {
         // 1. Usamos la instancia de AdminControlador para obtener la lista
         List<Paquete> lista = adminControl.obtenerTodosLosPaquetes();

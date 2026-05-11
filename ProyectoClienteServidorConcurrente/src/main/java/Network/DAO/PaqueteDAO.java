@@ -23,27 +23,35 @@ public class PaqueteDAO  {
         rs.getString("remitente"),
         rs.getString("destinatario"),
         rs.getString("direccion_entrega"),
+        rs.getDouble("peso"),
         rs.getInt("id_estado"),
         rs.getDate("fecha_creacion"),
         rs.getInt("id_vehiculo")
     );
 }
    
-    public boolean crearPaquete(Paquete paquete) {
-        String sql = "INSERT INTO paquetes (descripcion, remitente, destinatario, direccion_entrega, id_estado) VALUES (?, ?, ?, ?, ?)";
+    public boolean crearPaquete(Paquete paquete) {      
+        String sql = "INSERT INTO paquetes (descripcion, remitente, destinatario, direccion_entrega, peso, id_estado, fecha_creacion, id_vehiculo) "
+                + "VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)";
 
         try (Connection conexion = ConexionMySQL.getConexion();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
+            PreparedStatement ps = conexion.prepareStatement(sql)) {
             
-            ps.setString(1 , paquete.getDescripcion());
+            ps.setString(1, paquete.getDescripcion());
             ps.setString(2, paquete.getRemitente());
             ps.setString(3, paquete.getDestinatario());
             ps.setString(4, paquete.getDireccion_entrega());
-            ps.setInt(5, paquete.getId_estado());
+            
+            // Manejo del Peso (Double)
+            ps.setDouble(5, paquete.getPeso()); 
+            
+            // Manejo de Estados y Vehículos (Int)
+            ps.setInt(6, paquete.getId_estado());
+            ps.setInt(7, paquete.getId_vehiculo());
             
             return ps.executeUpdate() > 0;
         } catch(SQLException e) {
-            System.err.println("Error al crear paquete: " + e.getMessage());
+            System.err.println("Error al crear paquete en DB: " + e.getMessage());
             return false;
         }
     }

@@ -121,9 +121,13 @@ public class HiloCliente extends Thread{
                     boolean creado = paqueteDAO.crearPaquete(pNuevo);
                     
                     if(creado) {
-                        LoggerManager.log(idUsuarioActual, "CREAR_PAQUETE", "ID de usuario " + idUsuarioActual + " creó un paquete"); 
+                        LoggerManager.log(idUsuarioActual, "CREAR_PAQUETE", 
+                            "Usuario " + idUsuarioActual + " creó un paquete" + pNuevo.getDescripcion()); 
+
+                        return new MensajeRed("RESPUESTA_CREAR",pNuevo,true,"Paquete creado exitosamente");
+                    } else {
+                    return new MensajeRed("RESPUESTA_CREAR",null,false,"Error al insertar en la base de datos");
                     }
-                    return new MensajeRed("RESPUESTA_CREAR", creado, creado, creado ? "OK" : "Error en DB");
 
                 case "LISTAR_PAQUETES":
                     List<Paquete> lista = paqueteDAO.listarPaquetes();

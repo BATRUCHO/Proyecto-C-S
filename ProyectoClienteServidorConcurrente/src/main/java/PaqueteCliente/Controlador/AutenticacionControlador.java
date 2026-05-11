@@ -14,6 +14,9 @@ public class AutenticacionControlador {
 
     private ClienteSocket clienteSocket;
 
+    //--------------MetodosControlLogin----------------//
+
+
    public void iniciarSesion(String email, String password, JFrame vistaLogin) {
         // 1. Creamos un usuario temporal con las credenciales
         Usuario loginUser = new Usuario(0, "", new java.sql.Date(0), "", "", email, "", password, 0);

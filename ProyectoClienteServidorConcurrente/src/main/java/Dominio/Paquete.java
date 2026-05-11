@@ -12,18 +12,21 @@ public class Paquete implements Serializable {
     private String remitente;
     private String destinatario;
     private String direccion_entrega;
+    private Double peso;
     private int id_estado;
     private Date fecha_creacion;
     private int id_vehiculo;
 
+
     
-    public Paquete(int id_paquete, String descripcion, String remitente, String destinatario, String direccion_entrega,
+    public Paquete(int id_paquete, String descripcion, String remitente, String destinatario, String direccion_entrega, Double peso,
             int id_estado, Date fecha_creacion, int id_vehiculo) {
         this.id_paquete = id_paquete;
         this.descripcion = descripcion;
         this.remitente = remitente;
         this.destinatario = destinatario;
         this.direccion_entrega = direccion_entrega;
+        this.peso = peso;
         this.id_estado = id_estado;
         this.fecha_creacion = fecha_creacion;
         this.id_vehiculo = id_vehiculo;
@@ -77,6 +80,16 @@ public class Paquete implements Serializable {
 
     public void setDireccion_entrega(String direccion_entrega) {
         this.direccion_entrega = direccion_entrega;
+    }
+
+
+    public Double getPeso() {
+        return peso;
+    }
+
+
+    public void setPeso(Double peso) {
+        this.peso = peso;
     }
 
 

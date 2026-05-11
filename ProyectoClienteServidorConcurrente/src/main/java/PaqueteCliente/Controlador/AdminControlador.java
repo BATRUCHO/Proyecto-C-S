@@ -10,9 +10,26 @@ import PaqueteCliente.ModeloRed.ClienteSocket;
 
 public class AdminControlador {
 
-    /**
-     * Metodo para crear un nuevo paquete.Obtiene todos los paquetes desde el servidor para mostrarlos en la tabla.
-     */
+    //----------------MetodosControlUsuario----------------//
+
+  public boolean registrarUsuario(String nombre, String apellido, Date fechaNac, 
+                                String dni, String email, String telefono, 
+                                String password, int idRol) {
+    
+        Usuario nuevoUsuario = new Usuario(0, dni, fechaNac, nombre, apellido, email, telefono, password, idRol);
+
+        MensajeRed peticion = new MensajeRed("REGISTRAR_USUARIO", nuevoUsuario, true, "");
+        MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
+
+        if (!respuesta.isEstadoExito()) {
+            System.err.println("Error en registro: " + respuesta.getMensajeRespuesta());
+        }
+
+        return respuesta.isEstadoExito();
+    }
+
+    //----------------MetodosControlPaquete----------------//
+
     public List<Paquete> obtenerTodosLosPaquetes() {
    
         MensajeRed peticion = new MensajeRed("LISTAR_PAQUETES", null, true, "");
@@ -35,9 +52,9 @@ public class AdminControlador {
         return respuesta.isEstadoExito();
     }
 
-    public boolean registrarNuevoPaquete(String desc, String remitente, String dest, String dirEntrega) {
+    public boolean registrarNuevoPaquete(Double peso, String desc, String remitente, String dest, String dirEntrega) {
 
-        Paquete nuevoPaquete = new Paquete(0, desc, remitente, dest, dirEntrega, 1, null, 0);
+        Paquete nuevoPaquete = new Paquete(0, desc, remitente, dest, dirEntrega, peso, 1, null, 0);
         MensajeRed peticion = new MensajeRed("CREAR_PAQUETE", nuevoPaquete, true, "");
         MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
 
@@ -47,21 +64,7 @@ public class AdminControlador {
         return respuesta.isEstadoExito();
     }
 
-    public boolean registrarUsuario(String nombre, String apellido, Date fechaNac, 
-                                String dni, String email, String telefono, 
-                                String password, int idRol) {
     
-        Usuario nuevoUsuario = new Usuario(0, dni, fechaNac, nombre, apellido, email, telefono, password, idRol);
-
-        MensajeRed peticion = new MensajeRed("REGISTRAR_USUARIO", nuevoUsuario, true, "");
-        MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
-
-        if (!respuesta.isEstadoExito()) {
-            System.err.println("Error en registro: " + respuesta.getMensajeRespuesta());
-        }
-
-        return respuesta.isEstadoExito();
-    }
 
     
 
