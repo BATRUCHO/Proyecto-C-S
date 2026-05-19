@@ -113,7 +113,6 @@ public class HiloCliente extends Thread{
                         List<Usuario> listaUsuarios = usuarioDAO.listarUsuarios();
                         return new MensajeRed("LISTA_USUARIOS_RESPUESTA", listaUsuarios, true, "Lista obtenida");
 
-
                 // ----- Módulo Paquetes ------ //
 
                 case "CREAR_PAQUETE":
@@ -151,7 +150,7 @@ public class HiloCliente extends Thread{
                         return new MensajeRed("ASIGNACION_RESPUESTA", false, false, "Error: " + e.getMessage());
                     } 
 
-                case "ACTUALIZAR_ESTADO_PAQUETE":
+                case "ACTUALIZAR_ESTADO_PAQUETE": //  Revisar funcion
                         String[] partes = peticion.getPayload().toString().split(":");
                         int idPkg = Integer.parseInt(partes[0]);
                         int estado = Integer.parseInt(partes[1]);
@@ -163,14 +162,23 @@ public class HiloCliente extends Thread{
                         }
                         return new MensajeRed("ESTADO_RES", exito, exito, exito ? "Estado actualizado" : "Error");
 
-                case "LISTAR_PAQUETES_CONDUCTOR":
-                        int idCond = (int) peticion.getPayload();
-                        List<Paquete> misPaquetes = paqueteDAO.listarPaquetesPorConductor(idCond);
-                        return new MensajeRed("LISTA_CONDUCTOR_RES", misPaquetes, true, "Paquetes obtenidos");
-
+                case "EDITAR_PAQUETE":
+                    Paquete pEditar = (Paquete) peticion.getPayload();
+                    boolean editado = paqueteDAO.EditarPaquete(pEditar);
+                    if(editado) {
+                        logDAO.registrarEvento(idUsuarioActual, "EDITAR_PAQUETE", "Paquete " + pEditar.getId_paquete() + " editado");
+                    }
+                    return new MensajeRed("EDITAR_RESPUESTA", editado, editado, editado ? "Paquete actualizado" : "Error al actualizar");
+                    
+                case "ELIMINAR_PAQUETE":
+                    int idEliminar = (int) peticion.getPayload();
+                    boolean eliminado = paqueteDAO.eliminarPaquete(idEliminar);
+                    if(eliminado) {
+                        logDAO.registrarEvento(idUsuarioActual, "ELIMINAR_PAQUETE", "Paquete " + idEliminar + " eliminado");
+                    }
+                    return new MensajeRed("ELIMINAR_RESPUESTA", eliminado, eliminado, eliminado ? "Paquete eliminado" : "Error al eliminar");          
 
                         // ----- Módulo Vehículos ------ //
-
                         
                 case "ACTUALIZAR_GPS":
                         String[] puntos = peticion.getPayload().toString().split(":");
@@ -180,15 +188,12 @@ public class HiloCliente extends Thread{
 
                         vehiculoDAO.registrarUbicacion(idVeh, lat, lng);
                         return new MensajeRed("GPS_OK", null, true, "Coordenadas recibidas");
-                case "RASTREAR_PAQUETE":
-                        int idPkgRastreo = (int) peticion.getPayload();
-                        Paquete pRastreo = paqueteDAO.buscarPaquetePorId(idPkgRastreo); 
-                        return new MensajeRed("RASTREO_RES", pRastreo, pRastreo != null, pRastreo != null ? "OK" : "No encontrado");
-
+               
                 case "ULTIMA_UBICACION":
                     int idVehUbi = (int) peticion.getPayload();
                     UbicacionVehiculo ubi = null; 
                     return new MensajeRed("UBICACION_RES", ubi, ubi != null, ubi != null ? "OK" : "Sin datos GPS");
+                    
                 default:
                     return new MensajeRed("DESCONOCIDO", null, false, "La acción no existe");
             }

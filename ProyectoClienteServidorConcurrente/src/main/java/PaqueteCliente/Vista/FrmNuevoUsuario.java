@@ -61,4 +61,8 @@ public class FrmNuevoUsuario extends JDialog {
             JOptionPane.showMessageDialog(this, "Error: Verifique el formato de fecha.");
         }
     }
+
+    public static void main(String[] args) {
+        new FrmNuevoUsuario(null).setVisible(true);
+    }
 }

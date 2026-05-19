@@ -94,75 +94,78 @@ public class PaqueteDAO  {
 
     
     public void actualizarEstadoPaquete(int idPaquete, EstadoPaquete nuevoEstado) {
-    String sql = "UPDATE paquetes SET id_estado = ? WHERE id_paquete = ?";
-    
-        try (Connection conexion = ConexionMySQL.getConexion();
-            PreparedStatement ps = conexion.prepareStatement(sql)) {
-            
-            // Aquí extraemos el ID numérico del Enum usando el getter que creaste
-            ps.setInt(1, nuevoEstado.getId()); 
-            ps.setInt(2, idPaquete);
-            
-            int filasAfectadas = ps.executeUpdate();
-            
-            if (filasAfectadas > 0) {
-                System.out.println("Estado del paquete " + idPaquete + " actualizado a: " + nuevoEstado.name());
-            }
+        String sql = "UPDATE paquetes SET id_estado = ? WHERE id_paquete = ?";
         
+            try (Connection conexion = ConexionMySQL.getConexion();
+                PreparedStatement ps = conexion.prepareStatement(sql)) {
+                
+                // Aquí extraemos el ID numérico del Enum usando el getter que creaste
+                ps.setInt(1, nuevoEstado.getId()); 
+                ps.setInt(2, idPaquete);
+                
+                int filasAfectadas = ps.executeUpdate();
+                
+                if (filasAfectadas > 0) {
+                    System.out.println("Estado del paquete " + idPaquete + " actualizado a: " + nuevoEstado.name());
+                }
+            
+            } catch (SQLException e) {
+                System.err.println("Error al actualizar estado del paquete: " + e.getMessage());
+            }
+    }
+
+    public boolean eliminarPaquete(int idPaquete) {
+        String sql = "DELETE FROM paquetes WHERE id_paquete = ?";
+
+        try (Connection conexion = ConexionMySQL.getConexion();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, idPaquete);
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.err.println("Error al actualizar estado del paquete: " + e.getMessage());
+            System.err.println("Error al eliminar paquete: " + e.getMessage());
+            return false;
         }
+    }
+
+    public boolean EditarPaquete (Paquete paquete){
+        // Usamos UPDATE y filtramos por el ID único
+        String sql = "UPDATE paquetes SET descripcion=?, remitente=?, destinatario=?, "
+                + "direccion_entrega=?, peso=?, id_estado=?, id_vehiculo=? "
+                + "WHERE id_paquete = ?";
+        
+        try (Connection conexion =  ConexionMySQL.getConexion();
+            PreparedStatement ps = conexion.prepareStatement(sql)){
+
+                ps.setString(1, paquete.getDescripcion());
+                ps.setString(2, paquete.getRemitente());
+                ps.setString(3, paquete.getDestinatario());
+                ps.setString(4, paquete.getDireccion_entrega());
+                ps.setDouble(5, paquete.getPeso());
+                ps.setInt(6, paquete.getId_estado());
+                ps.setInt(7, paquete.getId_vehiculo());
+
+                // El ultimo parametro a actualizar es el ID único
+                ps.setInt(8, paquete.getId_paquete());
+                return ps.executeUpdate() > 0;
+            } catch (SQLException e) {
+                System.err.println("Error al actualizar paquete: " + e.getMessage());
+                return false;
+
+            }
     }
 
   
     public void registrarIncidencias(Incidencias in) {
-    String sql = "INSERT INTO incidencias (id_paquete, id_conductor, descripcion) VALUES (?, ?, ?)";
-        try (Connection conexion = ConexionMySQL.getConexion();
-            PreparedStatement ps = conexion.prepareStatement(sql)) {
-            ps.setInt(1, in.getIdPaquete());
-            ps.setInt(2, in.getIdConductor());
-            ps.setString(3, in.getDescripcion());
-            ps.executeUpdate();
-    }   catch (SQLException e) {
-        System.err.println("Error al registrar incidencia: " + e.getMessage());
-    }
-    }
-
-    
-    public Paquete buscarPaquetePorId(int idPaquete) {
-    String sql = "SELECT * FROM paquetes WHERE id_paquete = ?";
-
-    try {Connection conexion = ConexionMySQL.getConexion();
-            PreparedStatement ps = conexion.prepareStatement(sql);
-            ps.setInt(1, idPaquete);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapearPaquete(rs);
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al buscar paquete por ID: " + e.getMessage());
+        String sql = "INSERT INTO incidencias (id_paquete, id_conductor, descripcion) VALUES (?, ?, ?)";
+            try (Connection conexion = ConexionMySQL.getConexion();
+                PreparedStatement ps = conexion.prepareStatement(sql)) {
+                ps.setInt(1, in.getIdPaquete());
+                ps.setInt(2, in.getIdConductor());
+                ps.setString(3, in.getDescripcion());
+                ps.executeUpdate();
+        }   catch (SQLException e) {
+            System.err.println("Error al registrar incidencia: " + e.getMessage());
         }
-        return null;    
-        
-    }
-
-    
-    public Paquete buscarPaquetePorContenido(String contenido) {
-    String sql = "SELECT * FROM paquetes WHERE descripcion LIKE ?";
-
-        try(Connection conexion = ConexionMySQL.getConexion();
-            PreparedStatement ps = conexion.prepareStatement(sql)){
-            ps.setString(1, contenido);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapearPaquete(rs);
-                }
-            }
-            } catch (SQLException e) {
-                System.err.println("Error al buscar paquete por contenido: " + e.getMessage());
-            }
-            return null;
     }
 
    

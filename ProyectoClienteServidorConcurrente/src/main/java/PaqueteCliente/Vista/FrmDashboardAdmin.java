@@ -9,6 +9,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -26,6 +27,8 @@ public class FrmDashboardAdmin extends JFrame {
     private JTable tblPaquetes;
     private DefaultTableModel modeloPaquetes;
     private AdminControlador adminControl = new AdminControlador(); // Instancia del controlador
+    private  List<Paquete> listaPaquetes;
+
 
 
     public FrmDashboardAdmin(Usuario admin) { 
@@ -67,6 +70,7 @@ public class FrmDashboardAdmin extends JFrame {
 
     // Añadimos las pestañas llamando a métodos que crean cada panel
     pestañas.addTab("📦 Gestión de Paquetes", crearPanelPaquetes());
+    pestañas.addTab("🚙 Gestión de Vehículos", crearPanelVehiculos());
     pestañas.addTab("👥 Gestión de Usuarios", crearPanelUsuarios());
     pestañas.addTab("📖 Gestion de registros de Logs", crearPanelRegistros());
 
@@ -81,9 +85,10 @@ public class FrmDashboardAdmin extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         
         // Configuración de la Tabla
-        String[] columnas = {"ID_Paquete", "Descripción","Remitente", "Destinatario", "Dirección_Entrega", "Estado","Fecha_Creacion"};
+        String[] columnas = {"ID_Paquete", "Descripción","Remitente", "Destinatario", "Dirección de Entrega", "Estado","Fecha de Creacion"};
         modeloPaquetes = new DefaultTableModel(columnas, 0) {
     
+        @Override
         public boolean isCellEditable(int row, int column) { return false; } 
         };
         
@@ -93,15 +98,17 @@ public class FrmDashboardAdmin extends JFrame {
         // Botones de acción
         JPanel panelBotones = new JPanel();
         JButton btnActualizarPaquetes = new JButton("Actualizar Estado Paquetes");
-        JButton btnNuevoPaquete = new JButton("Registrar Paquete");
-        JButton btnEliminar = new JButton("Eliminar Paquete");
+        JButton btnRegistrarPaquete = new JButton("Registrar Paquete");
+        JButton btnAsignarPaquete = new JButton("Asignar Paquete");
         JButton btnEditar = new JButton("Editar Paquete");
+        JButton btnEliminar = new JButton("Eliminar Paquete");
 
         // Se agregan al panel los botones
         panelBotones.add(btnActualizarPaquetes);
-        panelBotones.add(btnNuevoPaquete);
-        panelBotones.add(btnEliminar);
+        panelBotones.add(btnRegistrarPaquete);
+        panelBotones.add(btnAsignarPaquete);
         panelBotones.add(btnEditar);
+        panelBotones.add(btnEliminar);
 
         panel.add(panelBotones, BorderLayout.SOUTH);
 
@@ -112,7 +119,7 @@ public class FrmDashboardAdmin extends JFrame {
         btnActualizarPaquetes.addActionListener(e -> refrescarTablaPaquetes());
 
         // BottonNuevoPaquete abre la ventana de nuevo paquete
-        btnNuevoPaquete.addActionListener(e -> {
+        btnRegistrarPaquete.addActionListener(e -> {
             FrmNuevoPaquete ventanaNuevo = new FrmNuevoPaquete(this);
             ventanaNuevo.setVisible(true);
             
@@ -121,13 +128,127 @@ public class FrmDashboardAdmin extends JFrame {
             }
         });
 
-        // BotonEliminar elimina el paquete seleccionado
-        btnEliminar.addActionListener(e -> {
+        // BotonAsignarPaquete asigna el paquete seleccionado
+        btnAsignarPaquete.addActionListener(e -> {
+            int filaSeleccionada = tblPaquetes.getSelectedRow();
+
+            if (filaSeleccionada == -1) {
+                JOptionPane.showMessageDialog(this, "Por favor, seleccione un paquete de la tabla.");
+                return;
+            }
+
+            int idPaquete = (int) tblPaquetes.getValueAt(filaSeleccionada, 0);
+            int idConductor = adminLogueado.getIdUsuario();
+            boolean asignado = adminControl.asignarPaquete(idPaquete, idConductor);
+
+            if (asignado) {
+                refrescarTablaPaquetes();
+            } else {
+                JOptionPane.showMessageDialog(this, "No se pudo asignar el paquete.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+    
+        });
+
+        // BotonEditar abre la ventana de editar paquete
+        btnEditar.addActionListener(e -> {
+            int filaSeleccionada = tblPaquetes.getSelectedRow();
+
+            // Si la seleccion es igual -1 significa que no se selecciono nada
+            if (filaSeleccionada == -1) {
+                JOptionPane.showMessageDialog(this, "Por favor, seleccione un paquete de la tabla.");
+                return;
+            }
+
+            // Obtiene el ID del paquete seleccionado
+            int id =(int) tblPaquetes.getValueAt(filaSeleccionada, 0);
+
+            // Usa el metodo auxiliar para buscar el paquete por ID
+            Paquete paqueteSeleccionado = buscarPaquetePorId(id);
+
+            if(paqueteSeleccionado == null){
+                JOptionPane.showMessageDialog(this, "No se pudieron recuperar los datos completos del paquete.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Abre la ventana de edición con los datos del paquete a editar
+            FrmNuevoPaquete ventanaEditar = new FrmNuevoPaquete(this, paqueteSeleccionado);
+            ventanaEditar.setVisible(true);
+
+            if (ventanaEditar.isExito()) {
+                refrescarTablaPaquetes();
+            }
             
         });
+
+        // BotonEliminar elimina el paquete seleccionado
+        btnEliminar.addActionListener(e -> {
+            int filaSeleccionada = tblPaquetes.getSelectedRow();
+
+            if(filaSeleccionada == -1){
+                JOptionPane.showMessageDialog(this, "Por favor, seleccione un paquete de la tabla.");
+                return;
+            }
             
+            int id = (int) tblPaquetes.getValueAt(filaSeleccionada, 0);
+            boolean eliminado = adminControl.eliminarPaquete(id);
+
+            if(eliminado){
+                refrescarTablaPaquetes();
+            }else{
+                JOptionPane.showMessageDialog(this, "No se pudo eliminar el paquete.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        });
+        
+        return panel;
+    }
+
+    private JPanel crearPanelVehiculos() {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        // Modelo de tabla para vehículos
+        String[] columnas = { "ID_Vehiculo","Placa","Marca","Modelo","ID_tipo_vehiculo","Estado" };
+        DefaultTableModel modeloVehiculos = new DefaultTableModel(columnas, 0) {
+
+        @Override
+        public boolean isCellEditable(int row, int column) {return false;}
+        };
+
+        JTable tblVehiculos = new JTable(modeloVehiculos);
+        panel.add(new JScrollPane(tblVehiculos), BorderLayout.CENTER);
+
+        //Botones de acción
+        JPanel panelBotones = new JPanel();
+        JButton btnActualizarVehiculos = new JButton("Actualizar Estado Vehiculos");
+        JButton btnRegistrarVehiculo = new JButton("Registrar Vehiculo");
+        JButton btnEditar = new JButton("Editar Vehiculo");
+        JButton btnEliminar = new JButton("Eliminar Vehiculo");
+
+        // Se agregan al panel los botones
+        panelBotones.add(btnActualizarVehiculos);
+        panelBotones.add(btnRegistrarVehiculo);
+        panelBotones.add(btnEditar);
+        panelBotones.add(btnEliminar);
+
+
+        panel.add(panelBotones, BorderLayout.SOUTH);
+
+        //--------------BotonesEventos----------------//
+
+        btnActualizarVehiculos.addActionListener(e -> {
+        });
+
+        btnRegistrarVehiculo.addActionListener(e -> {
+        });
+
+        btnEditar.addActionListener(e -> {
+        });
+
+        btnEliminar.addActionListener(e -> {
+        });
 
         return panel;
+
     }
 
     private JPanel crearPanelUsuarios() {
@@ -150,7 +271,8 @@ public class FrmDashboardAdmin extends JFrame {
         panel.add(new JScrollPane(tblUsuarios), BorderLayout.CENTER);
         
         return panel;
-}
+    }
+    
     private JPanel crearPanelRegistros() {
 
         JPanel panel = new JPanel(new BorderLayout());
@@ -164,14 +286,13 @@ public class FrmDashboardAdmin extends JFrame {
 
         return panel;
 
-}
-
+    }
 
     //--------------MetodosAuxiliares----------------//
     
     public void refrescarTablaPaquetes() {
         // 1. Usamos la instancia de AdminControlador para obtener la lista
-        List<Paquete> lista = adminControl.obtenerTodosLosPaquetes();
+        List<Paquete> lista = adminControl.actualizarPaquetes();
 
         // 2. Limpiamos el modelo actual de la tabla
         modeloPaquetes.setRowCount(0);
@@ -196,11 +317,24 @@ public class FrmDashboardAdmin extends JFrame {
     private String interpretarEstado(int idEstado) {
         switch (idEstado) {
             case 1: return "En Bodega";
-            case 2: return "Asignado a Ruta";
+            case 2: return "Asignado a Ruta o En Tránsito";
             case 3: return "Entregado";
+            case 4: return "Con Incidencias";
             default: return "Desconocido";
         }
     }
+
+    public Paquete buscarPaquetePorId(int id) {
+        if(listaPaquetes != null) {
+            for (Paquete p : listaPaquetes) {
+                if (p.getId_paquete() == id) {
+                    return p; // Lo encontro, retorna el objeto paquete
+                }
+            }
+        }
+        return null; // No lo encontro
+    }
+
 
 
     //Metodo prueba ventana admin//
@@ -215,5 +349,5 @@ public class FrmDashboardAdmin extends JFrame {
         
         new FrmDashboardAdmin(adminPrueba).setVisible(true);
     });
-}
+    }
 }

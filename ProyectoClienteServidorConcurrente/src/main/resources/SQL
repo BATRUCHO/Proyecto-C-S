@@ -62,9 +62,12 @@ CREATE TABLE paquetes (
     remitente VARCHAR(100),
     destinatario VARCHAR(100),
     direccion_entrega TEXT NOT NULL,
+    peso DECIMAL(10, 2),
     id_estado INT,
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,.
+    id_vehiculo INT, 
     FOREIGN KEY (id_estado) REFERENCES estados_paquete(id_estado)
+    FOREIGN KEY (id_vehiculo) REFERENCES vehiculos(id_vehiculo)
 );
 
 CREATE TABLE asignaciones (
@@ -120,11 +123,15 @@ VALUES ('Admin', 'Sistema', '1990-01-01', '12345678', 'admin@mail.com', '8888888
 INSERT INTO usuarios (nombre, apellido, fechaNacimiento, dni, email, telefono, password, id_rol) 
 VALUES ('Juan', 'Conductor', '1992-05-15', '87654321', 'juan@mail.com', '77777777', 'cond123', 2);
 
--- Insertar usuario pruebas
-INSERT INTO usuarios (nombre, apellido, fechaNacimiento, dni, email, telefono, password, id_rol)
-VALUES
-    ('Juan', 'Pérez', '1990-05-15', '12345678', 'PRUEBA', '123456789', '123', 1),
-    ('María', 'Gómez', '1985-08-22', '98765432', 'PRUEBA2', '987654321', '123', 2);
+
+-- Insertar estados de paquete 
+INSERT INTO estados_paquete (id_estado, descripcion) VALUES 
+(1, 'Registrado'),
+(2, 'En Tránsito'),
+(3, 'Entregado'),
+(4, 'CON_INCIDENCIA');
+
+
  
 
 

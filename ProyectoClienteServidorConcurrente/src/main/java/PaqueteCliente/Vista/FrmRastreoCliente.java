@@ -94,4 +94,11 @@ public class FrmRastreoCliente extends JFrame {
         if (id == 3) return "Entregado";
         return "Desconocido";
     }
+
+    
+
+    public static void main(String[] args) {
+        new FrmRastreoCliente().setVisible(true);
+    }
+
 }

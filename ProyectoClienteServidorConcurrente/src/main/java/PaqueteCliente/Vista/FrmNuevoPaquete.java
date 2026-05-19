@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import Dominio.Paquete;
 import PaqueteCliente.Controlador.AdminControlador;
 
 public class FrmNuevoPaquete extends JDialog {
@@ -19,17 +20,30 @@ public class FrmNuevoPaquete extends JDialog {
     private JButton btnGuardar, btnCancelar;
     private AdminControlador adminControl = new AdminControlador();
     private boolean exito = false; // Para avisar al Dashboard si debe refrescar la tabla 
+    private Paquete paqueteExistente = null;
 
 
+    // Constructor 1 : Para crear un nuevo paquete
     public FrmNuevoPaquete(Frame parent) {
         super(parent, "Registrar Nuevo Paquete", true); // true lo hace modal
-        setSize(400, 450);
+        setSize(400, 520);
         setLocationRelativeTo(parent);
         setLayout(null);
         setResizable(false);
 
         initComponents();
         configurarEventos();
+
+    }
+
+    // Constructor 2 : Para editar un paquete existente (Sobrecarga)
+    public FrmNuevoPaquete(Frame parent, Paquete paquete) {
+        this(parent); // Llama automaticamente al constor uno para inicializar
+        this.paqueteExistente = paquete; // Se guarda el paquete existente
+
+        if (paqueteExistente != null) {
+            llenarDatosParaEditar();   
+        }
     }
 
     private void initComponents() {
@@ -70,7 +84,7 @@ public class FrmNuevoPaquete extends JDialog {
                 //Al hacer click, si el texto es el guia, se borra
                 if(txtPeso.getText().equals(placeholder)) {
                     txtPeso.setText("");
-                    txtPeso.setForeground(Color.BLACK); // Cambia a color negroa al escritorio
+                    txtPeso.setForeground(Color.BLACK); // Cambia a color negro al escritorio
                 }
             }
 
@@ -127,41 +141,60 @@ public class FrmNuevoPaquete extends JDialog {
 
         //Boton para guardar accion de registro
         btnGuardar.addActionListener(e -> {
-            // 1. Validar campos básicos
-            if (txtPeso.getText().isEmpty() || txtDescripcion.getText().isEmpty() || txtDestinatario.getText().isEmpty() || txtDireccion.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Todas las columnas son obligatorias.");
+            // 1. Captura de datos y limpieza de espacios
+            String desc = txtDescripcion.getText().trim();
+            String dest = txtDestinatario.getText().trim();
+            String dir = txtDireccion.getText().trim();
+            String pesoTexto = txtPeso.getText().trim();
+            String placeholder = "0,0"; // O "0.0" según definiste arriba
+
+            // 2. Validación de campos de texto obligatorios
+            if (desc.isEmpty() || dest.isEmpty() || dir.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "La descripción, el destinatario y la dirección son obligatorios.");
                 return;
             }
-            
-            String pesoTexto = txtPeso.getText().trim();
-            double pesoFinal;
 
-            if (pesoTexto.equals("0.0") || pesoTexto.isEmpty()) {
-                pesoFinal = 0.0 ;               
-            } else {
+            // 3. Validación lógica del Peso (Evitar NumberFormatException)
+            double pesoFinal = 0.0;
+            if (!pesoTexto.equals(placeholder) && !pesoTexto.isEmpty()) {
                 try {
-                    pesoFinal = Double.parseDouble(pesoTexto);
+                    // Reemplazamos coma por punto por si el usuario usa formato latino
+                    pesoFinal = Double.parseDouble(pesoTexto.replace(",", "."));
+                    
+                    if (pesoFinal <= 0) {
+                        JOptionPane.showMessageDialog(this, "El peso debe ser mayor a 0.");
+                        return;
+                    }
                 } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "El peso debe ser un número válido.");
+                    JOptionPane.showMessageDialog(this, "Por favor, ingrese un número válido para el peso.");
                     return;
                 }
+            } else {
+                JOptionPane.showMessageDialog(this, "Debe indicar el peso del paquete.");
+                return;
             }
 
-            double peso = Double.parseDouble(txtPeso.getText());
-            // 2. Llamar al controlador
-            boolean res = adminControl.registrarNuevoPaquete(
-                peso,
-                txtDescripcion.getText(),
-                "Remitente General",
-                txtDestinatario.getText(),
-                txtDireccion.getText()
-            );
+            // 4. Llamada al controlador con la variable ya validada
+           boolean res;
+           if (paqueteExistente == null){
+                //Modo crear
+             res = adminControl.registrarNuevoPaquete(pesoFinal, desc, "Remitente", dest, dir);
+            }else{
+                //Modo editar
+                paqueteExistente.setDescripcion(desc);
+                paqueteExistente.setDestinatario(dest);
+                paqueteExistente.setDireccion_entrega(dir);
+                paqueteExistente.setPeso(pesoFinal);
+
+                res = adminControl.editarPaquete(paqueteExistente);
+            }
+
             if (res) {
-                JOptionPane.showMessageDialog(this, "Paquete registrado exitosamente.");
+                JOptionPane.showMessageDialog(this, "Paquete editado exitosamente.");
                 this.exito = true;
                 dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "Error al registrar en el servidor.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error de red: No se pudo conectar con el servidor.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
@@ -186,6 +219,22 @@ public class FrmNuevoPaquete extends JDialog {
     //Metodo de automaticacion para los botones//
     public boolean isExito() {
         return exito;
+    }
+
+    //Metodo para la edicion del paquete
+    public void llenarDatosParaEditar() {
+
+        //Se cambia el titulo de la ventana
+        setTitle("Editar Paquete #" + paqueteExistente.getId_paquete());
+
+        //Carga de datos en los campos del Jtextfield
+        txtIdPaquete.setText(Integer.toString(paqueteExistente.getId_paquete()));
+        txtDescripcion.setText(paqueteExistente.getDescripcion());
+        txtDestinatario.setText(paqueteExistente.getDestinatario());
+        txtDireccion.setText(paqueteExistente.getDireccion_entrega());
+
+        txtPeso.setText(Double.toString(paqueteExistente.getPeso()));
+        txtPeso.setForeground(Color.BLACK);
     }
 
     // Método main para probar la vista individualmente//
