@@ -1,8 +1,8 @@
 package Dominio;
 
-
 import java.io.Serializable;
-import java.sql.Date;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 
 public class Paquete implements Serializable {
@@ -12,24 +12,19 @@ public class Paquete implements Serializable {
     private String remitente;
     private String destinatario;
     private String direccion_entrega;
-    private Double peso;
-    private int id_estado;
-    private Date fecha_creacion;
-    private int id_vehiculo;
-
-
+    private BigDecimal peso;
+    private Timestamp fecha_creacion;
     
-    public Paquete(int id_paquete, String descripcion, String remitente, String destinatario, String direccion_entrega, Double peso,
-            int id_estado, Date fecha_creacion, int id_vehiculo) {
+    public Paquete(int id_paquete, String descripcion, String remitente, String destinatario, String direccion_entrega, BigDecimal peso, 
+        Timestamp fecha_creacion) {
+
         this.id_paquete = id_paquete;
         this.descripcion = descripcion;
         this.remitente = remitente;
         this.destinatario = destinatario;
         this.direccion_entrega = direccion_entrega;
         this.peso = peso;
-        this.id_estado = id_estado;
         this.fecha_creacion = fecha_creacion;
-        this.id_vehiculo = id_vehiculo;
 
     }
 
@@ -38,9 +33,11 @@ public class Paquete implements Serializable {
     }
 
 
+
     public void setId_paquete(int id_paquete) {
         this.id_paquete = id_paquete;
     }
+
 
 
     public String getDescripcion() {
@@ -48,9 +45,11 @@ public class Paquete implements Serializable {
     }
 
 
+
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
 
 
     public String getRemitente() {
@@ -58,9 +57,11 @@ public class Paquete implements Serializable {
     }
 
 
+
     public void setRemitente(String remitente) {
         this.remitente = remitente;
     }
+
 
 
     public String getDestinatario() {
@@ -68,9 +69,11 @@ public class Paquete implements Serializable {
     }
 
 
+
     public void setDestinatario(String destinatario) {
         this.destinatario = destinatario;
     }
+
 
 
     public String getDireccion_entrega() {
@@ -78,48 +81,36 @@ public class Paquete implements Serializable {
     }
 
 
+
     public void setDireccion_entrega(String direccion_entrega) {
         this.direccion_entrega = direccion_entrega;
     }
 
 
-    public Double getPeso() {
+
+    public BigDecimal getPeso() {
         return peso;
     }
 
 
-    public void setPeso(Double peso) {
+
+    public void setPeso(BigDecimal peso) {
         this.peso = peso;
     }
 
 
-    public int getId_estado() {
-        return id_estado;
-    }
 
-
-    public void setId_estado(int id_estado) {
-        this.id_estado = id_estado;
-    }
-
-
-    public Date getFecha_creacion() {
+    public Timestamp getFecha_creacion() {
         return fecha_creacion;
     }
 
 
-    public void setFecha_creacion(Date fecha_creacion) {
+
+    public void setFecha_creacion(Timestamp fecha_creacion) {
         this.fecha_creacion = fecha_creacion;
     }
 
-    public int getId_vehiculo() {
-        return id_vehiculo;
-    }
-
-    public void setId_vehiculo(int id_vehiculo) {
-        this.id_vehiculo = id_vehiculo;
-
-    }
+  
 }
     
  

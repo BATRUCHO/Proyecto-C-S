@@ -20,103 +20,71 @@ private Vehiculo mapearVehiculo(ResultSet rs) throws SQLException {
         rs.getString("placa"),
         rs.getString("marca"),
         rs.getString("modelo"),
-        rs.getInt("id_tipo"),
+        rs.getInt("id_tipoVehiculo"),
         rs.getString("estado")
     );
 
 }
     
-   
-    public boolean guardarVehiculo(Vehiculo vehiculo) {
-    String sql = "INSERT INTO vehiculos (placa, marca, modelo, id_tipo, estado) VALUES (?, ?, ?, ?, ?)";
-        
-    try (Connection conexion = ConexionMySQL.getConexion();
-         PreparedStatement ps = conexion.prepareStatement(sql)) {
-        
-        ps.setString(1, vehiculo.getPlaca());
-        ps.setString(2, vehiculo.getMarca());
-        ps.setString(3, vehiculo.getModelo());
-        ps.setInt(4, vehiculo.getId_tipo());
-        ps.setString(5, vehiculo.getEstado());
-                
-        return ps.executeUpdate() > 0;
-    } catch (SQLException e) {
-        e.printStackTrace();
-        return false;
-    }
-}
-
-    
-    public Vehiculo buscarVehiculoPorId(int idVehiculo) {
-    String sql = "SELECT * FROM vehiculos WHERE id_vehiculo = ?";
-
-    try (Connection conexion = ConexionMySQL.getConexion();
-            PreparedStatement ps = conexion.prepareStatement(sql)) {
-            ps.setInt(1, idVehiculo);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapearVehiculo(rs); 
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-        
-    
-    public Vehiculo buscarVehiculoPorPlaca(String placa) {
-    String sql = "SELECT * FROM vehiculos WHERE placa = ?";
-
-    try (Connection conexion = ConexionMySQL.getConexion();
-            PreparedStatement ps = conexion.prepareStatement(sql)) {
-            ps.setString(1, placa);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapearVehiculo(rs); 
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-  
-    public void registrarUbicacion(int id_vehiculo, double latitud, double longitud) {
-        
-        String sql = "INSERT INTO ubicaciones_vehiculos (id_vehiculo, latitud, longitud) VALUES (?, ?, ?)";
-        
-        try (Connection con = ConexionMySQL.getConexion();
-            PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setInt(1, id_vehiculo);
-            ps.setDouble(2, latitud);
-            ps.setDouble(3, longitud);
+    public boolean registrarVehiculo(Vehiculo vehiculo) {
+        String sql = "INSERT INTO vehiculos (placa, marca, modelo, id_tipoVehiculo, estado) VALUES (?, ?, ?, ?, ?)";
             
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }    
-    }
-
-   
-    public void actualizarEstado(int id, EstadoVehiculo estado) {
-
-        String sql = "UPDATE vehiculos SET estado = ? WHERE id_vehiculo = ?";
         try (Connection conexion = ConexionMySQL.getConexion();
             PreparedStatement ps = conexion.prepareStatement(sql)) {
             
-            ps.setString(1, estado.name()); // O estado.getTexto() si lo implementaste
-            ps.setInt(2, id);
-            ps.executeUpdate();
-            
-        } catch (SQLException e) {      
+            ps.setString(1, vehiculo.getPlaca());
+            ps.setString(2, vehiculo.getMarca());
+            ps.setString(3, vehiculo.getModelo());
+            ps.setInt(4, vehiculo.getId_tipo_vehiculo());
+            ps.setString(5, vehiculo.getEstado());
+                    
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
+
+
+    public boolean editarVehiculo(Vehiculo vehiculo) {
+        String sql = "UPDATE vehiculos SET placa = ?, marca = ?, modelo = ?, id_tipoVehiculo = ?, estado = ? WHERE id_vehiculo = ?";
         
-    
+        try(Connection c = ConexionMySQL.getConexion();
+            PreparedStatement ps = c.prepareStatement(sql)){
+
+            ps.setString(1, vehiculo.getPlaca());
+            ps.setString(2, vehiculo.getMarca());
+            ps.setString(3, vehiculo.getModelo());
+            ps.setInt(4, vehiculo.getId_tipo_vehiculo());
+            ps.setString(5, vehiculo.getEstado());
+            ps.setInt(6, vehiculo.getId_vehiculo());
+            
+            return ps.executeUpdate() > 0;
+
+            }catch(SQLException e){
+                System.err.println("Error al editar vehiculo: " + e.getMessage());
+                return false;
+            }
+    }
+
+
+    public boolean eliminarVehiculo(int id) {
+        String sql = "DELETE FROM vehiculos WHERE id_vehiculo = ?";
+
+        try(Connection c = ConexionMySQL.getConexion();
+            PreparedStatement ps = c.prepareStatement(sql)){
+
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+
+        }catch(SQLException e){
+            System.err.println("Error al eliminar vehiculo: " + e.getMessage());
+            return false;
+        }
+
+    }
+
+      
     public List<Vehiculo> listarVehiculosActivos() {
 
         List<Vehiculo> listaVehiculos= new ArrayList<>();
@@ -136,4 +104,53 @@ private Vehiculo mapearVehiculo(ResultSet rs) throws SQLException {
         return listaVehiculos;
         
         }
+
+
+
+
+
+
+
+
+
+
+
+
+        public void actualizarEstadoVehiculo(int id, EstadoVehiculo estado) {
+            String sql = "UPDATE vehiculos SET estado = ? WHERE id_vehiculo = ?";
+            try (Connection conexion = ConexionMySQL.getConexion();
+                PreparedStatement ps = conexion.prepareStatement(sql)) {
+                
+                ps.setString(1, estado.name()); // O estado.getTexto() si lo implementaste
+                ps.setInt(2, id);
+                ps.executeUpdate();
+                
+            } catch (SQLException e) {      
+                e.printStackTrace();
+            }
+        }
+
+
+
+        public void registrarUbicacion(int id_vehiculo, double latitud, double longitud) {
+            
+            String sql = "INSERT INTO ubicaciones_vehiculos (id_vehiculo, latitud, longitud) VALUES (?, ?, ?)";
+            
+            try (Connection con = ConexionMySQL.getConexion();
+                PreparedStatement ps = con.prepareStatement(sql)) {
+
+                ps.setInt(1, id_vehiculo);
+                ps.setDouble(2, latitud);
+                ps.setDouble(3, longitud);
+                
+                ps.executeUpdate();
+            }catch(SQLException e) {
+                e.printStackTrace();
+            }    
+        }
+
 }
+
+
+
+

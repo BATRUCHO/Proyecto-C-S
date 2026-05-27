@@ -11,10 +11,10 @@ public class ConfigLoader {
     static {
         try (InputStream input = ConfigLoader.class.getClassLoader().getResourceAsStream("db.properties")) {
             if (input == null) {
-                System.out.println("❌ ERROR: No se encontró db.properties en el classpath");
+                System.out.println(" ERROR: No se encontró db.properties en el classpath");
             } else {
                 properties.load(input);
-                System.out.println("✅ Archivo db.properties cargado correctamente.");
+                System.out.println(" Confirmacion: Archivo db.properties cargado correctamente.");
             }
         } catch (IOException ex) {
             ex.printStackTrace();   

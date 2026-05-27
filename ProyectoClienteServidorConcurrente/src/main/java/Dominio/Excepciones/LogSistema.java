@@ -4,59 +4,56 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 public class LogSistema implements Serializable {
-    private int idLog;
-    private int idUsuario;
+    private int id_log;
     private String accion;
-    private String detalle;
-    private Timestamp fechaHora;
+    private String detalles;
+    private Timestamp fecha_hora;
 
 
-    public LogSistema(int idLog, int idUsuario, String accion,String detalle,Timestamp fechaHora) {
-        this.idLog = idLog;
-        this.idUsuario = idUsuario;
+    public LogSistema(int id_log, String accion,String detalles,Timestamp fecha_hora) {
+        this.id_log = id_log;
         this.accion = accion;
-        this.detalle = detalle;
-        this.fechaHora = fechaHora;
+        this.detalles = detalles;
+        this.fecha_hora = fecha_hora;
+    }
+
+    public int getId_log() {
+        return id_log;
     }
 
 
-    public int getIdLog() {
-        return idLog;
+    public void setId_log(int id_log) {
+        this.id_log = id_log;
     }
 
-    public void setIdLog(int idLog) {
-        this.idLog = idLog;
-    }
-
-    public int getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
 
     public String getAccion() {
         return accion;
     }
 
+
     public void setAccion(String accion) {
         this.accion = accion;
     }
-    public String getDetalle() {
-        return detalle;
-    }
-    public void setDetalle(String detalle) {
-        this.detalle = detalle;
+
+
+    public String getDetalles() {
+        return detalles;
     }
 
-    public Timestamp getFechaHora() {
-        return fechaHora;
+
+    public void setDetalle(String detalles) {
+        this.detalles = detalles;
     }
 
-    public void setFechaHora(Timestamp fechaHora) {
-        this.fechaHora = fechaHora;
+
+    public Timestamp getFecha_hora() {
+        return fecha_hora;
     }
 
+
+    public void setFecha_hora(Timestamp fecha_hora) {
+        this.fecha_hora = fecha_hora;
+    }
 
 }

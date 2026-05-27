@@ -35,9 +35,23 @@ public class AutenticacionControlador {
         }
     }
 
+    public boolean cerrarSesion(int idUsuario) {
+        // Se crea la peticion de logout
+        MensajeRed peticion = new MensajeRed("LOGOUT", idUsuario, true, "");
+        // Enviamos a través de tu clase ClienteSocket (usando Singleton)
+        MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
+
+        return respuesta.isEstadoExito();
+
+    }
+
+    //--------------MetodosAuxiliares----------------//
+
     private void redirigirPorRol(Usuario user, JFrame vistaLogin) {
+        // Cerrar la ventana de inicio de sesión
         vistaLogin.dispose(); 
         
+        // Redirigir según el rol del usuario
         switch (user.getIdRol()) {
             case 1: // Administrador
                 new FrmDashboardAdmin(user).setVisible(true);

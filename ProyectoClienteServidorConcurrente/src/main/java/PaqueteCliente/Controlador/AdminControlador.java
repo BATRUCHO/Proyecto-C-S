@@ -4,9 +4,11 @@ import java.sql.Date;
 import java.util.List;
 
 import Dominio.EstadoPaquete;
+import Dominio.EstadoVehiculo;
 import Dominio.Excepciones.MensajeRed;
 import Dominio.Paquete;
 import Dominio.Usuario;
+import Dominio.Vehiculo;
 import PaqueteCliente.ModeloRed.ClienteSocket;
 
 public class AdminControlador {
@@ -17,7 +19,16 @@ public class AdminControlador {
                                 String dni, String email, String telefono, 
                                 String password, int idRol) {
     
-        Usuario nuevoUsuario = new Usuario(0, dni, fechaNac, nombre, apellido, email, telefono, password, idRol);
+        Usuario nuevoUsuario = new Usuario(
+            0, 
+            dni, 
+            fechaNac, 
+            nombre, 
+            apellido, 
+            email, 
+            telefono, 
+            password, 
+            idRol);
 
         MensajeRed peticion = new MensajeRed("REGISTRAR_USUARIO", nuevoUsuario, true, "");
         MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
@@ -92,7 +103,53 @@ public class AdminControlador {
 
     //----------------MetodosVehiculo----------------//
 
-    
+    public List<Vehiculo> actualizarVehiculos() {
+        MensajeRed peticion = new MensajeRed("LISTAR_VEHICULOS", null, true, "");
+        MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
+
+        if (respuesta.isEstadoExito()) {
+            return (List<Vehiculo>) respuesta.getPayload();
+        }else{
+            System.err.println("Error: " + respuesta.getMensajeRespuesta());
+            return null;
+        }
+    }
+
+    public boolean registrarNuevoVehiculo(String placa, String marca, String modelo, int id_tipoVehiculo, String estado) { {
+        Vehiculo nuevoVehiculo = new Vehiculo(
+            
+            0, 
+            placa, 
+            marca, 
+            modelo, 
+            id_tipoVehiculo,
+            EstadoVehiculo.DISPONIBLE.name()
+            );
+
+        MensajeRed peticion = new MensajeRed("REGISTRAR_VEHICULO", nuevoVehiculo, true, "");
+        MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
+
+        if(!respuesta.isEstadoExito()){
+            System.err.println("Error del servidor: " + respuesta.getMensajeRespuesta());
+        }
+        return respuesta.isEstadoExito();
+        }
+    }
+
+    public boolean editarVehiculo(Vehiculo vehiculo) {
+
+        MensajeRed peticion = new MensajeRed("EDITAR_VEHICULO", vehiculo, true, "");
+        MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
+        return respuesta.isEstadoExito();
+    }
+
+    public boolean eliminarVehiculo(int idVehiculo){
+        
+        MensajeRed peticion = new MensajeRed("ELIMINAR_VEHICULO", idVehiculo, true, "");
+        MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
+        return respuesta.isEstadoExito();
+    }
+
 
     //----------------MetodosControlLogs----------------//
 

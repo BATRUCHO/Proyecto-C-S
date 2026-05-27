@@ -10,7 +10,7 @@ import Network.DAO.LogDAO;
 
 public class LoggerManager {
 
-    private static final String FILE_PATH = "Sistema.log";
+    private static final String FILE_PATH = "Sistema de auditoria.log";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final LogDAO logDAO = new LogDAO();
 

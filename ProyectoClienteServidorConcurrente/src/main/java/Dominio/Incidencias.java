@@ -5,42 +5,22 @@ import java.sql.Timestamp;
 
 public class Incidencias implements Serializable {
 
-    private int idIncidencia;
-    private int idPaquete;
-    private int idConductor;
+    private int id_incidencia;
     private String descripcion;
-    private Timestamp fechaHora;
+    private Timestamp fecha_hora;
 
-public Incidencias(int idIncidencia, int idPaquete, int idConductor, String descripcion, Timestamp fechaHora){
-    this.idIncidencia = idIncidencia;
-    this.idPaquete = idPaquete;
-    this.idConductor = idConductor;
-    this.descripcion = descripcion;
-    this.fechaHora = fechaHora;
-}
-
-    public int getIdIncidencia() {
-        return idIncidencia;
+    public Incidencias(int id_incidencia, String descripcion, Timestamp fecha_hora){
+        this.id_incidencia = id_incidencia;
+        this.descripcion = descripcion;
+        this.fecha_hora = fecha_hora;
     }
 
-    public void setIdIncidencia(int idIncidencia) {
-        this.idIncidencia = idIncidencia;
+    public int getId_incidencia() {
+        return id_incidencia;
     }
 
-    public int getIdPaquete() {
-        return idPaquete;
-    }
-
-    public void setIdPaquete(int idPaquete) {
-        this.idPaquete = idPaquete;
-    }
-
-    public int getIdConductor() {
-        return idConductor;
-    }
-
-    public void setIdConductor(int idConductor) {
-        this.idConductor = idConductor;
+    public void setId_incidencia(int id_incidencia) {
+        this.id_incidencia = id_incidencia;
     }
 
     public String getDescripcion() {
@@ -51,12 +31,11 @@ public Incidencias(int idIncidencia, int idPaquete, int idConductor, String desc
         this.descripcion = descripcion;
     }
 
-    public Timestamp getFechaHora() {
-        return fechaHora;
+    public Timestamp getFecha_hora() {
+        return fecha_hora;
     }
 
-    public void setFechaHora(Timestamp fechaHora) {
-        this.fechaHora = fechaHora;
+    public void setFecha_hora(Timestamp fecha_hora) {
+        this.fecha_hora = fecha_hora;
     }
-
 }

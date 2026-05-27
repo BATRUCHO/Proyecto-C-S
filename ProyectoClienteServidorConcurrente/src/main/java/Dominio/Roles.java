@@ -3,18 +3,31 @@ package Dominio;
 
 public enum Roles   {
 
-    CLIENTE(1),
-    REPARTIDORES(2),
-    ADMINISTRADOR(3);
+    CONDUCTORES(1,"Conductor"),
+    ADMINISTRADOR(2,"Administrador");
 
-    private final int id;
+    private final int id_rol;
+    private final String nombre;
 
-    Roles(int id) {
-        this.id = id;
+
+    Roles(int id_rol, String nombre) {
+        this.id_rol = id_rol;
+        this.nombre = nombre;
     }
 
-    public int getId() {
-        return id;
+    public int getId() {return id_rol;}
+    public String getNombre() {return nombre;}
+
+      //Metodo analitico para buscar por ID numerico
+    public static String obtenerTextoPorId(int idBuscar){
+        for(Roles rol : values()) {
+            if(rol.getId() == idBuscar){
+                return rol.getNombre();
+            }
+        }
+        return "Desconocido";
     }
+
+
 
 }

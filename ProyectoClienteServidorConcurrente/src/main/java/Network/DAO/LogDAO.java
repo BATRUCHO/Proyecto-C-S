@@ -24,8 +24,8 @@ public class LogDAO {
     }
 
    public void registrarEvento(int idUsuario, String accion, String detalle) {
-    String sql = "INSERT INTO logs_sistema (id_usuario, accion, detalle, fecha_hora) VALUES (?, ?, ?, NOW())";
-    // Usamos el ConfigLoader que ya arreglamos para la conexión segura
+    String sql = "INSERT INTO logs_sistema (id_usuario, accion, detalles, fecha_hora) VALUES (?, ?, ?, NOW())";
+    
     try (Connection cn = Network.BD.ConexionMySQL.getConexion();
          PreparedStatement ps = cn.prepareStatement(sql)) {
         ps.setInt(1, idUsuario);

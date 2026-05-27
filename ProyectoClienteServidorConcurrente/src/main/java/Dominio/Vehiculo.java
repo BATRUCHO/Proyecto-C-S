@@ -8,16 +8,13 @@ public class Vehiculo implements Serializable {
     private String placa;
     private String marca;
     private String modelo;
-    private int id_tipo;
-    private String estado;
+    
 
-    public Vehiculo(int id_vehiculo, String placa, String marca, String modelo, int id_tipo, String estado) {
+    public Vehiculo(int id_vehiculo, String placa, String marca, String modelo) {
         this.id_vehiculo = id_vehiculo;
         this.placa = placa;
         this.marca = marca;
         this.modelo = modelo;
-        this.id_tipo = id_tipo;
-        this.estado = estado;
     }
 
     public int getId_vehiculo() {
@@ -51,31 +48,5 @@ public class Vehiculo implements Serializable {
     public void setModelo(String modelo) {
         this.modelo = modelo;
     }
-
-    public int getId_tipo() {
-        return id_tipo;
-    }
-
-    public void setId_tipo(int id_tipo) {
-        this.id_tipo = id_tipo;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    
-
-    
-    
-
-    
-   
- 
-    
       
 }

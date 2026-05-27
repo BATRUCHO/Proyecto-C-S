@@ -33,6 +33,7 @@ public class ClienteSocket {
             
             return (MensajeRed) entrada.readObject();
             
+            
         } catch (Exception e) {
             return new MensajeRed("ERROR", null, false, "Error de conexión: " + e.getMessage());
         }

@@ -56,8 +56,8 @@ public class FrmNuevoPaquete extends JDialog {
 
         // 1. ID Seguimiento (y=70)
         addLabel("ID Seguimiento:", 50, 70);
-        txtIdPaquete = new JTextField("Autogenerado");
-        txtIdPaquete.setBounds(180, 70, 170, 30); // X=180 para que el label y el campo estén en la misma línea
+        txtIdPaquete = new JTextField("Autogenerado"); // Revisar esto -------------------------------
+        txtIdPaquete.setBounds(180, 70, 170, 30); 
         txtIdPaquete.setEditable(false);
         txtIdPaquete.setEnabled(false);
         add(txtIdPaquete);

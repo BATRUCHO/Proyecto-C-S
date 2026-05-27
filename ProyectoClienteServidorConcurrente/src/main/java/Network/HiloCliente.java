@@ -8,8 +8,8 @@ import java.util.List;
 
 import Dominio.Excepciones.MensajeRed;
 import Dominio.Paquete;
-import Dominio.UbicacionVehiculo;
 import Dominio.Usuario;
+import Dominio.Vehiculo;
 import LoggerFile.LoggerManager;
 import Network.DAO.LogDAO;
 import Network.DAO.PaqueteDAO;
@@ -60,6 +60,7 @@ public class HiloCliente extends Thread{
 
     private MensajeRed procesarPeticion(MensajeRed peticion) {
         String accion = peticion.getAccion().trim();
+
         UsuarioDAO usuarioDAO = new UsuarioDAO();
         PaqueteDAO paqueteDAO = new PaqueteDAO();
         VehiculoDAO vehiculoDAO = new VehiculoDAO();
@@ -83,6 +84,10 @@ public class HiloCliente extends Thread{
                             LoggerManager.log(0, "LOGIN_FALLIDO", "Intento fallido: " + credenciales.getEmail());
                             return new MensajeRed("LOGIN_RESPUESTA", null, false, "Credenciales incorrectas");
                         }
+
+                case "LOGOUT":
+                        LoggerManager.log(idUsuarioActual, "LOGOUT", "El usuario cerró la sesión de forma voluntaria.");
+                        return new MensajeRed("LOGOUT_RESPUESTA", true, true, "Seccion Finalizada");
 
                 case "REGISTRAR_USUARIO":
                         Usuario u = (Usuario) peticion.getPayload();
@@ -180,20 +185,42 @@ public class HiloCliente extends Thread{
 
                         // ----- Módulo Vehículos ------ //
                         
-                case "ACTUALIZAR_GPS":
-                        String[] puntos = peticion.getPayload().toString().split(":");
-                        int idVeh = Integer.parseInt(puntos[0]);
-                        double lat = Double.parseDouble(puntos[1]);
-                        double lng = Double.parseDouble(puntos[2]);
+                case "LISTAR_VEHICULOS":
+                    List<Vehiculo> listaVehiculos = vehiculoDAO.listarVehiculosActivos();
+                    return new MensajeRed("LISTAR_VEHICULOS_RESPUESTA", listaVehiculos, true, "Lista obtenida");
+                
+                case "REGISTRAR_VEHICULO":
+                    Vehiculo v = (Vehiculo) peticion.getPayload();
+                    boolean registrado = vehiculoDAO.registrarVehiculo(v);
 
-                        vehiculoDAO.registrarUbicacion(idVeh, lat, lng);
-                        return new MensajeRed("GPS_OK", null, true, "Coordenadas recibidas");
-               
-                case "ULTIMA_UBICACION":
-                    int idVehUbi = (int) peticion.getPayload();
-                    UbicacionVehiculo ubi = null; 
-                    return new MensajeRed("UBICACION_RES", ubi, ubi != null, ubi != null ? "OK" : "Sin datos GPS");
-                    
+                    if(registrado) {
+                        LoggerManager.log(idUsuarioActual, "REGISTRAR_VEHICULO"
+                        , "Usuario " + idUsuarioActual + " creó un vehiculo" + v.getPlaca());
+                        return new MensajeRed("REGISTRO_RESPUESTA", registrado, registrado, registrado ? "OK" : "Error al guardar");
+                    } else {
+                        return new MensajeRed("REGISTRO_RESPUESTA", null, false, "Error al insertar en la base de datos el vehiculo");
+                    }
+
+                case "EDITAR_VEHICULO":
+                    Vehiculo vEditar = (Vehiculo) peticion.getPayload();
+                    boolean editadoVehiculo = vehiculoDAO.editarVehiculo(vEditar);
+
+                    if(editadoVehiculo) {
+                        LoggerManager.log(idUsuarioActual, "EDITAR_VEHICULO"
+                        , "Usuario " + idUsuarioActual + " editó un vehiculo" + vEditar.getPlaca());
+                    }
+                    return new MensajeRed("EDITAR_RESPUESTA", editadoVehiculo, editadoVehiculo, editadoVehiculo ? "OK" : "Error al editar el vehiculo");
+                
+                case "ELIMINAR_VEHICULO":
+                    int idEliminarVehiculo = (int) peticion.getPayload();
+                    boolean eliminadoVehiculo = vehiculoDAO.eliminarVehiculo(idEliminarVehiculo);
+
+                    if(eliminadoVehiculo) {
+                        LoggerManager.log(idUsuarioActual, "ELIMINAR_VEHICULO"
+                        , "Usuario " + idUsuarioActual + " eliminó un vehiculo" + idEliminarVehiculo);
+                    }
+                    return new MensajeRed("ELIMINAR_RESPUESTA", eliminadoVehiculo, eliminadoVehiculo, eliminadoVehiculo ? "OK" : "Error al eliminar el vehiculo");
+                
                 default:
                     return new MensajeRed("DESCONOCIDO", null, false, "La acción no existe");
             }
@@ -205,14 +232,13 @@ public class HiloCliente extends Thread{
 
         private void cerrarConexiones() {
             try {
-                if(idUsuarioActual != 0){
-                    LoggerManager.log(idUsuarioActual,"DESCONEXION","El usuario ha cerrado la sesión o perdió conexión.");
-                }
-                if (socketCliente != null) socketCliente.close();
-                if (entrada != null) entrada.close();
-                if (salida != null) salida.close();
+                //Cierre seguro de liberacion de recursos
+                if(entrada != null) entrada.close();
+                if(salida != null) salida.close();
+                if(socketCliente != null && !socketCliente.isClosed()) socketCliente.close();
+                
             }catch (IOException e) {
-                System.err.println("Error al cerrar conexiones: " + e.getMessage());
+                System.err.println("Error al liberar sockets: " + e.getMessage());
             }
         }
 }

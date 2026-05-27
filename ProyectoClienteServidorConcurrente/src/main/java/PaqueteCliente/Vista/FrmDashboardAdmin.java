@@ -17,17 +17,29 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
+import Dominio.EstadoPaquete;
 import Dominio.Paquete;
 import Dominio.Usuario;
+import Dominio.Vehiculo;
 import PaqueteCliente.Controlador.AdminControlador;
+import PaqueteCliente.Controlador.AutenticacionControlador;
 
 public class FrmDashboardAdmin extends JFrame {
 
     private Usuario adminLogueado;
     private JTable tblPaquetes;
-    private DefaultTableModel modeloPaquetes;
+
     private AdminControlador adminControl = new AdminControlador(); // Instancia del controlador
+    private AutenticacionControlador authControl = new AutenticacionControlador(); // Instancia del controlador
+
     private  List<Paquete> listaPaquetes;
+    private  List<Vehiculo> listaVehiculos;
+    private  List<Usuario> listaUsuarios;
+
+    private DefaultTableModel modeloPaquetes;
+    private DefaultTableModel modeloVehiculos;
+    private DefaultTableModel modeloUsuarios;
+    private DefaultTableModel modeloRegistros;
 
 
 
@@ -41,13 +53,22 @@ public class FrmDashboardAdmin extends JFrame {
         setLayout(new BorderLayout());
 
         initComponents();
-        
-        refrescarTablaPaquetes(); // 
+        refrescarTablaPaquetes();  
+
+        // Proceso de cierre de sesion si sale desde la X
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                authControl.cerrarSesion(adminLogueado.getIdUsuario());
+                System.exit(0);
+            }
+        });
     }
 
     private void initComponents() {
 
-    // 1. Panel de información superior (Nombre del admin, botón cerrar sesión)
+    // 1. Panel de información superior (Nombre del admin)
     JPanel panelHeader = new JPanel(new BorderLayout());
     panelHeader.setBackground(new Color(45, 52, 54)); // Un gris oscuro profesional
 
@@ -59,9 +80,22 @@ public class FrmDashboardAdmin extends JFrame {
     btnCerrarSesion.setBackground(new Color(231, 76, 60));
     btnCerrarSesion.setForeground(Color.WHITE);
     btnCerrarSesion.setFocusPainted(false);
+
     btnCerrarSesion.addActionListener(e -> {
-        this.dispose();
-        new FrmLogin().setVisible(true);
+
+       int confirmar = JOptionPane.showConfirmDialog(
+        this,
+        "Esta seguro de que desea cerrar la sesion actual?",
+        "Confirmacion salida",
+        JOptionPane.YES_NO_OPTION,
+        JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (confirmar == JOptionPane.YES_OPTION) {
+            authControl.cerrarSesion(adminLogueado.getIdUsuario());       
+            dispose();
+            new FrmLogin().setVisible(true);
+        }
     });
 
     // 2. El Contenedor de Pestañas
@@ -208,7 +242,7 @@ public class FrmDashboardAdmin extends JFrame {
 
         // Modelo de tabla para vehículos
         String[] columnas = { "ID_Vehiculo","Placa","Marca","Modelo","ID_tipo_vehiculo","Estado" };
-        DefaultTableModel modeloVehiculos = new DefaultTableModel(columnas, 0) {
+        modeloVehiculos = new DefaultTableModel(columnas, 0) {
 
         @Override
         public boolean isCellEditable(int row, int column) {return false;}
@@ -235,16 +269,55 @@ public class FrmDashboardAdmin extends JFrame {
 
         //--------------BotonesEventos----------------//
 
-        btnActualizarVehiculos.addActionListener(e -> {
-        });
+        btnActualizarVehiculos.addActionListener(e -> refrescarTablaVehiculos());
 
         btnRegistrarVehiculo.addActionListener(e -> {
+            FrmRegistrarVehiculo ventanaNuevo = new FrmRegistrarVehiculo(this);
+            ventanaNuevo.setVisible(true);
+            
+            if (ventanaNuevo.isExito()) {
+                refrescarTablaVehiculos();
+            }
         });
 
         btnEditar.addActionListener(e -> {
+            int filaSeleccionada = tblVehiculos.getSelectedRow();
+
+            if (filaSeleccionada == -1) {
+                JOptionPane.showMessageDialog(this, "Por favor, seleccione un vehiculo de la tabla.");
+                return;
+            }
+
+            int id =(int) tblVehiculos.getValueAt(filaSeleccionada, 0);
+            Vehiculo vehiculoSeleccionado = buscarVehiculoPorId(id);
+
+            if(vehiculoSeleccionado == null){
+                JOptionPane.showMessageDialog(this, "No se pudieron recuperar los datos completos del vehiculo.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            FrmRegistrarVehiculo ventanaEditar = new FrmRegistrarVehiculo(this, vehiculoSeleccionado);
+            ventanaEditar.setVisible(true);
+
+            if (ventanaEditar.isExito()) {
+                refrescarTablaVehiculos();
+            }
         });
 
         btnEliminar.addActionListener(e -> {
+            int filaSeleccionada = tblVehiculos.getSelectedRow();
+            if (filaSeleccionada == -1) {
+                JOptionPane.showInputDialog(this,"Por favor, seleccione un paquete de la tabla.");
+                return;
+            }
+            int id = (int) tblVehiculos.getValueAt(filaSeleccionada, 0);
+            boolean eliminado = adminControl.eliminarVehiculo(id);
+
+            if(eliminado){
+                refrescarTablaPaquetes();
+            }else{
+                JOptionPane.showMessageDialog(this, "No se pudo eliminar el vehiculo.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         return panel;
@@ -256,7 +329,7 @@ public class FrmDashboardAdmin extends JFrame {
         
         // Modelo de tabla para usuarios
         String[] columnas = {"ID", "Nombre", "Email", "Rol", "Estado"};
-        DefaultTableModel modeloUsuarios = new DefaultTableModel(columnas, 0);
+        modeloUsuarios = new DefaultTableModel(columnas, 0);
         JTable tblUsuarios = new JTable(modeloUsuarios);
         
         // Panel de botones lateral o superior
@@ -279,7 +352,7 @@ public class FrmDashboardAdmin extends JFrame {
 
         //Modelo para la tabla de registros
         String[] columnas = {"ID", "Usuario", "Accion","Descripcion", "Fecha"};
-        DefaultTableModel modeloRegistros = new DefaultTableModel(columnas, 0);
+        modeloRegistros = new DefaultTableModel(columnas, 0);
         JTable tblRegistros = new JTable(modeloRegistros);
 
         panel.add(new JScrollPane(tblRegistros), BorderLayout.CENTER);
@@ -289,23 +362,44 @@ public class FrmDashboardAdmin extends JFrame {
     }
 
     //--------------MetodosAuxiliares----------------//
+
+    public void refrescarTablaVehiculos() {
+        this.listaVehiculos = adminControl.actualizarVehiculos();
+        modeloVehiculos.setRowCount(0);
+
+        if(listaVehiculos != null && !listaVehiculos.isEmpty()){
+            for (Vehiculo v : listaVehiculos) {
+                Object[] fila = {
+                    v.getId_vehiculo(),
+                    v.getPlaca(),
+                    v.getMarca(),
+                    v.getModelo(),
+                    v.getId_tipo_vehiculo(),
+                    v.getEstado()
+                };
+                modeloVehiculos.addRow(fila);
+            }
+        } else {
+            System.out.println("No se recibieron paquetes del servidor.");
+        }
+    }
     
     public void refrescarTablaPaquetes() {
         // 1. Usamos la instancia de AdminControlador para obtener la lista
-        List<Paquete> lista = adminControl.actualizarPaquetes();
+        this.listaPaquetes= adminControl.actualizarPaquetes();
 
         // 2. Limpiamos el modelo actual de la tabla
         modeloPaquetes.setRowCount(0);
 
         // 3. Validamos y llenamos
-        if (lista != null && !lista.isEmpty()) {
-            for (Paquete p : lista) {
+        if (listaPaquetes != null && !listaPaquetes.isEmpty()) {
+            for (Paquete p : listaPaquetes) {
                 Object[] fila = {
                     p.getId_paquete(),
                     p.getDescripcion(),
                     p.getDestinatario(),
                     p.getDireccion_entrega(),
-                    interpretarEstado(p.getId_estado()) // Convertimos el ID numérico a texto
+                    EstadoPaquete.obtenerTextoPorId(p.getId_estado()) 
                 };
                 modeloPaquetes.addRow(fila);
             }
@@ -314,14 +408,8 @@ public class FrmDashboardAdmin extends JFrame {
         }
     }
 
-    private String interpretarEstado(int idEstado) {
-        switch (idEstado) {
-            case 1: return "En Bodega";
-            case 2: return "Asignado a Ruta o En Tránsito";
-            case 3: return "Entregado";
-            case 4: return "Con Incidencias";
-            default: return "Desconocido";
-        }
+    public void refrescarTablaUsuarios() {
+
     }
 
     public Paquete buscarPaquetePorId(int id) {
@@ -335,7 +423,27 @@ public class FrmDashboardAdmin extends JFrame {
         return null; // No lo encontro
     }
 
+    public Usuario buscarUsuarioPorId(int id) {
+        if(listaUsuarios != null) {
+            for (Usuario u : listaUsuarios) {
+                if (u.getIdUsuario() == id) {
+                    return u; // Lo encontro, retorna el objeto usuario
+                }
+            }
+        }
+        return null; // No lo encontro
+    }
 
+    public Vehiculo buscarVehiculoPorId(int id) {
+        if(listaVehiculos != null) {
+            for (Vehiculo v : listaVehiculos) {
+                if (v.getId_vehiculo() == id) {
+                    return v; // Lo encontro, retorna el objeto vehiculo
+                }
+            }
+        }
+        return null; // No lo encontro
+    }
 
     //Metodo prueba ventana admin//
     public static void main(String[] args) {
