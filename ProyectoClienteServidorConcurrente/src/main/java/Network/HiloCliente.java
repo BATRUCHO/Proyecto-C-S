@@ -8,9 +8,11 @@ import java.util.List;
 
 import Dominio.Excepciones.MensajeRed;
 import Dominio.Paquete;
-import Dominio.Usuario;
+import Dominio.Usuarios;
 import Dominio.Vehiculo;
+
 import LoggerFile.LoggerManager;
+
 import Network.DAO.LogDAO;
 import Network.DAO.PaqueteDAO;
 import Network.DAO.UsuarioDAO;
@@ -18,12 +20,12 @@ import Network.DAO.VehiculoDAO;
 
 
 public class HiloCliente extends Thread{
-    private Socket socketCliente;
+    private final Socket socketCliente;
     private ObjectInputStream entrada;
     private ObjectOutputStream salida;
 
     private int idUsuarioActual = 0;
-    private Usuario usuarioValidado;
+    private Usuarios usuarioValidado;
 
 
     public HiloCliente(Socket socket) {
@@ -32,7 +34,8 @@ public class HiloCliente extends Thread{
 
     @Override
     public void run() { 
-        try {
+        try { 
+
             salida = new ObjectOutputStream(socketCliente.getOutputStream());
             salida.flush();
             entrada = new ObjectInputStream(socketCliente.getInputStream());
@@ -65,7 +68,6 @@ public class HiloCliente extends Thread{
         PaqueteDAO paqueteDAO = new PaqueteDAO();
         VehiculoDAO vehiculoDAO = new VehiculoDAO();
         LogDAO logDAO = new LogDAO(); 
-
 
         try {
             switch (accion) {
@@ -137,35 +139,7 @@ public class HiloCliente extends Thread{
                     List<Paquete> lista = paqueteDAO.listarPaquetes();
                     return new MensajeRed("LISTA_PAQUETES_RESPUESTA", lista, true, "Lista obtenida");
 
-                case "ASIGNAR_PAQUETE":
-                    try {
-                        String[] datos = peticion.getPayload().toString().split(":");
-                        int idPkg = Integer.parseInt(datos[0]);
-                        int idCond = Integer.parseInt(datos[1]);
-                        
-                        boolean exito = paqueteDAO.asignarPaquete(idPkg, idCond);
-                        
-                        if(exito) {
-                            logDAO.registrarEvento(idUsuarioActual, "ASIGNACION", "Asignación: Pkg " + idPkg + " a Cond " + idCond);
-                        }
-                        
-                        return new MensajeRed("ASIGNACION_RESPUESTA", exito, exito, 
-                            exito ? "Paquete asignado" : "Error en base de datos");
-                    } catch (Exception e) {
-                        return new MensajeRed("ASIGNACION_RESPUESTA", false, false, "Error: " + e.getMessage());
-                    } 
 
-                case "ACTUALIZAR_ESTADO_PAQUETE": //  Revisar funcion
-                        String[] partes = peticion.getPayload().toString().split(":");
-                        int idPkg = Integer.parseInt(partes[0]);
-                        int estado = Integer.parseInt(partes[1]);
-                        
-                        boolean exito = true;
-                        
-                        if(exito) {
-                            logDAO.registrarEvento(idUsuarioActual, "CAMBIO_ESTADO", "Paquete " + idPkg + " a estado " + estado);
-                        }
-                        return new MensajeRed("ESTADO_RES", exito, exito, exito ? "Estado actualizado" : "Error");
 
                 case "EDITAR_PAQUETE":
                     Paquete pEditar = (Paquete) peticion.getPayload();
@@ -220,7 +194,31 @@ public class HiloCliente extends Thread{
                         , "Usuario " + idUsuarioActual + " eliminó un vehiculo" + idEliminarVehiculo);
                     }
                     return new MensajeRed("ELIMINAR_RESPUESTA", eliminadoVehiculo, eliminadoVehiculo, eliminadoVehiculo ? "OK" : "Error al eliminar el vehiculo");
-                
+                    
+
+                    // ----- Módulo Asignaciones ------ //
+
+                    /*  
+                case "ASIGNAR_PAQUETE":
+                    try {
+                        String[] datos = peticion.getPayload().toString().split(":");
+                        int idPkg = Integer.parseInt(datos[0]);
+                        int idCond = Integer.parseInt(datos[1]);
+                        
+                        boolean exito = paqueteDAO.asignarPaquete(idPkg, idCond);
+                        
+                        if(exito) {
+                            logDAO.registrarEvento(idUsuarioActual, "ASIGNACION", "Asignación: Pkg " + idPkg + " a Cond " + idCond);
+                        }
+                        
+                        return new MensajeRed("ASIGNACION_RESPUESTA", exito, exito, 
+                            exito ? "Paquete asignado" : "Error en base de datos");
+                    } catch (Exception e) {
+                        return new MensajeRed("ASIGNACION_RESPUESTA", false, false, "Error: " + e.getMessage());
+                    }
+
+                    */
+
                 default:
                     return new MensajeRed("DESCONOCIDO", null, false, "La acción no existe");
             }

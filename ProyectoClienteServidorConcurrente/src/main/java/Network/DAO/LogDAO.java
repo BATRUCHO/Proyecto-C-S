@@ -15,11 +15,11 @@ public class LogDAO {
 
     private LogSistema mapearLogs(ResultSet rs) throws SQLException {
         return new LogSistema(
-            rs.getInt("id_log"),
-            rs.getInt("id_usuario"),
-            rs.getString("accion"),
-            rs.getString("detalle"),
-            rs.getTimestamp("fecha_hora")
+            rs.getInt("id_log"),          
+            rs.getInt("id_usuario"),      
+            rs.getString("accion"),      
+            rs.getString("detalles"),    
+            rs.getTimestamp("fecha_hora") 
         );
     }
 

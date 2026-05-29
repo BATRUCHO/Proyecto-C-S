@@ -13,8 +13,9 @@ public class Usuarios implements Serializable{
     private String email;
     private String telefono;
     private String password;
+    private int id_rol;
 
-    public Usuarios(int id_usuario, String nombre, String apellido, Date fechaNacimiento, String dni, String email, String telefono, String password) {
+    public Usuarios(int id_usuario, String nombre, String apellido, Date fechaNacimiento, String dni, String email, String telefono, String password, int id_rol ) {
         this.id_usuario = id_usuario;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -23,6 +24,7 @@ public class Usuarios implements Serializable{
         this.email = email;
         this.telefono = telefono;
         this.password = password;
+        this.id_rol = id_rol;
     }
 
     public int getId_usuario() {
@@ -87,6 +89,14 @@ public class Usuarios implements Serializable{
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getIdRol() {
+        return id_rol;
+    }
+
+    public void setIdRol(int id_rol) {
+        this.id_rol = id_rol;
     }
 
 }

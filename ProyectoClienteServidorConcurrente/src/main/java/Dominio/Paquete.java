@@ -13,6 +13,7 @@ public class Paquete implements Serializable {
     private String destinatario;
     private String direccion_entrega;
     private BigDecimal peso;
+    private int id_estado;
     private Timestamp fecha_creacion;
     
     public Paquete(int id_paquete, String descripcion, String remitente, String destinatario, String direccion_entrega, BigDecimal peso, 
@@ -98,6 +99,14 @@ public class Paquete implements Serializable {
         this.peso = peso;
     }
 
+
+    public int getId_estado() {
+        return id_estado;
+    }
+
+    public void setId_estado(int id_estado) {
+        this.id_estado = id_estado;
+    }
 
 
     public Timestamp getFecha_creacion() {

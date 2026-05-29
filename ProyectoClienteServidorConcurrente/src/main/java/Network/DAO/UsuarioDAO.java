@@ -8,19 +8,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import Dominio.Conductores;
-import Dominio.Usuario;
+import Dominio.Usuarios;
 import Network.BD.ConexionMySQL;
 
 public class UsuarioDAO  {
 
-private Usuario mapearUsuario(ResultSet rs) throws SQLException {
-    return new Usuario(
+private Usuarios mapearUsuario(ResultSet rs) throws SQLException {
+    return new Usuarios(
         rs.getInt("id_usuario"),
-        rs.getString("dni"),
-        rs.getDate("fechaNacimiento"),
         rs.getString("nombre"),
         rs.getString("apellido"),
+        rs.getDate("fechaNacimiento"),
+        rs.getString("dni"),
         rs.getString("email"),
         rs.getString("telefono"),
         rs.getString("password"),
@@ -28,7 +27,7 @@ private Usuario mapearUsuario(ResultSet rs) throws SQLException {
     );
 }
 
-    public boolean registrarUsuario(Usuario usuario) {
+    public boolean registrarUsuario(Usuarios usuario) {
 
     String sql = "INSERT INTO usuarios (nombre, apellido, fechaNacimiento, dni, email, telefono, password, id_rol) " +
                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -53,7 +52,7 @@ private Usuario mapearUsuario(ResultSet rs) throws SQLException {
     
     }
 
-    public Usuario eliminarUsuario(int idUsuario) {
+    public Usuarios eliminarUsuario(int idUsuario) {
             String sql = "UPDATE usuarios SET activo = 0 WHERE id_usuario = ?";
 
             try (Connection conexion = ConexionMySQL.getConexion();
@@ -72,8 +71,8 @@ private Usuario mapearUsuario(ResultSet rs) throws SQLException {
             return null;
         }
    
-    public List<Usuario> listarUsuarios() {
-        List<Usuario> listaUsuarios= new ArrayList<>();
+    public List<Usuarios> listarUsuarios() {
+        List<Usuarios> listaUsuarios= new ArrayList<>();
         String sql = "SELECT * FROM usuarios WHERE ";
 
         try (Connection conexion = ConexionMySQL.getConexion();
@@ -81,17 +80,17 @@ private Usuario mapearUsuario(ResultSet rs) throws SQLException {
             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-            Usuario u = mapearUsuario(rs);
+            Usuarios u = mapearUsuario(rs);
             listaUsuarios.add(u);
             }
         } catch (SQLException e) {
             System.err.println("Error al listar usuarios: " + e.getMessage());
         }
         return listaUsuarios;
-        }
+    }
 
 
-    public Usuario validarLogin(String email, String password) {
+    public Usuarios validarLogin(String email, String password) {
         String sql = "SELECT * FROM usuarios WHERE email = ? AND password = ? ";
 
         try (Connection conexion = ConexionMySQL.getConexion();
@@ -113,7 +112,7 @@ private Usuario mapearUsuario(ResultSet rs) throws SQLException {
 
         // ------------------SQL Secundarios------------------- //
 
-    public Usuario buscarUsuarioPorId(int idUsuario) {
+    public Usuarios buscarUsuarioPorId(int idUsuario) {
         String sql = "SELECT * FROM usuarios WHERE id_usuario = ?";
 
         try (Connection con = ConexionMySQL.getConexion();
@@ -131,7 +130,7 @@ private Usuario mapearUsuario(ResultSet rs) throws SQLException {
     }
     
     
-    public Usuario buscarUsuarioPorCorreo(String email) {
+    public Usuarios buscarUsuarioPorCorreo(String email) {
         String sql = "SELECT * FROM usuarios WHERE email = ?";
 
         try (Connection con = ConexionMySQL.getConexion();
@@ -148,29 +147,4 @@ private Usuario mapearUsuario(ResultSet rs) throws SQLException {
         return null;
     }        
 
-
-    public Conductores obtenerConductorPorUsuario(int id_usuario) {
-    String sql = "SELECT id_conductor, nombre, cedula, id_usuario, id_vehiculo_asignado FROM conductores WHERE id_usuario = ?";
-
-    try (Connection conexion = ConexionMySQL.getConexion();
-         PreparedStatement ps = conexion.prepareStatement(sql)) {
-        ps.setInt(1, id_usuario);
-
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                
-                return new Conductores(
-                    rs.getInt("id_conductor"),
-                    rs.getString("nombre"),
-                    rs.getString("cedula"),
-                    rs.getInt("id_usuario"),
-                    rs.getInt("id_vehiculo_asignado")
-                );
-            }
-        }
-    } catch (SQLException e) {
-        System.err.println("Error al obtener conductor por usuario: " + e.getMessage());
-    }
-    return null;
-    }
 }
