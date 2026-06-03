@@ -33,7 +33,7 @@ public class Paquete implements Serializable {
         return id_paquete;
     }
 
-
+    
 
     public void setId_paquete(int id_paquete) {
         this.id_paquete = id_paquete;

@@ -73,7 +73,7 @@ private Usuarios mapearUsuario(ResultSet rs) throws SQLException {
    
     public List<Usuarios> listarUsuarios() {
         List<Usuarios> listaUsuarios= new ArrayList<>();
-        String sql = "SELECT * FROM usuarios WHERE ";
+        String sql = "SELECT * FROM usuarios ";
 
         try (Connection conexion = ConexionMySQL.getConexion();
             PreparedStatement ps = conexion.prepareStatement(sql);  

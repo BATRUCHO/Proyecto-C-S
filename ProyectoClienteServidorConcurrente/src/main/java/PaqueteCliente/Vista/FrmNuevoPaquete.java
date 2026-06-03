@@ -3,6 +3,7 @@ package PaqueteCliente.Vista;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Frame;
+import java.math.BigDecimal;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -14,11 +15,12 @@ import javax.swing.SwingConstants;
 import Dominio.Paquete;
 import PaqueteCliente.Controlador.AdminControlador;
 
+
 public class FrmNuevoPaquete extends JDialog {
 
-    private JTextField txtDescripcion, txtDestinatario, txtDireccion,txtIdPaquete, txtFechaCreacion, txtPeso;
+    private JTextField txtDescripcion, txtRemitente, txtDestinatario, txtDireccion,txtIdPaquete, txtFechaCreacion, txtPeso;
     private JButton btnGuardar, btnCancelar;
-    private AdminControlador adminControl = new AdminControlador();
+    private final AdminControlador adminControl = new AdminControlador();
     private boolean exito = false; // Para avisar al Dashboard si debe refrescar la tabla 
     private Paquete paqueteExistente = null;
 
@@ -103,35 +105,36 @@ public class FrmNuevoPaquete extends JDialog {
 
 
 
-        // --- SECCIÓN DE TEXTO (AQUÍ USAMOS ANCHO COMPLETO) ---
+        // --- SECCIÓN DE TEXTO 
 
-        // 4. Descripción (y=200)
         addLabel("Descripción del paquete:", 50, 190);
-        txtDescripcion = addTextField(50, 215); // x=50, y=215
+        txtDescripcion = addTextField(50, 215); 
 
-        // 5. Destinatario (y=255)
-        addLabel("Nombre del destinatario:", 50, 255);
-        txtDestinatario = addTextField(50, 280); // x=50, y=280
+        addLabel("Nombre del remitente:", 50, 255);
+        txtRemitente = addTextField(50, 280);
 
-        // 6. Dirección (y=320)
-        addLabel("Dirección de Entrega:", 50, 320);
-        txtDireccion = addTextField(50, 345); // x=50, y=345
+       
+        addLabel("Nombre del destinatario:", 50, 320);
+        txtDestinatario = addTextField(50, 345);   
 
-        // 7. Botones (y=410)
+        addLabel("Dirección de Entrega:", 50, 385);
+        txtDireccion = addTextField(50, 410);
+
+      
         btnGuardar = new JButton("GUARDAR");
-        btnGuardar.setBounds(50, 410, 130, 40);
+        btnGuardar.setBounds(50, 475, 130, 40);
         btnGuardar.setBackground(new Color(46, 204, 113));
         btnGuardar.setForeground(Color.WHITE);
         add(btnGuardar);
 
         btnCancelar = new JButton("CANCELAR");
-        btnCancelar.setBounds(220, 410, 130, 40);
+        btnCancelar.setBounds(220, 475, 130, 40);
         btnCancelar.setBackground(new Color(231, 76, 60));
         btnCancelar.setForeground(Color.WHITE);
         add(btnCancelar);
 
         // Tama;o de la ventana
-        this.setSize(400, 520); 
+        this.setSize(400, 620); 
     }
 
     private void configurarEventos() {
@@ -143,25 +146,26 @@ public class FrmNuevoPaquete extends JDialog {
         btnGuardar.addActionListener(e -> {
             // 1. Captura de datos y limpieza de espacios
             String desc = txtDescripcion.getText().trim();
+            String rem = txtRemitente.getText().trim();
             String dest = txtDestinatario.getText().trim();
             String dir = txtDireccion.getText().trim();
             String pesoTexto = txtPeso.getText().trim();
-            String placeholder = "0,0"; // O "0.0" según definiste arriba
+            String placeholder = "0,0"; 
 
             // 2. Validación de campos de texto obligatorios
-            if (desc.isEmpty() || dest.isEmpty() || dir.isEmpty()) {
+            if (desc.isEmpty()|| rem.isEmpty() || dest.isEmpty() || dir.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "La descripción, el destinatario y la dirección son obligatorios.");
                 return;
             }
 
             // 3. Validación lógica del Peso (Evitar NumberFormatException)
-            double pesoFinal = 0.0;
+            BigDecimal pesoFinal = BigDecimal.ZERO;
             if (!pesoTexto.equals(placeholder) && !pesoTexto.isEmpty()) {
                 try {
                     // Reemplazamos coma por punto por si el usuario usa formato latino
-                    pesoFinal = Double.parseDouble(pesoTexto.replace(",", "."));
+                    pesoFinal = new BigDecimal(pesoTexto.replace(",", "."));
                     
-                    if (pesoFinal <= 0) {
+                    if (pesoFinal.compareTo(BigDecimal.ZERO) <= 0.0) {
                         JOptionPane.showMessageDialog(this, "El peso debe ser mayor a 0.");
                         return;
                     }
@@ -171,26 +175,31 @@ public class FrmNuevoPaquete extends JDialog {
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Debe indicar el peso del paquete.");
-                return;
+                return ;
             }
 
             // 4. Llamada al controlador con la variable ya validada
            boolean res;
+           String mensajeExito;
+
            if (paqueteExistente == null){
                 //Modo crear
-             res = adminControl.registrarNuevoPaquete(pesoFinal, desc, "Remitente", dest, dir);
+                res = adminControl.registrarNuevoPaquete(desc, rem, dest, dir, pesoFinal);
+                mensajeExito = "Paquete creado exitosamente.";
             }else{
                 //Modo editar
                 paqueteExistente.setDescripcion(desc);
+                paqueteExistente.setRemitente(rem);
                 paqueteExistente.setDestinatario(dest);
                 paqueteExistente.setDireccion_entrega(dir);
-                paqueteExistente.setPeso(pesoFinal);
+                paqueteExistente.setPeso((pesoFinal));
 
                 res = adminControl.editarPaquete(paqueteExistente);
+                mensajeExito = "Paquete editado exitosamente.";
             }
 
             if (res) {
-                JOptionPane.showMessageDialog(this, "Paquete editado exitosamente.");
+                JOptionPane.showMessageDialog(this, mensajeExito);
                 this.exito = true;
                 dispose();
             } else {
@@ -230,10 +239,11 @@ public class FrmNuevoPaquete extends JDialog {
         //Carga de datos en los campos del Jtextfield
         txtIdPaquete.setText(Integer.toString(paqueteExistente.getId_paquete()));
         txtDescripcion.setText(paqueteExistente.getDescripcion());
+        txtRemitente.setText(paqueteExistente.getRemitente());
         txtDestinatario.setText(paqueteExistente.getDestinatario());
         txtDireccion.setText(paqueteExistente.getDireccion_entrega());
 
-        txtPeso.setText(Double.toString(paqueteExistente.getPeso()));
+        txtPeso.setText(paqueteExistente.getPeso().toString());
         txtPeso.setForeground(Color.BLACK);
     }
 

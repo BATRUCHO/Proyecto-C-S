@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import Dominio.Excepciones.MensajeRed;
-import Dominio.Usuario;
+import Dominio.Usuarios;
 import PaqueteCliente.ModeloRed.ClienteSocket;
 import PaqueteCliente.Vista.FrmDashboardAdmin;
 import PaqueteCliente.Vista.FrmDashboardConductor;
@@ -17,9 +17,10 @@ public class AutenticacionControlador {
     //--------------MetodosControlLogin----------------//
 
 
-   public void iniciarSesion(String email, String password, JFrame vistaLogin) {
+   @SuppressWarnings("static-access")
+    public void iniciarSesion(String email, String password, JFrame vistaLogin) {
         // 1. Creamos un usuario temporal con las credenciales
-        Usuario loginUser = new Usuario(0, "", new java.sql.Date(0), "", "", email, "", password, 0);
+        Usuarios loginUser = new Usuarios(0, "", "", null, "", email, "", password, 0);
 
         // 2. Empaquetamos en el MensajeRed que ya definiste
         MensajeRed peticion = new MensajeRed("LOGIN", loginUser, true, "");
@@ -28,7 +29,7 @@ public class AutenticacionControlador {
         MensajeRed respuesta = clienteSocket.getInstancia().enviarPeticion(peticion);
 
         if (respuesta.isEstadoExito()) {
-            Usuario usuarioLogueado = (Usuario) respuesta.getPayload();
+            Usuarios usuarioLogueado = (Usuarios) respuesta.getPayload();
             redirigirPorRol(usuarioLogueado, vistaLogin);
         } else {
             JOptionPane.showMessageDialog(vistaLogin, respuesta.getMensajeRespuesta(), "Error de Acceso", JOptionPane.ERROR_MESSAGE);
@@ -47,7 +48,7 @@ public class AutenticacionControlador {
 
     //--------------MetodosAuxiliares----------------//
 
-    private void redirigirPorRol(Usuario user, JFrame vistaLogin) {
+    private void redirigirPorRol(Usuarios user, JFrame vistaLogin) {
         // Cerrar la ventana de inicio de sesión
         vistaLogin.dispose(); 
         

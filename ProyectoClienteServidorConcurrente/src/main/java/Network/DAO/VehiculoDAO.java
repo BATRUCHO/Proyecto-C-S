@@ -47,7 +47,7 @@ private Vehiculo mapearVehiculo(ResultSet rs) throws SQLException {
 
 
     public boolean editarVehiculo(Vehiculo vehiculo) {
-        String sql = "UPDATE vehiculos SET placa = ?, marca = ?, modelo = ?, id_tipoVehiculo = ?, estado = ?, id_tipo_vehiculo = ?, id_estado_vehiculo = ? WHERE id_vehiculo = ?";
+        String sql = "UPDATE vehiculos SET placa = ?, marca = ?, modelo = ?, id_tipoVehiculo = ?, id_estado_vehiculo = ? WHERE id_vehiculo = ?";
         
         try(Connection c = ConexionMySQL.getConexion();
             PreparedStatement ps = c.prepareStatement(sql)){
@@ -57,6 +57,7 @@ private Vehiculo mapearVehiculo(ResultSet rs) throws SQLException {
             ps.setString(3, vehiculo.getModelo());
             ps.setInt(4, vehiculo.getId_tipoVehiculo());
             ps.setInt(5, vehiculo.getId_estado_vehiculo());
+            ps.setInt(6, vehiculo.getId_vehiculo());
             
             return ps.executeUpdate() > 0;
 
@@ -83,7 +84,7 @@ private Vehiculo mapearVehiculo(ResultSet rs) throws SQLException {
     }
 
       
-    public List<Vehiculo> listarVehiculosActivos() {
+    public List<Vehiculo> listarVehiculos() {
         List<Vehiculo> listaVehiculos= new ArrayList<>();
 
         String sql = "SELECT * FROM vehiculos ";

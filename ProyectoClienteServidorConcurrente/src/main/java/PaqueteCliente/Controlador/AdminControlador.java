@@ -1,13 +1,12 @@
 package PaqueteCliente.Controlador;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
 
-import Dominio.EstadoPaquete;
-import Dominio.EstadoVehiculo;
 import Dominio.Excepciones.MensajeRed;
 import Dominio.Paquete;
-import Dominio.Usuario;
+import Dominio.Usuarios;
 import Dominio.Vehiculo;
 import PaqueteCliente.ModeloRed.ClienteSocket;
 
@@ -15,20 +14,21 @@ public class AdminControlador {
 
     //----------------MetodosControlUsuario----------------//
 
-  public boolean registrarUsuario(String nombre, String apellido, Date fechaNac, 
+  public boolean registrarUsuario(String nombre, String apellido, Date fechaNacimiento, 
                                 String dni, String email, String telefono, 
                                 String password, int idRol) {
     
-        Usuario nuevoUsuario = new Usuario(
+        Usuarios nuevoUsuario = new Usuarios(
             0, 
-            dni, 
-            fechaNac, 
             nombre, 
             apellido, 
+            fechaNacimiento, 
+            dni, 
             email, 
             telefono, 
             password, 
-            idRol);
+            idRol
+        );
 
         MensajeRed peticion = new MensajeRed("REGISTRAR_USUARIO", nuevoUsuario, true, "");
         MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
@@ -40,10 +40,17 @@ public class AdminControlador {
         return respuesta.isEstadoExito();
     }
 
+    public boolean eliminarUsuario(int idUsuario) {
+
+        MensajeRed peticion = new MensajeRed("ELIMINAR_USUARIO", idUsuario, true, "");
+        MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
+        return respuesta.isEstadoExito();
+    } 
 
 
     //----------------MetodosControlPaquete----------------//
 
+    @SuppressWarnings("unchecked")
     public List<Paquete> actualizarPaquetes() {
         MensajeRed peticion = new MensajeRed("LISTAR_PAQUETES", null, true, "");
         MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
@@ -56,17 +63,20 @@ public class AdminControlador {
         }
     }
 
-     public boolean registrarNuevoPaquete(Double peso, String desc, String remitente, String dest, String dirEntrega) {
-        Paquete nuevoPaquete = new Paquete(
-            0, 
-            desc, 
-            remitente, 
-            dest, 
-            dirEntrega, 
-            peso, 
-            EstadoPaquete.EN_BODEGA.getId(), // Estado inicial
-            null, 
-            0);
+     public boolean registrarNuevoPaquete(String descripcion, String remitente, String destinatario, String direccion_entrega, BigDecimal peso) {
+
+        Paquete nuevoPaquete = new Paquete( // Instanciamos el objeto con el orden estricto de sus campos de dominio
+            0, // id_paquete = 0 (porque es autoincrement)
+            descripcion,
+            remitente,
+            destinatario,
+            direccion_entrega,
+            peso,
+            null // fecha_creacion = null (porque la estampa el servidor con NOW())
+        );
+ 
+        nuevoPaquete.setId_estado(1); // Inyectamos el estado operativo inicial fijo (Regla de negocio: Nace en bodega)
+
 
         MensajeRed peticion = new MensajeRed("CREAR_PAQUETE", nuevoPaquete, true, "");
         MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
@@ -92,10 +102,15 @@ public class AdminControlador {
         return respuesta.isEstadoExito();
     }
 
-    public boolean eliminarPaquete(int idPaquete) {
-        String datos = Integer.toString(idPaquete);
-
-        MensajeRed peticion = new MensajeRed("ELIMINAR_PAQUETE", datos, true, "");
+    public boolean eliminarPaquete(int idPaquete , int id_usuario) {
+    // Colocamos las variables en el orden exacto del constructor de MensajeRed
+    // 1. Accion ("ELIMINAR_PAQUETE")
+    // 2. Payload (idPaquete)
+    // 3. EstadoExito (true)
+    // 4. MensajeRespuesta ("")
+    // 5. idUsuarioSender (id_usuario) <--- El ID real viaja aquí al final
+    
+        MensajeRed peticion = new MensajeRed("ELIMINAR_PAQUETE", idPaquete, true, "",id_usuario);
         MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
         return respuesta.isEstadoExito();
     
@@ -103,6 +118,7 @@ public class AdminControlador {
 
     //----------------MetodosVehiculo----------------//
 
+    @SuppressWarnings("unchecked")
     public List<Vehiculo> actualizarVehiculos() {
         MensajeRed peticion = new MensajeRed("LISTAR_VEHICULOS", null, true, "");
         MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
@@ -115,7 +131,7 @@ public class AdminControlador {
         }
     }
 
-    public boolean registrarNuevoVehiculo(String placa, String marca, String modelo, int id_tipoVehiculo, String estado) { {
+    public boolean registrarNuevoVehiculo(String placa, String marca, String modelo, int id_tipoVehiculo, int id_estado_vehiculo) { {
         Vehiculo nuevoVehiculo = new Vehiculo(
             
             0, 
@@ -123,7 +139,7 @@ public class AdminControlador {
             marca, 
             modelo, 
             id_tipoVehiculo,
-            EstadoVehiculo.DISPONIBLE.name()
+            id_estado_vehiculo
             );
 
         MensajeRed peticion = new MensajeRed("REGISTRAR_VEHICULO", nuevoVehiculo, true, "");
@@ -149,9 +165,6 @@ public class AdminControlador {
         MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
         return respuesta.isEstadoExito();
     }
-
-
-    //----------------MetodosControlLogs----------------//
 
 
 

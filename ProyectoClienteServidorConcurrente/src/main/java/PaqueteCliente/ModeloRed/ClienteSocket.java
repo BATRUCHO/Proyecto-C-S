@@ -35,7 +35,7 @@ public class ClienteSocket {
             
             
         } catch (Exception e) {
-            return new MensajeRed("ERROR", null, false, "Error de conexión: " + e.getMessage());
+            return new MensajeRed("ERROR", null, false, "Error de conexión: " + e.getMessage(), 0);
         }
     }
 }

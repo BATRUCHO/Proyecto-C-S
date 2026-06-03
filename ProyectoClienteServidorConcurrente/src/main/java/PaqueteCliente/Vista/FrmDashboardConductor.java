@@ -17,18 +17,18 @@ import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 
 import Dominio.Paquete;
-import Dominio.Usuario;
+import Dominio.Usuarios;
 import PaqueteCliente.Controlador.RutaControlador;
 
 public class FrmDashboardConductor extends JFrame {
 
-    private Usuario conductorLogueado;
+    private Usuarios conductorLogueado;
     private JTable tblEntregas;
     private DefaultTableModel modeloTabla;
     private RutaControlador rutaControl = new RutaControlador();
     private Timer timerGps; // Para automatizar el envío de ubicación
 
-    public FrmDashboardConductor(Usuario conductor) {
+    public FrmDashboardConductor(Usuarios conductor) {
         this.conductorLogueado = conductor;
 
         setTitle("LogiTrack - Panel de Conductor | " + conductor.getNombre());
@@ -94,7 +94,7 @@ public class FrmDashboardConductor extends JFrame {
 
     private void refrescarEntregas() {
         // Usamos el controlador para traer solo mis paquetes
-        List<Paquete> lista = rutaControl.obtenerMisPaquetes(conductorLogueado.getIdUsuario());
+        List<Paquete> lista = rutaControl.obtenerMisPaquetes(conductorLogueado.getId_usuario());
         modeloTabla.setRowCount(0);
 
         if (lista != null) {
@@ -133,7 +133,7 @@ public class FrmDashboardConductor extends JFrame {
             double lon = -84.0907 + (Math.random() * 0.01);
             
             // Asumimos que el usuario tiene un id_vehiculo asociado
-            rutaControl.enviarUbicacionGps(conductorLogueado.getIdUsuario(), lat, lon);
+            rutaControl.enviarUbicacionGps(conductorLogueado.getId_usuario(), lat, lon);
             System.out.println("GPS: Ubicación actualizada automáticamente.");
         });
         timerGps.start();

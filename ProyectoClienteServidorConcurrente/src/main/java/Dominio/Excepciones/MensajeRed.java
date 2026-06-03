@@ -7,13 +7,26 @@ public class MensajeRed implements Serializable {
     private Object payload;
     private boolean estadoExito;
     private String mensajeRespuesta;
+    private int idUsuarioSender;
 
+    public MensajeRed(String accion, Object payload, boolean estadoExito, String mensajeRespuesta, int idUsuarioSender) {
+        this.accion = accion;
+        this.payload = payload;
+        this.estadoExito = estadoExito;
+        this.mensajeRespuesta = mensajeRespuesta;
+        this.idUsuarioSender = idUsuarioSender;
+
+    }
+
+    // SobreCarga de constructor
     public MensajeRed(String accion, Object payload, boolean estadoExito, String mensajeRespuesta) {
         this.accion = accion;
         this.payload = payload;
         this.estadoExito = estadoExito;
         this.mensajeRespuesta = mensajeRespuesta;
+        this.idUsuarioSender = 0;
     }
+
 
     // Getters y setters
     public String getAccion() {
@@ -48,5 +61,12 @@ public class MensajeRed implements Serializable {
         this.mensajeRespuesta = mensajeRespuesta;
     }
 
-}
+    public int getIdUsuarioSender() {
+        return idUsuarioSender;
+    }
 
+    public void setIdUsuarioSender(int idUsuarioSender) {
+        this.idUsuarioSender = idUsuarioSender;
+    }
+
+}

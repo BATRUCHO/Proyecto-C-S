@@ -19,22 +19,22 @@ import javax.swing.table.DefaultTableModel;
 
 import Dominio.EstadoPaquete;
 import Dominio.Paquete;
-import Dominio.Usuario;
+import Dominio.Usuarios;
 import Dominio.Vehiculo;
 import PaqueteCliente.Controlador.AdminControlador;
 import PaqueteCliente.Controlador.AutenticacionControlador;
 
 public class FrmDashboardAdmin extends JFrame {
 
-    private Usuario adminLogueado;
+    private Usuarios adminLogueado;
     private JTable tblPaquetes;
 
-    private AdminControlador adminControl = new AdminControlador(); // Instancia del controlador
+    private final AdminControlador adminControl = new AdminControlador(); // Instancia del controlador
     private AutenticacionControlador authControl = new AutenticacionControlador(); // Instancia del controlador
 
     private  List<Paquete> listaPaquetes;
     private  List<Vehiculo> listaVehiculos;
-    private  List<Usuario> listaUsuarios;
+    private  List<Usuarios> listaUsuarios;
 
     private DefaultTableModel modeloPaquetes;
     private DefaultTableModel modeloVehiculos;
@@ -43,7 +43,7 @@ public class FrmDashboardAdmin extends JFrame {
 
 
 
-    public FrmDashboardAdmin(Usuario admin) { 
+    public FrmDashboardAdmin(Usuarios admin) { 
         this.adminLogueado = admin;
 
         setTitle("LogiTrack - Panel de Administración");
@@ -60,7 +60,7 @@ public class FrmDashboardAdmin extends JFrame {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
-                authControl.cerrarSesion(adminLogueado.getIdUsuario());
+                authControl.cerrarSesion(adminLogueado.getId_usuario());
                 System.exit(0);
             }
         });
@@ -92,7 +92,7 @@ public class FrmDashboardAdmin extends JFrame {
         );
 
         if (confirmar == JOptionPane.YES_OPTION) {
-            authControl.cerrarSesion(adminLogueado.getIdUsuario());       
+            authControl.cerrarSesion(adminLogueado.getId_usuario());       
             dispose();
             new FrmLogin().setVisible(true);
         }
@@ -119,7 +119,7 @@ public class FrmDashboardAdmin extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         
         // Configuración de la Tabla
-        String[] columnas = {"ID_Paquete", "Descripción","Remitente", "Destinatario", "Dirección de Entrega", "Estado","Fecha de Creacion"};
+        String[] columnas = {"ID_Paquete", "Descripción","Remitente", "Destinatario", "Dirección de Entrega", "Peso", "Estado Paquete","Fecha de Creacion"};
         modeloPaquetes = new DefaultTableModel(columnas, 0) {
     
         @Override
@@ -163,7 +163,7 @@ public class FrmDashboardAdmin extends JFrame {
         });
 
         // BotonAsignarPaquete asigna el paquete seleccionado
-        btnAsignarPaquete.addActionListener(e -> {
+        /*btnAsignarPaquete.addActionListener(e -> {
             int filaSeleccionada = tblPaquetes.getSelectedRow();
 
             if (filaSeleccionada == -1) {
@@ -172,7 +172,7 @@ public class FrmDashboardAdmin extends JFrame {
             }
 
             int idPaquete = (int) tblPaquetes.getValueAt(filaSeleccionada, 0);
-            int idConductor = adminLogueado.getIdUsuario();
+            int idConductor = adminLogueado.getId_usuario();
             boolean asignado = adminControl.asignarPaquete(idPaquete, idConductor);
 
             if (asignado) {
@@ -181,7 +181,7 @@ public class FrmDashboardAdmin extends JFrame {
                 JOptionPane.showMessageDialog(this, "No se pudo asignar el paquete.", "Error", JOptionPane.ERROR_MESSAGE);
             }
     
-        });
+        });*/
 
         // BotonEditar abre la ventana de editar paquete
         btnEditar.addActionListener(e -> {
@@ -222,16 +222,32 @@ public class FrmDashboardAdmin extends JFrame {
                 JOptionPane.showMessageDialog(this, "Por favor, seleccione un paquete de la tabla.");
                 return;
             }
-            
-            int id = (int) tblPaquetes.getValueAt(filaSeleccionada, 0);
-            boolean eliminado = adminControl.eliminarPaquete(id);
 
-            if(eliminado){
-                refrescarTablaPaquetes();
-            }else{
-                JOptionPane.showMessageDialog(this, "No se pudo eliminar el paquete.", "Error", JOptionPane.ERROR_MESSAGE);
+            int idEliminar =(int) modeloPaquetes.getValueAt(filaSeleccionada, 0);
+            String descripcion = (String) modeloPaquetes.getValueAt(filaSeleccionada, 1);
+
+            int confirmado = JOptionPane.showConfirmDialog(
+                this,
+                "¿Está completamente seguro de que desea eliminar el paquete ID: " + idEliminar + " (" + descripcion + ")?\n"
+                + "Esta accion no se puede deshacer y afectara el inventario en bodega.",
+                "Confirmacion de eliminación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+
+            if(confirmado != JOptionPane.YES_OPTION){
+                return;
             }
 
+            boolean eliminado = adminControl.eliminarPaquete(idEliminar, adminLogueado.getId_usuario());
+
+            if(eliminado){
+                JOptionPane.showMessageDialog(this, "Paquete eliminado y registrado en el historial de logs correctamente.");
+                refrescarTablaPaquetes();
+            }else{
+                JOptionPane.showMessageDialog(this, "No se pudo eliminar el paquete.", "Error", JOptionPane.ERROR_MESSAGE); 
+                
+            }
         });
         
         return panel;
@@ -374,8 +390,8 @@ public class FrmDashboardAdmin extends JFrame {
                     v.getPlaca(),
                     v.getMarca(),
                     v.getModelo(),
-                    v.getId_tipo_vehiculo(),
-                    v.getEstado()
+                    v.getId_tipoVehiculo(),
+                    v.getId_estado_vehiculo()
                 };
                 modeloVehiculos.addRow(fila);
             }
@@ -391,15 +407,18 @@ public class FrmDashboardAdmin extends JFrame {
         // 2. Limpiamos el modelo actual de la tabla
         modeloPaquetes.setRowCount(0);
 
-        // 3. Validamos y llenamos
+        // 3. Validamos y llenamos la tabla de acuerdo a la lista recibida
         if (listaPaquetes != null && !listaPaquetes.isEmpty()) {
             for (Paquete p : listaPaquetes) {
                 Object[] fila = {
-                    p.getId_paquete(),
-                    p.getDescripcion(),
-                    p.getDestinatario(),
-                    p.getDireccion_entrega(),
-                    EstadoPaquete.obtenerTextoPorId(p.getId_estado()) 
+                   p.getId_paquete(),
+                   p.getDescripcion(),
+                   p.getRemitente(),
+                   p.getDestinatario(),
+                   p.getDireccion_entrega(),
+                   p.getPeso(),
+                   EstadoPaquete.obtenerTextoPorId(p.getId_estado()),
+                   p.getFecha_creacion() 
                 };
                 modeloPaquetes.addRow(fila);
             }
@@ -423,10 +442,10 @@ public class FrmDashboardAdmin extends JFrame {
         return null; // No lo encontro
     }
 
-    public Usuario buscarUsuarioPorId(int id) {
+    public Usuarios buscarUsuarioPorId(int id) {
         if(listaUsuarios != null) {
-            for (Usuario u : listaUsuarios) {
-                if (u.getIdUsuario() == id) {
+            for (Usuarios u : listaUsuarios) {
+                if (u.getId_usuario() == id) {
                     return u; // Lo encontro, retorna el objeto usuario
                 }
             }
@@ -452,8 +471,8 @@ public class FrmDashboardAdmin extends JFrame {
         java.sql.Date fechaNac = java.sql.Date.valueOf("1990-01-01");
 
         // Agregamos 'new' y los tipos de datos correctos
-        Usuario adminPrueba = new Usuario(1, "Admin", fechaNac, "Sistema", "12345678", 
-                                          "admin@mail.com", "88888888", "admin123", 1);
+        Usuarios adminPrueba = new Usuarios(1, "Admin", "Sistema", fechaNac, "12345678", 
+                                           "admin@mail.com", "88888888", "admin123", 1);
         
         new FrmDashboardAdmin(adminPrueba).setVisible(true);
     });
