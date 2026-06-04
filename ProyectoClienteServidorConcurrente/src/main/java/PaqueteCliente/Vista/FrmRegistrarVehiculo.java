@@ -17,15 +17,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import Dominio.EstadoVehiculo;
+import Dominio.TipoVehiculo;
 import Dominio.Vehiculo;
 import PaqueteCliente.Controlador.AdminControlador;
 
 
+
 public class FrmRegistrarVehiculo extends JDialog {
 
-    private JTextField txtIdVehiculo,txtPlaca,txtEstado;
+    private JTextField txtIdVehiculo,txtPlaca;
     private JButton btnGuardar, btnCancelar;
-    private AdminControlador adminControl = new AdminControlador();
+    private final AdminControlador adminControl = new AdminControlador();
     private boolean exito = false; // Para avisar al Dashboard si debe refrescar la tabla 
     private Vehiculo vehiculoExistente = null;
 
@@ -33,6 +36,8 @@ public class FrmRegistrarVehiculo extends JDialog {
     private JComboBox<String> cbMarca;
     private JComboBox<String> cbModelo;
     private JComboBox<String> cbTipo;
+    private JComboBox<String> cbEstado;
+
 
     // Constructor 1 : Para crear un nuevo vehiculo
 
@@ -79,14 +84,13 @@ public class FrmRegistrarVehiculo extends JDialog {
         txtPlaca.setEditable(false);
         txtPlaca.setEnabled(false);
 
-        addLabel("Estado", 50, 160);
-        txtEstado = addTextField(50, 185); 
-        txtEstado.setText("Disponible");
-        txtEstado.setEditable(false);
-        txtEstado.setEnabled(false);
+        addLabel("Estado", 50, 170);
+        cbEstado = new JComboBox<>(new String[]{"Disponible","En ruta","En mantenimiento"});
+        cbEstado.setBounds(180, 170, 170, 30);
+        add(cbEstado);
         
         addLabel("Marca de vehiculo", 50, 220);
-        cbMarca = new JComboBox<>(new String[]{"Selecionar dato","Toyota","Mercedez-Beans","Suzuki","Iveco","Freightliner","Volvo","Ford","Hino","Honda","Nissan"});
+        cbMarca = new JComboBox<>(new String[]{"Toyota","Mercedez-Beans","Suzuki","Iveco","Freightliner","Volvo","Ford","Hino","Honda","Nissan"});
         cbMarca.setBounds(180, 220, 170, 30);
         add(cbMarca);
 
@@ -98,8 +102,8 @@ public class FrmRegistrarVehiculo extends JDialog {
         cbModelo.setBounds(180, 270, 170, 30);
         add(cbModelo);
 
-        addLabel("Tipo de vehiculo", 50, 320);  //Mejorar
-        cbTipo = new JComboBox<>(new String[]{"Selecionar dato","1","2","3"});
+        addLabel("Tipo de vehiculo", 50, 320); 
+        cbTipo = new JComboBox<>(new String[]{"Camioneta","Motocicleta","Camión pesado"});
         cbTipo.setBounds(180, 320, 170, 30);
         add(cbTipo);
 
@@ -126,52 +130,51 @@ public class FrmRegistrarVehiculo extends JDialog {
         btnCancelar.addActionListener(e -> dispose());
         
         //Boton para guardar accion de registro
+       // Boton para guardar accion de registro
         btnGuardar.addActionListener(e -> {
 
-            // 1. Captura de datos y limpieza de espacios
-            int indexMarca = cbMarca.getSelectedIndex();
-            int indexModelo = cbModelo.getSelectedIndex();
-            int indexTipo = cbTipo.getSelectedIndex();
-            
+            // 1. Captura de datos básicos
             String placa = txtPlaca.getText().trim();
-            String estado = txtEstado.getText().trim(); 
+            
+            // 2. CORREGIDO: Evitamos problemas de casteo usando .toString() directamente
+            String marca = cbMarca.getSelectedItem().toString();
+            String modelo = cbModelo.getSelectedItem().toString();
+            String tipoTexto = cbTipo.getSelectedItem().toString();
+            String estadoTexto = cbEstado.getSelectedItem().toString();
 
-            // 2. Validación estricta de selección (evitamos index 0 que es "Selecionar dato")
-            if (indexMarca == 0 || indexModelo == 0 || indexTipo == 0 || placa.isEmpty() || estado.isEmpty()){
-                JOptionPane.showMessageDialog(this, "Todos los datos deben son obligatorios");
+            // 3. Traducimos los textos visuales a los IDs reales de la Base de Datos
+            int tipoId = TipoVehiculo.obtenerIdPorTexto(tipoTexto);
+            int estadoId = EstadoVehiculo.obtenerIdPorTexto(estadoTexto);
+
+            // 4. Validación estricta (Suponiendo que el índice 0 es "Seleccionar...")
+            if (cbMarca.getSelectedIndex() == 0 || cbModelo.getSelectedIndex() == 0 || 
+                tipoId == 0 || estadoId == 0 || placa.isEmpty()) {
+                
+                JOptionPane.showMessageDialog(this, "Todos los datos son obligatorios y deben ser válidos.");
                 return;
             }
 
-            // 3. Llamada al controlador con la variable ya validada
-
-            String marca = (String) cbMarca.getSelectedItem();
-            String modelo = (String) cbModelo.getSelectedItem();
-            int tipo = Integer.parseInt((String) cbTipo.getSelectedItem());
-
-
             boolean res;
-            if (vehiculoExistente == null){
-                //Modo crear
-                res = adminControl.registrarNuevoVehiculo(placa, marca, modelo, tipo, estado);
-            }else{
-                //Modo editar
+            if (vehiculoExistente == null) {
+                res = adminControl.registrarNuevoVehiculo(placa, marca, modelo, tipoId, estadoId);
+            } else {
+                
                 vehiculoExistente.setPlaca(placa);
                 vehiculoExistente.setMarca(marca);
                 vehiculoExistente.setModelo(modelo);
-                vehiculoExistente.setId_tipo_vehiculo(tipo);
-                vehiculoExistente.setEstado(estado);
+                vehiculoExistente.setId_tipoVehiculo(tipoId);
+                vehiculoExistente.setId_estado_vehiculo(estadoId);
 
                 res = adminControl.editarVehiculo(vehiculoExistente);
             }
 
             if (res) {
-                JOptionPane.showMessageDialog(this, "Vehiculo editado exitosamente.");
+                JOptionPane.showMessageDialog(this, "Vehículo procesado exitosamente.");
                 this.exito = true;
                 dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "Error de red: No se pudo conectar con el servidor.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error de red: No se pudo conectar con el servidor o persistir los datos.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-
         });
 
     }
@@ -236,11 +239,14 @@ public class FrmRegistrarVehiculo extends JDialog {
         txtPlaca.setText(vehiculoExistente.getPlaca());
  
         //Carga de datos en los combobox
-        cbMarca.setSelectedItem((Object) vehiculoExistente.getMarca());
-        cbModelo.setSelectedItem((Object) vehiculoExistente.getModelo());
-        cbTipo.setSelectedItem((Object) String.valueOf(vehiculoExistente.getId_tipo_vehiculo()));
-        txtEstado.setText(vehiculoExistente.getEstado());
+        cbMarca.setSelectedItem(vehiculoExistente.getMarca());
+        cbModelo.setSelectedItem(vehiculoExistente.getModelo());
 
+        String tipoStr = TipoVehiculo.obtenerTextoPorId(vehiculoExistente.getId_tipoVehiculo());
+        cbTipo.setSelectedItem(tipoStr);
+
+        String estadoStr = EstadoVehiculo.obtenerTextoPorId(vehiculoExistente.getId_estado_vehiculo());
+        cbEstado.setSelectedItem(estadoStr);
     }
 
     // Método main para probar la vista individualmente//

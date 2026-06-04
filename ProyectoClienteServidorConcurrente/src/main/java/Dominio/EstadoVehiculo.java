@@ -23,10 +23,19 @@ public enum EstadoVehiculo {
     //Metodo analitico para buscar por ID numerico
     public static String obtenerTextoPorId(int idBuscar){
         for(EstadoVehiculo estado : values()) {
-            if(estado.getId_estado_vehiculo() == idBuscar){
-                return estado.getDescripcion();
-            }
+            if(estado.getId_estado_vehiculo() == idBuscar)
+                return estado.getDescripcion();    
         }
         return "Desconocido";
     }
+
+    public static int obtenerIdPorTexto(String textoBuscar){
+        for(EstadoVehiculo estado : values()) {
+            if(estado.getDescripcion().equalsIgnoreCase(textoBuscar)){
+                return estado.getId_estado_vehiculo();
+            }
+        }
+        return 0;
+    }
+
 }

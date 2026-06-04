@@ -138,4 +138,14 @@ public class FrmDashboardConductor extends JFrame {
         });
         timerGps.start();
     }
+
+    public static void main(String[] args) {
+        // Creamos un objeto Date válido para SQL
+        java.sql.Date fechaNac = java.sql.Date.valueOf("1990-01-01");
+        Usuarios conductorPrueba = new Usuarios(2, "Conductor", "Sistema", fechaNac, "12345678", 
+                                           "conductor@mail.com", "88888888", "admin123", 2);
+                                                   
+        new FrmDashboardConductor(conductorPrueba).setVisible(true);
+    }
+
 }

@@ -87,13 +87,13 @@ public class AdminControlador {
         return respuesta.isEstadoExito();
     }
 
-    public boolean asignarPaquete(int idPaquete, int idConductor) {
+    /*public boolean asignarPaquete(int idPaquete, int idConductor) {
         String datosAsignacion = idPaquete + ":" + idConductor;
 
         MensajeRed peticion = new MensajeRed("ASIGNAR_PAQUETE", datosAsignacion, true, "");
         MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
         return respuesta.isEstadoExito();
-    }
+    } */
 
     public boolean editarPaquete(Paquete paquete) {
         
@@ -131,25 +131,25 @@ public class AdminControlador {
         }
     }
 
-    public boolean registrarNuevoVehiculo(String placa, String marca, String modelo, int id_tipoVehiculo, int id_estado_vehiculo) { {
-        Vehiculo nuevoVehiculo = new Vehiculo(
-            
-            0, 
-            placa, 
-            marca, 
-            modelo, 
-            id_tipoVehiculo,
-            id_estado_vehiculo
-            );
+    public boolean registrarNuevoVehiculo(String placa, String marca, String modelo, int id_tipoVehiculo, int id_estado_vehiculo) { 
 
-        MensajeRed peticion = new MensajeRed("REGISTRAR_VEHICULO", nuevoVehiculo, true, "");
-        MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
+            Vehiculo nuevoVehiculo = new Vehiculo(        
+                0, // Dato autogenerado
+                placa, 
+                marca, 
+                modelo, 
+                id_tipoVehiculo,
+                id_estado_vehiculo
+                );
 
-        if(!respuesta.isEstadoExito()){
-            System.err.println("Error del servidor: " + respuesta.getMensajeRespuesta());
-        }
-        return respuesta.isEstadoExito();
-        }
+            MensajeRed peticion = new MensajeRed("REGISTRAR_VEHICULO", nuevoVehiculo, true, "");
+            MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
+
+            if(!respuesta.isEstadoExito()){
+                System.err.println("Error del servidor: " + respuesta.getMensajeRespuesta());
+            }
+            return respuesta.isEstadoExito();
+        
     }
 
     public boolean editarVehiculo(Vehiculo vehiculo) {
@@ -159,9 +159,9 @@ public class AdminControlador {
         return respuesta.isEstadoExito();
     }
 
-    public boolean eliminarVehiculo(int idVehiculo){
+    public boolean eliminarVehiculo(int idVehiculo, int id_usuario){
         
-        MensajeRed peticion = new MensajeRed("ELIMINAR_VEHICULO", idVehiculo, true, "");
+        MensajeRed peticion = new MensajeRed("ELIMINAR_VEHICULO", idVehiculo, true, "", id_usuario);
         MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
         return respuesta.isEstadoExito();
     }

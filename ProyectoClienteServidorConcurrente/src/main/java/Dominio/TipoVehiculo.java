@@ -19,6 +19,7 @@ public enum TipoVehiculo {
 
 
     //Metodo analitico para buscar por ID numerico
+
     public static String obtenerTextoPorId(int idBuscar){
         for(TipoVehiculo tipo : values()) {
             if(tipo.getIdTipoVehiculo() == idBuscar){
@@ -26,6 +27,16 @@ public enum TipoVehiculo {
             }
         }
         return "Desconocido";
+    }
+
+
+     public static int obtenerIdPorTexto(String textoBuscar){
+        for(TipoVehiculo tipo : values()) {
+            if(tipo.getDescripcion().equalsIgnoreCase(textoBuscar)){
+                return tipo.getIdTipoVehiculo();
+            }
+        }
+        return 0;
     }
 
 }

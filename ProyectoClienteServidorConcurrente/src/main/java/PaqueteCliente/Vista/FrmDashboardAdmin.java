@@ -257,7 +257,7 @@ public class FrmDashboardAdmin extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
 
         // Modelo de tabla para vehículos
-        String[] columnas = { "ID_Vehiculo","Placa","Marca","Modelo","ID_tipo_vehiculo","Estado" };
+        String[] columnas = { "ID_Vehiculo","Placa","Marca","Modelo","Tipo Vehiculo","Estado del vehiculo" };
         modeloVehiculos = new DefaultTableModel(columnas, 0) {
 
         @Override
@@ -320,16 +320,35 @@ public class FrmDashboardAdmin extends JFrame {
             }
         });
 
+
         btnEliminar.addActionListener(e -> {
             int filaSeleccionada = tblVehiculos.getSelectedRow();
+
             if (filaSeleccionada == -1) {
                 JOptionPane.showInputDialog(this,"Por favor, seleccione un paquete de la tabla.");
                 return;
             }
-            int id = (int) tblVehiculos.getValueAt(filaSeleccionada, 0);
-            boolean eliminado = adminControl.eliminarVehiculo(id);
+
+            int idEliminar = (int) tblVehiculos.getValueAt(filaSeleccionada, 0);
+            String descripcion = (String) tblVehiculos.getValueAt(filaSeleccionada, 1);
+
+            int confirmado = JOptionPane.showConfirmDialog(
+                 this,
+                "¿Está completamente seguro de que desea eliminar el vehiculo ID: " + idEliminar + " (" + descripcion + ")?\n"
+                + "Esta accion no se puede deshacer y afectara el transporte del paquete.",
+                "Confirmacion de eliminación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+            
+            if(confirmado != JOptionPane.YES_OPTION){
+                return;
+            }
+
+            boolean eliminado = adminControl.eliminarVehiculo(idEliminar, adminLogueado.getId_usuario());
 
             if(eliminado){
+                JOptionPane.showConfirmDialog(this,"Vehiculo eliminado y registrado en el historial de logs correctamente.");
                 refrescarTablaPaquetes();
             }else{
                 JOptionPane.showMessageDialog(this, "No se pudo eliminar el vehiculo.", "Error", JOptionPane.ERROR_MESSAGE);
