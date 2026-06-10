@@ -14,7 +14,7 @@ public class AdminControlador {
 
     //----------------MetodosControlUsuario----------------//
 
-  public boolean registrarUsuario(String nombre, String apellido, Date fechaNacimiento, 
+  public boolean registrarNuevoUsuario(String nombre, String apellido, Date fechaNacimiento, 
                                 String dni, String email, String telefono, 
                                 String password, int idRol) {
     
@@ -27,6 +27,8 @@ public class AdminControlador {
             email, 
             telefono, 
             password, 
+            null, 
+            true, 
             idRol
         );
 
@@ -40,13 +42,33 @@ public class AdminControlador {
         return respuesta.isEstadoExito();
     }
 
-    public boolean eliminarUsuario(int idUsuario) {
+    public boolean alterarEstadoUsuario(int idUsuario) {
 
-        MensajeRed peticion = new MensajeRed("ELIMINAR_USUARIO", idUsuario, true, "");
+        MensajeRed peticion = new MensajeRed("ALTERAR_ESTADO_USUARIO", idUsuario, true, "");
         MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
         return respuesta.isEstadoExito();
     } 
 
+    @SuppressWarnings("unchecked")
+    public List<Usuarios> actualizarUsuarios() {
+        MensajeRed peticion = new MensajeRed("LISTAR_USUARIOS", null, true, "");
+        MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
+
+         if (respuesta.isEstadoExito()) {
+            return (List<Usuarios>) respuesta.getPayload();
+        } else {
+            System.err.println("Error: " + respuesta.getMensajeRespuesta());
+            return null;
+        }
+    }
+
+
+    public boolean editarUsuario(Usuarios usuario) {
+     
+        MensajeRed peticion = new MensajeRed("EDITAR_USUARIO", usuario, true, "");
+        MensajeRed respuesta = ClienteSocket.getInstancia().enviarPeticion(peticion);
+        return respuesta.isEstadoExito();
+    }
 
     //----------------MetodosControlPaquete----------------//
 

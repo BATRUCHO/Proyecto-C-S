@@ -40,6 +40,8 @@ CREATE TABLE usuarios (
     telefono VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     id_rol INT,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    activo TINYINT(1) DEFAULT 1,
     FOREIGN KEY (id_rol) REFERENCES roles(id_rol)
 );
 

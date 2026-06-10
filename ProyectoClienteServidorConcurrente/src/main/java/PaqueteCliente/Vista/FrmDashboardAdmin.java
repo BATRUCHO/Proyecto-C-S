@@ -2,7 +2,6 @@ package PaqueteCliente.Vista;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.util.List;
 
@@ -18,11 +17,15 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import Dominio.EstadoPaquete;
+import Dominio.EstadoVehiculo;
 import Dominio.Paquete;
+import Dominio.Roles;
+import Dominio.TipoVehiculo;
 import Dominio.Usuarios;
 import Dominio.Vehiculo;
 import PaqueteCliente.Controlador.AdminControlador;
 import PaqueteCliente.Controlador.AutenticacionControlador;
+
 
 public class FrmDashboardAdmin extends JFrame {
 
@@ -122,8 +125,8 @@ public class FrmDashboardAdmin extends JFrame {
         String[] columnas = {"ID_Paquete", "Descripción","Remitente", "Destinatario", "Dirección de Entrega", "Peso", "Estado Paquete","Fecha de Creacion"};
         modeloPaquetes = new DefaultTableModel(columnas, 0) {
     
-        @Override
-        public boolean isCellEditable(int row, int column) { return false; } 
+            @Override
+            public boolean isCellEditable(int row, int column) { return false; } 
         };
         
         tblPaquetes = new JTable(modeloPaquetes);
@@ -342,14 +345,19 @@ public class FrmDashboardAdmin extends JFrame {
             );
             
             if(confirmado != JOptionPane.YES_OPTION){
-                return;
+                return; //Abortamos la ejecucion
             }
 
             boolean eliminado = adminControl.eliminarVehiculo(idEliminar, adminLogueado.getId_usuario());
 
             if(eliminado){
-                JOptionPane.showConfirmDialog(this,"Vehiculo eliminado y registrado en el historial de logs correctamente.");
-                refrescarTablaPaquetes();
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Vehiculo eliminado y registrado en el historial de logs correctamente.",
+                    "Eliminacion Exitosa",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+                refrescarTablaVehiculos();
             }else{
                 JOptionPane.showMessageDialog(this, "No se pudo eliminar el vehiculo.", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -363,24 +371,102 @@ public class FrmDashboardAdmin extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         
         // Modelo de tabla para usuarios
-        String[] columnas = {"ID", "Nombre", "Email", "Rol", "Estado"};
-        modeloUsuarios = new DefaultTableModel(columnas, 0);
+        String[] columnas = {"ID", "Nombre","Apellido", "Fecha Nacimiento", "DNI", "Email", "Telefono", "Password", "Rol", "Fecha de creacion","Estado del usuario"};
+        modeloUsuarios = new DefaultTableModel(columnas, 0){
+
+            @Override
+            public boolean isCellEditable(int row, int column) { return false; } 
+        };
+
         JTable tblUsuarios = new JTable(modeloUsuarios);
+        panel.add(new JScrollPane(tblUsuarios), BorderLayout.CENTER);
+
         
         // Panel de botones lateral o superior
-        JPanel panelAcciones = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel panelBotones = new JPanel();
+
+        JButton btnActualizarUsuarios = new JButton("Actualizar Estado Usuarios");
         JButton btnNuevoUsuario = new JButton("Nuevo Usuario");
-        JButton btnEliminar = new JButton("Desactivar");
+        JButton btnAlterarEstadoUsuario = new JButton("EstadoUsuario");
+        JButton btnEditar = new JButton("Editar");
         
-        panelAcciones.add(btnNuevoUsuario);
-        panelAcciones.add(btnEliminar);
+        panelBotones.add(btnActualizarUsuarios);
+        panelBotones.add(btnNuevoUsuario);
+        panelBotones.add(btnAlterarEstadoUsuario);
+        panelBotones.add(btnEditar);
         
-        panel.add(panelAcciones, BorderLayout.NORTH);
-        panel.add(new JScrollPane(tblUsuarios), BorderLayout.CENTER);
+        panel.add(panelBotones, BorderLayout.SOUTH);
+
+        //--------------BotonesEventos----------------//
+
+        btnActualizarUsuarios.addActionListener(e -> refrescarTablaUsuarios());
+
+        btnNuevoUsuario.addActionListener(e -> {
+            FrmNuevoUsuario ventanaNueva = new FrmNuevoUsuario(this);
+            ventanaNueva.setVisible(true);
+            
+            if (ventanaNueva.isExito()) {
+                refrescarTablaUsuarios();
+            }
+        });
+
+        btnAlterarEstadoUsuario.addActionListener(e -> {
+            int filaSeleccionada = tblUsuarios.getSelectedRow();
+
+            if (filaSeleccionada == -1) {
+                JOptionPane.showMessageDialog(this, "Por favor, seleccione un usuario de la tabla.");
+                return;
+            }
+            int id = (int) tblUsuarios.getValueAt(filaSeleccionada, 0);
+
+            int confirmado = JOptionPane.showConfirmDialog(
+                this,
+                "¿Está completamente seguro de que desea alterar el estado del usuario ID: " + id + "?",
+                "Confirmacion de alterar estado",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+
+            if(confirmado != JOptionPane.YES_OPTION){
+                return;
+            }
+
+            boolean exito = adminControl.alterarEstadoUsuario(id);
+            if (exito) {
+                JOptionPane.showMessageDialog(this, "Estado del usuario actualizado.");
+                refrescarTablaUsuarios();
+            }else{
+                JOptionPane.showMessageDialog(this, "No se pudo alterar el estado del usuario.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        });
+
+        btnEditar.addActionListener(e -> {
+            int filaSeleccionada = tblUsuarios.getSelectedRow();
+
+            if(filaSeleccionada == -1){
+                JOptionPane.showMessageDialog(this, "Por favor, seleccione un paquete de la tabla.");
+            }
+            int id =(int) tblUsuarios.getValueAt(filaSeleccionada, 0);
+            Usuarios usuarioSeleccionado = buscarUsuarioPorId(id);
+
+            if(usuarioSeleccionado == null){
+                 JOptionPane.showMessageDialog(this, "No se pudieron recuperar los datos completos del Usuario.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            FrmNuevoUsuario ventanaEditar = new FrmNuevoUsuario(this, usuarioSeleccionado);
+            ventanaEditar.setVisible(true);
+
+            if (ventanaEditar.isExito()) {
+                refrescarTablaUsuarios();
+            }
+
+        });
         
         return panel;
     }
-    
+  
     private JPanel crearPanelRegistros() {
 
         JPanel panel = new JPanel(new BorderLayout());
@@ -409,8 +495,8 @@ public class FrmDashboardAdmin extends JFrame {
                     v.getPlaca(),
                     v.getMarca(),
                     v.getModelo(),
-                    v.getId_tipoVehiculo(),
-                    v.getId_estado_vehiculo()
+                    TipoVehiculo.obtenerTextoPorId(v.getId_tipoVehiculo()),
+                    EstadoVehiculo.obtenerTextoPorId(v.getId_estado_vehiculo())
                 };
                 modeloVehiculos.addRow(fila);
             }
@@ -447,7 +533,29 @@ public class FrmDashboardAdmin extends JFrame {
     }
 
     public void refrescarTablaUsuarios() {
+        this.listaUsuarios = adminControl.actualizarUsuarios();
+        modeloUsuarios.setRowCount(0);
 
+        if(listaUsuarios != null && !listaUsuarios.isEmpty()){
+            for (Usuarios u : listaUsuarios) {
+                Object[] fila = {
+                    u.getId_usuario(),
+                    u.getNombre(),
+                    u.getApellido(),
+                    u.getFechaNacimiento(),
+                    u.getDni(),
+                    u.getEmail(),
+                    u.getTelefono(),
+                    u.getPassword(),
+                    Roles.obtenerTextoPorId(u.getIdRol()),
+                    u.getFechaCreacion(),
+                    u.isActivo() ? "Activo" : "Inactivo",
+                };
+                modeloUsuarios.addRow(fila);
+            }
+        } else {
+            System.out.println("No se recibieron usuarios del servidor.");
+        }
     }
 
     public Paquete buscarPaquetePorId(int id) {

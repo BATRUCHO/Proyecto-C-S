@@ -2,6 +2,7 @@ package Dominio;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 
 public class Usuarios implements Serializable{
@@ -13,9 +14,11 @@ public class Usuarios implements Serializable{
     private String email;
     private String telefono;
     private String password;
+    private Timestamp fechaCreacion;
+    private boolean activo;
     private int id_rol;
 
-    public Usuarios(int id_usuario, String nombre, String apellido, Date fechaNacimiento, String dni, String email, String telefono, String password, int id_rol ) {
+  public Usuarios(int id_usuario, String nombre, String apellido, Date fechaNacimiento, String dni, String email, String telefono, String password, int id_rol) {
         this.id_usuario = id_usuario;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -24,6 +27,22 @@ public class Usuarios implements Serializable{
         this.email = email;
         this.telefono = telefono;
         this.password = password;
+        this.id_rol = id_rol;
+        this.activo = true; 
+    }
+
+    // CONSTRUCTOR 2
+    public Usuarios(int id_usuario, String nombre, String apellido, Date fechaNacimiento, String dni, String email, String telefono, String password, Timestamp fechaCreacion, boolean activo, int id_rol) {
+        this.id_usuario = id_usuario;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.fechaNacimiento = fechaNacimiento;
+        this.dni = dni;
+        this.email = email;
+        this.telefono = telefono;
+        this.password = password;
+        this.fechaCreacion = fechaCreacion;
+        this.activo = activo;
         this.id_rol = id_rol;
     }
 
@@ -89,6 +108,21 @@ public class Usuarios implements Serializable{
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Timestamp getFechaCreacion() {
+        return fechaCreacion;
+    }
+    public void setFechaCreacion(Timestamp fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 
     public int getIdRol() {

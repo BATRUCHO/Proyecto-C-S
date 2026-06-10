@@ -85,25 +85,25 @@ public class FrmRegistrarVehiculo extends JDialog {
         txtPlaca.setEnabled(false);
 
         addLabel("Estado", 50, 170);
-        cbEstado = new JComboBox<>(new String[]{"Disponible","En ruta","En mantenimiento"});
+        cbEstado = new JComboBox<>(new String[]{"- Seleccione -","Disponible","En ruta","En mantenimiento"});
         cbEstado.setBounds(180, 170, 170, 30);
         add(cbEstado);
         
         addLabel("Marca de vehiculo", 50, 220);
-        cbMarca = new JComboBox<>(new String[]{"Toyota","Mercedez-Beans","Suzuki","Iveco","Freightliner","Volvo","Ford","Hino","Honda","Nissan"});
+        cbMarca = new JComboBox<>(new String[]{"- Seleccione -","Chevrolet","Volkswagen","Hyundai","Fiat","Renault","Kia","Mazda","Peugeot","Mitsubishi","Toyota","Mercedez-Beans","Suzuki","Iveco","Freightliner","Volvo","Ford","Hino","Honda","Nissan"});
         cbMarca.setBounds(180, 220, 170, 30);
         add(cbMarca);
 
         addLabel("Modelo de vehiculo", 50, 270);
         cbModelo = new JComboBox<>(new String[]{
-        "Selecionar dato","1990","1991","1992","1993","1994","1995","1996","1997","1998","1999","2000","2001","2002",
+        "- Seleccione -","1990","1991","1992","1993","1994","1995","1996","1997","1998","1999","2000","2001","2002",
         "2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014",
         "2015","2016","2017","2018","2019","2020","2021","2022","2023","2024","2025","2026"});
         cbModelo.setBounds(180, 270, 170, 30);
         add(cbModelo);
 
         addLabel("Tipo de vehiculo", 50, 320); 
-        cbTipo = new JComboBox<>(new String[]{"Camioneta","Motocicleta","Camión pesado"});
+        cbTipo = new JComboBox<>(new String[]{"- Seleccione -","Camioneta","Motocicleta","Camión pesado"});
         cbTipo.setBounds(180, 320, 170, 30);
         add(cbTipo);
 
@@ -129,7 +129,6 @@ public class FrmRegistrarVehiculo extends JDialog {
         //Boton para cancelar accion de registro
         btnCancelar.addActionListener(e -> dispose());
         
-        //Boton para guardar accion de registro
        // Boton para guardar accion de registro
         btnGuardar.addActionListener(e -> {
 
@@ -146,9 +145,9 @@ public class FrmRegistrarVehiculo extends JDialog {
             int tipoId = TipoVehiculo.obtenerIdPorTexto(tipoTexto);
             int estadoId = EstadoVehiculo.obtenerIdPorTexto(estadoTexto);
 
-            // 4. Validación estricta (Suponiendo que el índice 0 es "Seleccionar...")
+            // 4. Validación estricta 
             if (cbMarca.getSelectedIndex() == 0 || cbModelo.getSelectedIndex() == 0 || 
-                tipoId == 0 || estadoId == 0 || placa.isEmpty()) {
+                tipoId == 0 || estadoId == 0 ) {
                 
                 JOptionPane.showMessageDialog(this, "Todos los datos son obligatorios y deben ser válidos.");
                 return;
@@ -229,6 +228,7 @@ public class FrmRegistrarVehiculo extends JDialog {
     }
 
     //Metodo para la edicion del paquete
+    
     public void llenarDatosParaEditar() {
 
         //Se cambia el titulo de la ventana

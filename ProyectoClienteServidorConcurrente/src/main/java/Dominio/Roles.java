@@ -28,6 +28,17 @@ public enum Roles   {
         return "Desconocido";
     }
 
+    public static int obtenerIdPorTexto(String textoBuscar){
+        for(Roles rol : values()) {
+            if(rol.getNombre().equals(textoBuscar)){
+                return rol.getId();
+            }
+        }
+        return 0;
+    }
+
+    
+
 
 
 }

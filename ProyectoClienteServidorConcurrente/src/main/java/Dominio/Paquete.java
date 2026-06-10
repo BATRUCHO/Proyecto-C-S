@@ -86,8 +86,7 @@ public class Paquete implements Serializable {
     public void setDireccion_entrega(String direccion_entrega) {
         this.direccion_entrega = direccion_entrega;
     }
-
-
+    
 
     public BigDecimal getPeso() {
         return peso;
@@ -112,7 +111,6 @@ public class Paquete implements Serializable {
     public Timestamp getFecha_creacion() {
         return fecha_creacion;
     }
-
 
 
     public void setFecha_creacion(Timestamp fecha_creacion) {

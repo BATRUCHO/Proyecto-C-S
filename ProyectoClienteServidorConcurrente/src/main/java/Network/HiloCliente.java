@@ -113,17 +113,25 @@ public class HiloCliente extends Thread {
                     }
                 }
 
-                case "ELIMINAR_USUARIO" -> {
-                    int idUsuarioEliminar = (int) peticion.getPayload();
-                    Usuarios usuarioEliminado = usuarioDAO.eliminarUsuario(idUsuarioEliminar);
-                    
-                    if (usuarioEliminado != null) {
-                        LoggerManager.log(idUsuarioOperacion, "ELIMINAR_USUARIO", "Eliminación exitosa: " + usuarioEliminado.getEmail());
-                        yield new MensajeRed("ELIMINAR_RESPUESTA", usuarioEliminado, true, "Usuario eliminado");
+                case "ALTERAR_ESTADO_USUARIO" -> {
+                    int idUsuarioInactivado = (int) peticion.getPayload();
+                    boolean cambioEstado = usuarioDAO.alternarEstadoUsuario(idUsuarioInactivado); // Llamamos al metodo del Dao y lo guardamos en una variable booleana
+                    if (cambioEstado) { // Si es afirmativo entonces se inactivó el usuario y se registra el log, sino se registra un intento fallido
+                        LoggerManager.log(idUsuarioOperacion, "ALTERAR_ESTADO_USUARIO", "ALTERAR_ESTADO_USUARIO exitosa del usuario ID: " + idUsuarioInactivado);
+                        yield new MensajeRed("ALTERAR_ESTADO_USUARIO", true, true,  "Usuario a cambio a estado");
                     } else {
-                        LoggerManager.log(idUsuarioOperacion, "ELIMINAR_FALLIDO", "Intento fallido sobre ID: " + idUsuarioEliminar);
-                        yield new MensajeRed("ELIMINAR_RESPUESTA", null, false, "Usuario no encontrado");
+                        LoggerManager.log(idUsuarioOperacion, "ALTERAR_ESTADO_USUARIO", "Intento fallido sobre ID: " + idUsuarioInactivado);
+                        yield new MensajeRed("ALTERAR_ESTADO_USUARIO", null, false, "Usuario no encontrado");
                     }
+                }
+
+                case "EDITAR_USUARIO" -> { 
+                    Usuarios uEditar = (Usuarios) peticion.getPayload();
+                    boolean editado = usuarioDAO.editarUsuario(uEditar);
+                    if(editado) {
+                        LoggerManager.log(idUsuarioOperacion, "EDITAR_USUARIO", "Usuario " + uEditar.getId_usuario() + " editado un usuario");
+                    }
+                    yield new MensajeRed("EDITAR_USUARIO", editado, editado, editado ? "Usuario actualizado" : "Error al actualizar");
                 }
 
                 case "LISTAR_USUARIOS" -> new MensajeRed("LISTA_USUARIOS_RESPUESTA", usuarioDAO.listarUsuarios(), true, "Lista obtenida");
@@ -227,4 +235,3 @@ public class HiloCliente extends Thread {
     }
 
 }
-

@@ -23,10 +23,9 @@
             <version>9.0.0</version>
         </dependency>
         <dependency>
-            <groupId>com.github.tiagompalte</groupId>
-            <artifactId>tcc-porta-servico</artifactId>
-            <version>1.0.14</version>
-            <type>jar</type>
+            <groupId>com.toedter</groupId>
+            <artifactId>jcalendar</artifactId>
+            <version>1.4</version>
         </dependency>
     </dependencies>
 </project>
