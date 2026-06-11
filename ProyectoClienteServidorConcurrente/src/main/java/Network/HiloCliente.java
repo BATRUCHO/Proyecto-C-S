@@ -142,7 +142,7 @@ public class HiloCliente extends Thread {
                     boolean creado = paqueteDAO.crearPaquete(pNuevo);
                     
                     if(creado) {
-                        // CORREGIDO: Ahora usamos idUsuarioOperacion para evitar el quiebre de FK
+                        
                         LoggerManager.log(idUsuarioOperacion, "CREAR_PAQUETE", "Usuario " + idUsuarioOperacion + " creó un paquete: " + pNuevo.getDescripcion());
                         yield new MensajeRed("RESPUESTA_CREAR", pNuevo, true, "Paquete creado exitosamente");
                     } else {
@@ -156,8 +156,7 @@ public class HiloCliente extends Thread {
                     Paquete pEditar = (Paquete) peticion.getPayload();
                     boolean editado = paqueteDAO.EditarPaquete(pEditar);
                     if(editado) {
-                        // CORREGIDO: Log persistido con el ID dinámico real
-                        logDAO.registrarEvento(idUsuarioOperacion, "EDITAR_PAQUETE", "Paquete " + pEditar.getId_paquete() + " editado");
+                        LoggerManager.log(idUsuarioOperacion, "EDITAR_PAQUETE", "Paquete " + pEditar.getId_paquete() + " editado");
                     }
                     yield new MensajeRed("EDITAR_RESPUESTA", editado, editado, editado ? "Paquete actualizado" : "Error al actualizar");
                 }
@@ -167,7 +166,7 @@ public class HiloCliente extends Thread {
                     boolean eliminado = paqueteDAO.eliminarPaquete(idEliminar);
                     if(eliminado) {
                         
-                        logDAO.registrarEvento(idUsuarioOperacion, "ELIMINAR_PAQUETE", "Paquete " + idEliminar + " eliminado");
+                        LoggerManager.log(idUsuarioOperacion, "ELIMINAR_PAQUETE", "Paquete " + idEliminar + " eliminado");
                     }
                     yield new MensajeRed("ELIMINAR_RESPUESTA", eliminado, eliminado, eliminado ? "Paquete eliminado" : "Error al eliminar");
                 }
@@ -216,13 +215,18 @@ public class HiloCliente extends Thread {
                         
                         boolean exito = paqueteDAO.crearPaquete(null); 
                         if(exito) {
-                            logDAO.registrarEvento(idUsuarioOperacion, "ASIGNACION", "Asignación: Pkg " + idPkg + " a Cond " + idCond);
+                            LoggerManager.log(idUsuarioOperacion, "ASIGNACION", "Asignación: Pkg " + idPkg + " a Cond " + idCond);
                         }
                         yield new MensajeRed("ASIGNACION_RESPUESTA", exito, exito, exito ? "Paquete asignado" : "Error en base de datos");
                     } catch (Exception e) {
                         yield new MensajeRed("ASIGNACION_RESPUESTA", false, false, "Error: " + e.getMessage());
                     }
                 }
+                
+                // ----- Módulo logs ------ //
+
+                case "LISTAR_LOGS" -> new MensajeRed("LISTA_LOGS_RESPUESTA", logDAO.listarEventosSistema(), true, "Lista obtenida");
+
 
                 default -> new MensajeRed("DESCONOCIDO", null, false, "La acción no existe");
             }; 

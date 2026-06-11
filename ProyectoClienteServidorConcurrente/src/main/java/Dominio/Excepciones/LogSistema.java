@@ -9,14 +9,18 @@ public class LogSistema implements Serializable {
     private String accion;
     private String detalles;
     private Timestamp fecha_hora;
+    private String nombre_completo;
+    private String rol_usuario;
 
 
-    public LogSistema(int id_log,int id_usuario, String accion,String detalles,Timestamp fecha_hora) {
+    public LogSistema(int id_log,int id_usuario, String accion,String detalles,Timestamp fecha_hora,String nombre_completo,String rol_usuario) {
         this.id_log = id_log;
         this.id_usuario = id_usuario;
         this.accion = accion;
         this.detalles = detalles;
         this.fecha_hora = fecha_hora;
+        this.nombre_completo = nombre_completo;
+        this.rol_usuario = rol_usuario;
     }
 
     public int getId_log() {
@@ -65,4 +69,19 @@ public class LogSistema implements Serializable {
         this.fecha_hora = fecha_hora;
     }
 
+    public String getNombre_completo() {
+        return nombre_completo;
+    }
+
+    public void setNombre_completo(String nombre_completo) {
+        this.nombre_completo = nombre_completo;
+    }
+
+    public String getRol_usuario() {
+        return rol_usuario;
+    }
+
+    public void setRol_usuario(String rol_usuario) {
+        this.rol_usuario = rol_usuario;
+    }
 }

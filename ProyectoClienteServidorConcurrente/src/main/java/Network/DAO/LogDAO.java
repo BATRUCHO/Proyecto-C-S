@@ -19,40 +19,42 @@ public class LogDAO {
             rs.getInt("id_usuario"),      
             rs.getString("accion"),      
             rs.getString("detalles"),    
-            rs.getTimestamp("fecha_hora") 
+            rs.getTimestamp("fecha_hora"),
+            rs.getString("nombre_completo"),
+            rs.getString("rol_usuario")
         );
     }
 
    public void registrarEvento(int idUsuario, String accion, String detalle) {
     String sql = "INSERT INTO logs_sistema (id_usuario, accion, detalles, fecha_hora) VALUES (?, ?, ?, NOW())";
     
-    try (Connection cn = Network.BD.ConexionMySQL.getConexion();
-         PreparedStatement ps = cn.prepareStatement(sql)) {
-        ps.setInt(1, idUsuario);
-        ps.setString(2, accion);
-        ps.setString(3, detalle);
-        ps.executeUpdate();
-    } catch (Exception e) {
-        System.err.println("Error persistiendo en DB: " + e.getMessage());
-    }
+        try (Connection cn = Network.BD.ConexionMySQL.getConexion();
+            PreparedStatement ps = cn.prepareStatement(sql)) {
+            ps.setInt(1, idUsuario);
+            ps.setString(2, accion);
+            ps.setString(3, detalle);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            System.err.println("Error persistiendo en DB: " + e.getMessage());
+        }
     }
 
     public List<LogSistema> listarEventosSistema() {
-        List<LogSistema> listarEventosSistema = new ArrayList<>();
-        String sql = "SELECT * FROM logs_sistema ";
+
+        List<LogSistema> listaLogs = new ArrayList<>();
+        String sql = "SELECT * FROM vista_auditoria_completa ORDER BY fecha_hora DESC";
 
         try (Connection conexion = ConexionMySQL.getConexion();
             PreparedStatement ps = conexion.prepareStatement(sql);  
             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-            LogSistema l = mapearLogs(rs);
-            listarEventosSistema.add(l);
+                listaLogs.add(mapearLogs(rs));
             }
         } catch (SQLException e) {
-            System.err.println("Error al listar paquetes: " + e.getMessage());
+            System.err.println("Error al listar logs del sistema: " + e.getMessage());
         }
-        return listarEventosSistema;
+        return listaLogs;
+    }
 
-        }
 }

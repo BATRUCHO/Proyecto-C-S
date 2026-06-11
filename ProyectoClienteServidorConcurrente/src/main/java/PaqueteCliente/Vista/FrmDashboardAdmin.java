@@ -18,6 +18,7 @@ import javax.swing.table.DefaultTableModel;
 
 import Dominio.EstadoPaquete;
 import Dominio.EstadoVehiculo;
+import Dominio.Excepciones.LogSistema;
 import Dominio.Paquete;
 import Dominio.Roles;
 import Dominio.TipoVehiculo;
@@ -25,6 +26,7 @@ import Dominio.Usuarios;
 import Dominio.Vehiculo;
 import PaqueteCliente.Controlador.AdminControlador;
 import PaqueteCliente.Controlador.AutenticacionControlador;
+import PaqueteCliente.Utilidades.CSVExporter;
 
 
 public class FrmDashboardAdmin extends JFrame {
@@ -38,6 +40,8 @@ public class FrmDashboardAdmin extends JFrame {
     private  List<Paquete> listaPaquetes;
     private  List<Vehiculo> listaVehiculos;
     private  List<Usuarios> listaUsuarios;
+    private  List<LogSistema> listaLogs;
+
 
     private DefaultTableModel modeloPaquetes;
     private DefaultTableModel modeloVehiculos;
@@ -56,7 +60,8 @@ public class FrmDashboardAdmin extends JFrame {
         setLayout(new BorderLayout());
 
         initComponents();
-        refrescarTablaPaquetes();  
+        refrescarTablaPaquetes();
+        
 
         // Proceso de cierre de sesion si sale desde la X
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -472,17 +477,108 @@ public class FrmDashboardAdmin extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
 
         //Modelo para la tabla de registros
-        String[] columnas = {"ID", "Usuario", "Accion","Descripcion", "Fecha"};
+        String[] columnas = {"ID", "Usuario","Nombre Completo", "Rol", "Accion","Descripcion", "Fecha"};
         modeloRegistros = new DefaultTableModel(columnas, 0);
         JTable tblRegistros = new JTable(modeloRegistros);
 
         panel.add(new JScrollPane(tblRegistros), BorderLayout.CENTER);
+
+        JPanel panelBotones = new JPanel();
+
+        JButton btnActualizarLogs = new JButton("Actualizar Logs");
+        JButton btnExportarCSV = new JButton("Descargar Archivo");
+
+        panelBotones.add(btnActualizarLogs);
+        panelBotones.add(btnExportarCSV);
+
+
+        panel.add(panelBotones, BorderLayout.SOUTH);
+
+        //--------------BotonesEventos----------------//
+
+        btnActualizarLogs.addActionListener(e -> { refrescarTablaLogs();});
+
+        btnExportarCSV.addActionListener(e -> {
+
+            //1. Validamos que tengamos datos en la lista, por lo que el sistema tenga datos para descargar de la lista Logs
+            if (listaLogs == null || listaLogs.isEmpty()) {
+                this.listaLogs = adminControl.listarEventosSistema();
+            }
+                // 2. Definimos las opciones que verá el usuario
+                Object[] opciones = { "Datos_Logs.csv", "Datos_Paquetes.csv", "Datos_Vehiculos.csv", "Datos_Usuarios.csv"};
+
+                // 3. Desplegamos el menú de selección estructurado
+                Object seleccion = JOptionPane.showInputDialog(
+                    this,                                                   // 1. Component (Componente padre)
+                    "Seleccione el reporte que desea exportar a Excel:",    // 2. Object (Mensaje interno)
+                    "Extractor de Reportes Corporativos",                   // 3. String (Título de la ventana)
+                    JOptionPane.QUESTION_MESSAGE,                           // 4. int (Tipo de mensaje/ícono)
+                    null,                                                   // 5. Icon (Icono personalizado, null usa defecto)
+                    opciones,                                               // 6. Object[] (El arreglo de opciones para el ComboBox)
+                    opciones[0]                                             // 7. Object (La opción seleccionada por defecto)
+
+                );
+                
+                // 4. Control defensivo por si el usuario presiona "Cancelar" o cierra la ventana
+                if (seleccion == null){
+                    return;
+                }
+
+                //5. Control defencibo por si el usuario presiona "Cancelar" o cierra la ventana
+                String opcionElegida = seleccion.toString();
+
+                switch (opcionElegida) {
+                    case "Datos_Logs.csv" -> {
+                        CSVExporter.exportarLogs(this, this.listaLogs);
+
+                    }
+                    case "Datos_Paquetes.csv" -> {
+                        JOptionPane.showMessageDialog(this, "Módulo en desarrollo", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                        
+                    }
+                    case "Datos_Vehiculos.csv" -> {
+                        JOptionPane.showMessageDialog(this, "Módulo en desarrollo", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                        
+                    }
+                    case "Datos_Usuarios.csv" -> {
+                        JOptionPane.showMessageDialog(this, "Módulo en desarrollo", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                        
+                    }
+                    default -> {
+                        JOptionPane.showMessageDialog(this, "Opción no válida seleccionada." +opcionElegida, "Error", JOptionPane.ERROR_MESSAGE);  
+                    }
+                }
+            
+            
+            });
 
         return panel;
 
     }
 
     //--------------MetodosAuxiliares----------------//
+
+    public void refrescarTablaLogs(){
+        this.listaLogs = adminControl.listarEventosSistema();
+        modeloRegistros.setRowCount(0);
+
+        if(listaLogs != null && !listaLogs.isEmpty()){
+            for (LogSistema l : listaLogs) {
+                Object[] fila = {
+                    l.getId_log(),
+                    l.getId_usuario(),
+                    l.getNombre_completo(),
+                    l.getRol_usuario(),
+                    l.getAccion(),
+                    l.getDetalles(),
+                    l.getFecha_hora()
+                };
+                modeloRegistros.addRow(fila);
+            }
+        } else {
+            System.out.println("No se recibieron logs del servidor.");
+        }
+    }
 
     public void refrescarTablaVehiculos() {
         this.listaVehiculos = adminControl.actualizarVehiculos();

@@ -12,16 +12,19 @@ public class LoggerManager {
 
     private static final String FILE_PATH = "Sistema de auditoria.log";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private static final LogDAO logDAO = new LogDAO();
 
     public static void log(int idUsuario, String accion, String detalle){
         String fecha = LocalDateTime.now().format(DATE_TIME_FORMATTER);
         String mensajeFormateado = String.format("[%s] [USER: %d] %s: %s", fecha, idUsuario, accion, detalle);
 
+        // 1. Imprime en la consola del Servidor
         System.out.println(mensajeFormateado);
 
+        // 2. Escribe en el archivo de texto plano (.log) para respaldo rápido del administrador
         escribirEnArchivo(mensajeFormateado);
 
+        // 3. Persiste en la Base de Datos relacional de forma asíncrona/directa
+        LogDAO logDAO = new LogDAO();
         logDAO.registrarEvento(idUsuario,accion,detalle);
         
     }
@@ -35,7 +38,9 @@ public class LoggerManager {
         }
     }
 
+    private void exportarVistas() { 
+        
+        //Pendiente
 
-
-
+    }
 }
