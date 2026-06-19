@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 public class UbicacionVehiculo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private int id_ubicacion;
     private double latitud;
     private double longitud;

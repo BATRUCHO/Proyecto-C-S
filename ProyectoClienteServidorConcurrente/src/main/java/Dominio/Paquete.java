@@ -7,6 +7,8 @@ import java.sql.Timestamp;
 
 public class Paquete implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private int id_paquete;
     private String descripcion;
     private String remitente;

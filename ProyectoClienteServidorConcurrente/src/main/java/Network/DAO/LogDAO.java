@@ -14,9 +14,13 @@ import Network.BD.ConexionMySQL;
 public class LogDAO {
 
     private LogSistema mapearLogs(ResultSet rs) throws SQLException {
+        // Leemos el ID que puede ser nulo de forma segura
+        int idRaw = rs.getInt("id_usuario");
+        Integer idUsuario = rs.wasNull() ? null : idRaw;
+
         return new LogSistema(
             rs.getInt("id_log"),          
-            rs.getInt("id_usuario"),      
+            idUsuario,
             rs.getString("accion"),      
             rs.getString("detalles"),    
             rs.getTimestamp("fecha_hora"),
@@ -26,7 +30,7 @@ public class LogDAO {
     }
 
    public void registrarEvento(int idUsuario, String accion, String detalle) {
-    String sql = "INSERT INTO logs_sistema (id_usuario, accion, detalles, fecha_hora) VALUES (?, ?, ?, NOW())";
+    String sql = "INSERT INTO logs_sistema (id_usuario, accion, detalles, fecha_hora) VALUES (?, ?, ?, UTC_TIMESTAMP())"; // UTC_TIMESTAMP() para cruzar zona horaria estandar
     
         try (Connection cn = Network.BD.ConexionMySQL.getConexion();
             PreparedStatement ps = cn.prepareStatement(sql)) {
@@ -42,7 +46,8 @@ public class LogDAO {
     public List<LogSistema> listarEventosSistema() {
 
         List<LogSistema> listaLogs = new ArrayList<>();
-        String sql = "SELECT * FROM vista_auditoria_completa ORDER BY fecha_hora DESC";
+        String sql = "SELECT id_log, id_usuario, nombre_completo, rol_usuario, accion, detalles, fecha_hora " +
+                     "FROM vista_auditoria_completa ORDER BY fecha_hora DESC";  // Declara siempre explícitamente los campos exactos que necesitas por temas de seguridad
 
         try (Connection conexion = ConexionMySQL.getConexion();
             PreparedStatement ps = conexion.prepareStatement(sql);  

@@ -159,25 +159,25 @@ public class FrmNuevoPaquete extends JDialog {
             }
 
             // 3. Validación lógica del Peso (Evitar NumberFormatException)
-            BigDecimal pesoFinal = BigDecimal.ZERO;
-            if (!pesoTexto.equals(placeholder) && !pesoTexto.isEmpty()) {
-                try {
-                    // Reemplazamos coma por punto por si el usuario usa formato latino
-                    pesoFinal = new BigDecimal(pesoTexto.replace(",", "."));
-                    
-                    if (pesoFinal.compareTo(BigDecimal.ZERO) <= 0.0) {
-                        JOptionPane.showMessageDialog(this, "El peso debe ser mayor a 0.");
-                        return;
-                    }
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "Por favor, ingrese un número válido para el peso.");
-                    return;
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Debe indicar el peso del paquete.");
-                return ;
+            BigDecimal pesoFinal;
+            if (pesoTexto.isEmpty() || pesoTexto.equals(placeholder)) {
+                JOptionPane.showMessageDialog(this, "Debe indicar un peso válido para el paquete.", "Validación", JOptionPane.WARNING_MESSAGE);
+                return;
             }
 
+            try {
+                // Tu excelente conversión y normalización regional
+                pesoFinal = new BigDecimal(pesoTexto.replace(",", "."));
+
+                if (pesoFinal.compareTo(BigDecimal.ZERO) <= 0) {
+                    JOptionPane.showMessageDialog(this, "El peso debe ser una cantidad mayor a 0.", "Validación", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Por favor, ingrese un número válido para el peso (Ejemplo: 5.25).", "Error de Formato", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        
             // 4. Llamada al controlador con la variable ya validada
            boolean res;
            String mensajeExito;

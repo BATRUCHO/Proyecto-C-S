@@ -2,6 +2,7 @@ package PaqueteCliente.Vista;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 
 import Dominio.EstadoPaquete;
@@ -27,6 +29,8 @@ import Dominio.Vehiculo;
 import PaqueteCliente.Controlador.AdminControlador;
 import PaqueteCliente.Controlador.AutenticacionControlador;
 import PaqueteCliente.Utilidades.CSVExporter;
+import PaqueteCliente.Utilidades.MetodosBusquedaId;
+
 
 
 public class FrmDashboardAdmin extends JFrame {
@@ -41,7 +45,6 @@ public class FrmDashboardAdmin extends JFrame {
     private  List<Vehiculo> listaVehiculos;
     private  List<Usuarios> listaUsuarios;
     private  List<LogSistema> listaLogs;
-
 
     private DefaultTableModel modeloPaquetes;
     private DefaultTableModel modeloVehiculos;
@@ -61,6 +64,10 @@ public class FrmDashboardAdmin extends JFrame {
 
         initComponents();
         refrescarTablaPaquetes();
+        refrescarTablaVehiculos();
+        refrescarTablaUsuarios();
+        refrescarTablaLogs();
+
         
 
         // Proceso de cierre de sesion si sale desde la X
@@ -195,31 +202,37 @@ public class FrmDashboardAdmin extends JFrame {
         btnEditar.addActionListener(e -> {
             int filaSeleccionada = tblPaquetes.getSelectedRow();
 
-            // Si la seleccion es igual -1 significa que no se selecciono nada
+            // 1. Validación de interfaz defensiva: ¿Hay fila seleccionada?
             if (filaSeleccionada == -1) {
                 JOptionPane.showMessageDialog(this, "Por favor, seleccione un paquete de la tabla.");
                 return;
             }
 
-            // Obtiene el ID del paquete seleccionado
+            // 2. Obtiene el ID del paquete seleccionado de la columna 0
             int id =(int) tblPaquetes.getValueAt(filaSeleccionada, 0);
 
-            // Usa el metodo auxiliar para buscar el paquete por ID
-            Paquete paqueteSeleccionado = buscarPaquetePorId(id);
+            // 3. Invocamos la clase utilitaria de forma ESTÁTICA pasándole la lista en memoria y el ID
+            MetodosBusquedaId.buscarPaquetePorId(listaPaquetes, id)
+            .ifPresentOrElse(
+                // CAMINO A: ¿El paquete existe en el Optional? Java lo extrae automáticamente aquí
+                paqueteEncontrado -> {
+                    // Abre la ventana de edición pasando el paquete garantizado
+                    FrmNuevoPaquete ventanaEditar = new FrmNuevoPaquete(this, paqueteEncontrado);
+                    ventanaEditar.setVisible(true);
 
-            if(paqueteSeleccionado == null){
-                JOptionPane.showMessageDialog(this, "No se pudieron recuperar los datos completos del paquete.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // Abre la ventana de edición con los datos del paquete a editar
-            FrmNuevoPaquete ventanaEditar = new FrmNuevoPaquete(this, paqueteSeleccionado);
-            ventanaEditar.setVisible(true);
-
-            if (ventanaEditar.isExito()) {
-                refrescarTablaPaquetes();
-            }
-            
+                    // Si el formulario guardó con éxito, refrescamos la tabla
+                    if (ventanaEditar.isExito()) {
+                        refrescarTablaPaquetes();
+                    }
+                },
+                // CAMINO B: ¿El Optional vino vacío? (La lista estaba vacía o el ID no coincidió)
+                () -> {
+                    JOptionPane.showMessageDialog(this, 
+                        "No se pudieron recuperar los datos completos del paquete.\nEs posible que la lista no se haya cargado correctamente.", 
+                        "Error de Búsqueda", 
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            );
         });
 
         // BotonEliminar elimina el paquete seleccionado
@@ -313,19 +326,23 @@ public class FrmDashboardAdmin extends JFrame {
             }
 
             int id =(int) tblVehiculos.getValueAt(filaSeleccionada, 0);
-            Vehiculo vehiculoSeleccionado = buscarVehiculoPorId(id);
+       
+            MetodosBusquedaId.buscarVehiculoPorId(listaVehiculos, id)
+            .ifPresentOrElse(
+                vehiculoEncontrado -> {
+                    FrmRegistrarVehiculo ventanaEditar = new FrmRegistrarVehiculo(this, vehiculoEncontrado);
+                    ventanaEditar.setVisible(true);
 
-            if(vehiculoSeleccionado == null){
-                JOptionPane.showMessageDialog(this, "No se pudieron recuperar los datos completos del vehiculo.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            
-            FrmRegistrarVehiculo ventanaEditar = new FrmRegistrarVehiculo(this, vehiculoSeleccionado);
-            ventanaEditar.setVisible(true);
-
-            if (ventanaEditar.isExito()) {
-                refrescarTablaVehiculos();
-            }
+                    if (ventanaEditar.isExito()) {
+                        refrescarTablaVehiculos();
+                    }
+                },
+                () ->
+                    JOptionPane.showMessageDialog(this,
+                        "No se pudieron recuperar los datos completos del Vehiculo.\nEs posible que la lista no se haya cargado correctamente.", 
+                        "Error de Búsqueda", 
+                        JOptionPane.ERROR_MESSAGE)
+            );
         });
 
 
@@ -452,21 +469,25 @@ public class FrmDashboardAdmin extends JFrame {
             if(filaSeleccionada == -1){
                 JOptionPane.showMessageDialog(this, "Por favor, seleccione un paquete de la tabla.");
             }
+
             int id =(int) tblUsuarios.getValueAt(filaSeleccionada, 0);
-            Usuarios usuarioSeleccionado = buscarUsuarioPorId(id);
+            MetodosBusquedaId.buscarUsuarioPorId(listaUsuarios, id)
+            .ifPresentOrElse( 
+                usuarioEncontrado -> {
+                    FrmNuevoUsuario ventanaEditar = new FrmNuevoUsuario(this, usuarioEncontrado);
+                    ventanaEditar.setVisible(true);
 
-            if(usuarioSeleccionado == null){
-                 JOptionPane.showMessageDialog(this, "No se pudieron recuperar los datos completos del Usuario.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+                    if (ventanaEditar.isExito()) {
+                        refrescarTablaUsuarios();
+                    }
+                },
+                () -> JOptionPane.showMessageDialog(this,
+                    "No se pudieron recuperar los datos completos del usuario. \nEs posible que la lista no se haya cargado correctamente.",
+                    "Error de Búsqueda",
+                    JOptionPane.ERROR_MESSAGE
+                )
 
-            FrmNuevoUsuario ventanaEditar = new FrmNuevoUsuario(this, usuarioSeleccionado);
-            ventanaEditar.setVisible(true);
-
-            if (ventanaEditar.isExito()) {
-                refrescarTablaUsuarios();
-            }
-
+            );
         });
         
         return panel;
@@ -504,8 +525,8 @@ public class FrmDashboardAdmin extends JFrame {
             if (listaLogs == null || listaLogs.isEmpty()) {
                 this.listaLogs = adminControl.listarEventosSistema();
             }
-                // 2. Definimos las opciones que verá el usuario
-                Object[] opciones = { "Datos_Logs.csv", "Datos_Paquetes.csv", "Datos_Vehiculos.csv", "Datos_Usuarios.csv"};
+                // 2. Definimos las opciones que verá el usuario   
+                Object[] opciones = { "Reporte de Auditoría de Logs", "Reporte de Paquetes", "Reporte de Vehiculos", "Reporte de Usuarios"};
 
                 // 3. Desplegamos el menú de selección estructurado
                 Object seleccion = JOptionPane.showInputDialog(
@@ -528,19 +549,19 @@ public class FrmDashboardAdmin extends JFrame {
                 String opcionElegida = seleccion.toString();
 
                 switch (opcionElegida) {
-                    case "Datos_Logs.csv" -> {
+                    case "Reporte de Auditoría de Logs" -> {
                         CSVExporter.exportarLogs(this, this.listaLogs);
 
                     }
-                    case "Datos_Paquetes.csv" -> {
+                    case "Reporte de Paquetes" -> {
                         JOptionPane.showMessageDialog(this, "Módulo en desarrollo", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                         
                     }
-                    case "Datos_Vehiculos.csv" -> {
+                    case "Reporte de Vehiculos" -> {
                         JOptionPane.showMessageDialog(this, "Módulo en desarrollo", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                         
                     }
-                    case "Datos_Usuarios.csv" -> {
+                    case "Reporte de Usuarios" -> {
                         JOptionPane.showMessageDialog(this, "Módulo en desarrollo", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                         
                     }
@@ -559,133 +580,217 @@ public class FrmDashboardAdmin extends JFrame {
     //--------------MetodosAuxiliares----------------//
 
     public void refrescarTablaLogs(){
-        this.listaLogs = adminControl.listarEventosSistema();
-        modeloRegistros.setRowCount(0);
+        // 1. UX: Cambiamos el cursor de toda la ventana al de "Cargando"
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        // 2. UX: Limpiamos la tabla y ponemos un mensaje temporal directo en la celda
+        modeloPaquetes.setRowCount(0);
+        // Agregamos una fila vacía con el texto en la columna del medio (Ej: Descripción)
+        modeloPaquetes.addRow(new Object[]{"", "⏳ Cargando datos desde el servidor...", "", "", "", "", "", ""});
 
-        if(listaLogs != null && !listaLogs.isEmpty()){
-            for (LogSistema l : listaLogs) {
-                Object[] fila = {
-                    l.getId_log(),
-                    l.getId_usuario(),
-                    l.getNombre_completo(),
-                    l.getRol_usuario(),
-                    l.getAccion(),
-                    l.getDetalles(),
-                    l.getFecha_hora()
-                };
-                modeloRegistros.addRow(fila);
+        SwingWorker<List<LogSistema>, Void> worker = new SwingWorker<>() {
+
+            @Override
+            protected List<LogSistema> doInBackground() throws Exception {
+                return adminControl.listarEventosSistema();
             }
-        } else {
-            System.out.println("No se recibieron logs del servidor.");
-        }
+
+            @Override
+            protected void done() {
+                try{
+                    listaLogs = get();
+
+                    modeloRegistros.setRowCount(0);
+                    if(listaLogs != null && !listaLogs.isEmpty()){
+                        for (LogSistema l : listaLogs) {
+                            Object[] fila = {
+                                l.getId_log(),
+                                l.getId_usuario(),
+                                l.getNombre_completo(),
+                                l.getRol_usuario(),
+                                l.getAccion(),
+                                l.getDetalles(),
+                                l.getFecha_hora()
+                            };
+                            modeloRegistros.addRow(fila);
+                        }
+                    } else{
+                        modeloRegistros.addRow(new Object[]{"", "No hay logs registrados actualmente.", "", "", "", "", ""});
+                    }
+                } catch (Exception ex) {
+                    System.err.println("Error asincronico al cargar logs: " + ex.getMessage());
+                    modeloRegistros.setColumnCount(0);
+                    modeloRegistros.addRow(new Object[]{"", "❌ Error de conexión con el servidor.", "", "", "", "", ""});
+                }finally{
+                    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+        };
+        worker.execute();
     }
+
 
     public void refrescarTablaVehiculos() {
-        this.listaVehiculos = adminControl.actualizarVehiculos();
+
+             // 1. UX: Cambiamos el cursor de toda la ventana al de "Cargando"
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        // 2. UX: Limpiamos la tabla y ponemos un mensaje temporal directo en la celda
         modeloVehiculos.setRowCount(0);
+        // Agregamos una fila vacía con el texto en la columna del medio (Ej: Descripción)
+        modeloVehiculos.addRow(new Object[]{"", "⏳ Cargando datos desde el servidor...", "", "", "", "", "", ""});
 
-        if(listaVehiculos != null && !listaVehiculos.isEmpty()){
-            for (Vehiculo v : listaVehiculos) {
-                Object[] fila = {
-                    v.getId_vehiculo(),
-                    v.getPlaca(),
-                    v.getMarca(),
-                    v.getModelo(),
-                    TipoVehiculo.obtenerTextoPorId(v.getId_tipoVehiculo()),
-                    EstadoVehiculo.obtenerTextoPorId(v.getId_estado_vehiculo())
-                };
-                modeloVehiculos.addRow(fila);
+        SwingWorker<List<Vehiculo>, Void> worker = new SwingWorker<>() {
+
+            @Override
+            protected List<Vehiculo> doInBackground() throws Exception {
+                return adminControl.actualizarVehiculos();
             }
-        } else {
-            System.out.println("No se recibieron paquetes del servidor.");
-        }
+
+            @Override
+            protected void done() {
+                try{
+                    listaVehiculos = get();
+
+                    modeloVehiculos.setRowCount(0);
+                    if(listaVehiculos != null && !listaVehiculos.isEmpty()){
+                        for (Vehiculo v : listaVehiculos) {
+                            Object[] fila = {
+                                v.getId_vehiculo(),
+                                v.getPlaca(),
+                                v.getMarca(),
+                                v.getModelo(),
+                                TipoVehiculo.obtenerTextoPorId(v.getId_tipoVehiculo()),
+                                EstadoVehiculo.obtenerTextoPorId(v.getId_estado_vehiculo())
+                            };
+                            modeloVehiculos.addRow(fila);
+                        }
+                    } 
+                } catch (Exception ex) {
+                    System.err.println("Error asincronico al cargar vehiculos: " + ex.getMessage());
+                }
+            }
+        };
+        worker.execute();
     }
-    
-    public void refrescarTablaPaquetes() {
-        // 1. Usamos la instancia de AdminControlador para obtener la lista
-        this.listaPaquetes= adminControl.actualizarPaquetes();
+                
+        public void refrescarTablaPaquetes() {
 
-        // 2. Limpiamos el modelo actual de la tabla
+        // 1. UX: Cambiamos el cursor de toda la ventana al de "Cargando"
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        // 2. UX: Limpiamos la tabla y ponemos un mensaje temporal directo en la celda
         modeloPaquetes.setRowCount(0);
+        // Agregamos una fila vacía con el texto en la columna del medio (Ej: Descripción)
+        modeloPaquetes.addRow(new Object[]{"", "⏳ Cargando datos desde el servidor...", "", "", "", "", "", ""});
 
-        // 3. Validamos y llenamos la tabla de acuerdo a la lista recibida
-        if (listaPaquetes != null && !listaPaquetes.isEmpty()) {
-            for (Paquete p : listaPaquetes) {
-                Object[] fila = {
-                   p.getId_paquete(),
-                   p.getDescripcion(),
-                   p.getRemitente(),
-                   p.getDestinatario(),
-                   p.getDireccion_entrega(),
-                   p.getPeso(),
-                   EstadoPaquete.obtenerTextoPorId(p.getId_estado()),
-                   p.getFecha_creacion() 
-                };
-                modeloPaquetes.addRow(fila);
+        SwingWorker<List<Paquete>, Void> worker = new SwingWorker<>() {
+
+            @Override
+            protected List<Paquete> doInBackground() throws Exception {
+                // El hilo secundario va a la red de forma segura
+                return adminControl.actualizarPaquetes();
             }
-        } else {
-            System.out.println("No se recibieron paquetes del servidor.");
-        }
+
+            @Override
+            protected void done() {
+                try {
+                    listaPaquetes = get();
+                    
+                    // Limpiamos nuestra fila temporal de "Cargando"
+                    modeloPaquetes.setRowCount(0);
+
+                    if (listaPaquetes != null && !listaPaquetes.isEmpty()) {
+                        for (Paquete p : listaPaquetes) {
+                            Object[] fila = {
+                                p.getId_paquete(),
+                                p.getDescripcion(),
+                                p.getRemitente(),
+                                p.getDestinatario(),
+                                p.getDireccion_entrega(),
+                                p.getPeso(),
+                                EstadoPaquete.obtenerTextoPorId(p.getId_estado()),
+                                p.getFecha_creacion()
+                            };
+                            modeloPaquetes.addRow(fila);
+                        }
+                    } else {
+                        // UX: Si la red responde bien, pero no hay paquetes en BD
+                        modeloPaquetes.addRow(new Object[]{"", "No hay paquetes registrados actualmente.", "", "", "", "", "", ""});
+                    }
+                    
+                } catch (Exception ex) {
+                    System.err.println("Error asincrónico al cargar paquetes: " + ex.getMessage());
+                    modeloPaquetes.setRowCount(0);
+                    modeloPaquetes.addRow(new Object[]{"", "❌ Error de conexión con el servidor.", "", "", "", "", "", ""});
+                    
+                } finally {
+                    // 3. UX: ¡MUY IMPORTANTE! Restauramos el cursor normal pase lo que pase        
+                    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+        };
+        
+        worker.execute();
     }
 
     public void refrescarTablaUsuarios() {
-        this.listaUsuarios = adminControl.actualizarUsuarios();
+        
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
         modeloUsuarios.setRowCount(0);
+        modeloUsuarios.addRow(new Object[]{"", "⏳ Cargando datos desde el servidor...", "", "", "", "", "", ""});
 
-        if(listaUsuarios != null && !listaUsuarios.isEmpty()){
-            for (Usuarios u : listaUsuarios) {
-                Object[] fila = {
-                    u.getId_usuario(),
-                    u.getNombre(),
-                    u.getApellido(),
-                    u.getFechaNacimiento(),
-                    u.getDni(),
-                    u.getEmail(),
-                    u.getTelefono(),
-                    u.getPassword(),
-                    Roles.obtenerTextoPorId(u.getIdRol()),
-                    u.getFechaCreacion(),
-                    u.isActivo() ? "Activo" : "Inactivo",
-                };
-                modeloUsuarios.addRow(fila);
+
+        // 2. Creamos el trabajador en segundo plano
+        SwingWorker<List<Usuarios>, Void> worker = new SwingWorker<>() {
+
+            @Override
+            protected List<Usuarios> doInBackground() throws Exception {
+                //El metodo corre en un hilo aparte. Por lo que es seguro llamar al metodo del controlador de red
+                return adminControl.actualizarUsuarios();
             }
-        } else {
-            System.out.println("No se recibieron usuarios del servidor.");
-        }
-    }
 
-    public Paquete buscarPaquetePorId(int id) {
-        if(listaPaquetes != null) {
-            for (Paquete p : listaPaquetes) {
-                if (p.getId_paquete() == id) {
-                    return p; // Lo encontro, retorna el objeto paquete
+            @Override
+            protected void done() {
+                //Este metodo se ejecuta automaticamente cuando el doInBackground termina
+                //A continuacion el hilo visual vuelve a correr (EDT
+                try{
+                    //Obtener la lista que retorno el doInBackground
+                    listaUsuarios = get();
+
+                    // limpiamos y pintamos la tabla
+                    modeloUsuarios.setRowCount(0);
+                    if(listaUsuarios != null && !listaUsuarios.isEmpty()){
+                        for (Usuarios u : listaUsuarios) {
+                            Object[] fila = {
+                                u.getId_usuario(),
+                                u.getNombre(),
+                                u.getApellido(),
+                                u.getFechaNacimiento(),
+                                u.getDni(),
+                                u.getEmail(),
+                                u.getTelefono(),
+                                u.getPassword(),
+                                Roles.obtenerTextoPorId(u.getIdRol()),
+                                u.getFechaCreacion(),
+                                u.isActivo()  ? "Activo" : "Inactivo"
+                            };
+                            modeloUsuarios.addRow(fila);
+                        }
+                    }
+                } catch(Exception ex){
+                    System.err.println("Error asincronico al cargar usuarios: " + ex.getMessage());
+                    modeloUsuarios.setRowCount(0);
+                    modeloUsuarios.addRow(new Object[]{"", "❌ Error de conexión con el servidor.", "", "", "", "", "", ""});
+                } finally{
+                    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 }
             }
-        }
-        return null; // No lo encontro
+        };
+        //Ejecutamos el trabajador secundario
+        worker.execute(); 
     }
 
-    public Usuarios buscarUsuarioPorId(int id) {
-        if(listaUsuarios != null) {
-            for (Usuarios u : listaUsuarios) {
-                if (u.getId_usuario() == id) {
-                    return u; // Lo encontro, retorna el objeto usuario
-                }
-            }
-        }
-        return null; // No lo encontro
-    }
+    
 
-    public Vehiculo buscarVehiculoPorId(int id) {
-        if(listaVehiculos != null) {
-            for (Vehiculo v : listaVehiculos) {
-                if (v.getId_vehiculo() == id) {
-                    return v; // Lo encontro, retorna el objeto vehiculo
-                }
-            }
-        }
-        return null; // No lo encontro
-    }
+
 
     //Metodo prueba ventana admin//
     public static void main(String[] args) {

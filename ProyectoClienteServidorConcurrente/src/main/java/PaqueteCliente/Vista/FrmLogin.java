@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import Dominio.Usuarios;
 import PaqueteCliente.Controlador.AutenticacionControlador;
 
 public class FrmLogin extends JFrame {
@@ -26,6 +27,9 @@ public class FrmLogin extends JFrame {
     private JPasswordField txtPassword;
     private JButton btnIngresar;
     private JLabel lblLogo;
+
+    private int intentosFallidos = 0;
+    private static final int MAX_INTENTOS =3;
 
     public FrmLogin() {
         // Configuraciones básicas del JFrame
@@ -131,19 +135,44 @@ public class FrmLogin extends JFrame {
         }
     }
     
-//Mejorar el nivel de seguridad
     private void configurarEventos() {
         btnIngresar.addActionListener(e -> {
             String email = txtEmail.getText().trim();
-            String pass = new String(txtPassword.getPassword());
+            String pass = new String(txtPassword.getPassword());         
 
             if (email.isEmpty() || pass.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Por favor complete las credenciales.");
                 return;
             }
 
+            // Llamar a controlador puente
             AutenticacionControlador auth = new AutenticacionControlador();
-            auth.iniciarSesion(email, pass, this);
+            Usuarios usuariosLogueado = auth.iniciarSesion(email, pass);
+
+            if (usuariosLogueado != null){
+                //Caso de exito//
+                intentosFallidos = 0;
+                // La vista maneja su propia redirección y cierreX
+                redirigirPorRol(usuariosLogueado);
+            } else {
+                // --- CASO DE FALLA (Aquí entra tu estrategia de seguridad) --- //
+                intentosFallidos++;
+
+                // Regla de seguridad 1: Se vacía INMEDIATAMENTE la caja de contraseña por protección en RAM e interfaz
+                txtPassword.setText("");
+                
+                // Regla de seguridad 2: Control de reintentos anti-fuerza bruta
+                if (intentosFallidos >= MAX_INTENTOS){
+                    
+                }
+
+
+
+            }
+
+
+            
+            
         });
     }
 

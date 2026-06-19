@@ -18,21 +18,17 @@ public class AutenticacionControlador {
 
 
    @SuppressWarnings("static-access")
-    public void iniciarSesion(String email, String password, JFrame vistaLogin) {
-        // 1. Creamos un usuario temporal con las credenciales
-        Usuarios loginUser = new Usuarios(0, "", "", null, "", email, "", password, 0);
+    public Usuarios iniciarSesion(String email, String password, JFrame vistaLogin) {
+        
+        Usuarios loginUser = new Usuarios(0, "", "", null, "", email, "", password, 0); // 1. Creamos un usuario temporal con las credenciales
+        MensajeRed peticion = new MensajeRed("LOGIN", loginUser, true, "");// 2. Empaquetamos en el MensajeRed que ya definiste
 
-        // 2. Empaquetamos en el MensajeRed que ya definiste
-        MensajeRed peticion = new MensajeRed("LOGIN", loginUser, true, "");
-
-        // 3. Enviamos a través de tu clase ClienteSocket (usando Singleton)
-        MensajeRed respuesta = clienteSocket.getInstancia().enviarPeticion(peticion);
+        MensajeRed respuesta = clienteSocket.getInstancia().enviarPeticion(peticion); // 3. Enviamos a través de tu clase ClienteSocket (usando Singleton)
 
         if (respuesta.isEstadoExito()) {
-            Usuarios usuarioLogueado = (Usuarios) respuesta.getPayload();
-            redirigirPorRol(usuarioLogueado, vistaLogin);
+           return (Usuarios) respuesta.getPayload();
         } else {
-            JOptionPane.showMessageDialog(vistaLogin, respuesta.getMensajeRespuesta(), "Error de Acceso", JOptionPane.ERROR_MESSAGE);
+            return null;
         }
     }
 

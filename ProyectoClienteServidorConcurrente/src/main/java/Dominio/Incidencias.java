@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 
 public class Incidencias implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private int id_incidencia;
     private String descripcion;
     private Timestamp fecha_hora;

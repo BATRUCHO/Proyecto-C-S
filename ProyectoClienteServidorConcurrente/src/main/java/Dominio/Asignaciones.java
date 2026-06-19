@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 public class Asignaciones  implements Serializable{
+
+    private static final long serialVersionUID = 1L;
+
     private int id_asignacion;
     private Timestamp fecha_asignacion;
 

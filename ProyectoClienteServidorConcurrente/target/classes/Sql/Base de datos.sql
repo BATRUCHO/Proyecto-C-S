@@ -123,7 +123,7 @@ CREATE TABLE incidencias (
 CREATE TABLE logs_sistema (
     id_log INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT NULL, 
-    accion TEXT NOT NULL, 
+    accion VARCHAR(50) NOT NULL,  
     detalles TEXT,
     fecha_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)

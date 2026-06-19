@@ -18,8 +18,6 @@ import Network.DAO.VehiculoDAO;
 public class HiloCliente extends Thread {
 
     private final Socket socketCliente;
-    private ObjectInputStream entrada;
-    private ObjectOutputStream salida;
     private int idUsuarioActual = 0;
     private Usuarios usuarioValidado;
 
@@ -29,48 +27,36 @@ public class HiloCliente extends Thread {
 
     @Override
     public void run() { 
-        try { 
-            salida = new ObjectOutputStream(socketCliente.getOutputStream());
+        // Usamos try-with-resources aquí también para asegurar el cierre hermético
+        try (
+            ObjectOutputStream salida = new ObjectOutputStream(socketCliente.getOutputStream());
+            ObjectInputStream entrada = new ObjectInputStream(socketCliente.getInputStream());
+        ){
+            // Aseguramos la cabecera del stream de salida
             salida.flush();
-            entrada = new ObjectInputStream(socketCliente.getInputStream());
 
-            while (!socketCliente.isClosed()) {
-                try {
-                    Object objectRecibido = entrada.readObject();
-                    if (objectRecibido instanceof MensajeRed peticion) {
-                        MensajeRed respuesta = procesarPeticion(peticion);
-                        salida.writeObject(respuesta);
-                        salida.flush();
-                    }
-                } catch (java.io.EOFException e) {
-                    break; 
-                }
+            // Leemos LA petición (Una sola por conexión, sin while infinito)
+            Object objectRecibido = entrada.readObject();
+
+            if(objectRecibido instanceof MensajeRed peticion){
+                MensajeRed respuesta = procesarPeticion(peticion); // switch gigante
+                salida.writeObject(respuesta);
+                salida.flush(); // Empuja los datos por la red
             }
+            
         } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Cliente desconectado o error: " + e.getMessage());  
+            System.err.println("Conexión finalizada o interrumpida con cliente." + e.getMessage());
         } finally {
-            cerrarConexiones();
-        }
-    }
+            // El socket base si lo cerrramos a mano por si acaso
+            try{ if(socketCliente != null && !socketCliente.isClosed()) socketCliente.close(); 
 
-    private void cerrarConexiones() {
-        try {
-            if(entrada != null) entrada.close();
-            if(salida != null) salida.close();
-            if(socketCliente != null && !socketCliente.isClosed()) socketCliente.close();
-        } catch (IOException e) {
-            System.err.println("Error al liberar sockets: " + e.getMessage());
+            } catch (IOException e) { /* log */}
         }
     }
 
     @SuppressWarnings("UseSpecificCatch")
     private MensajeRed procesarPeticion(MensajeRed peticion) {
         String accion = peticion.getAccion().trim();
-
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
-        PaqueteDAO paqueteDAO = new PaqueteDAO();
-        VehiculoDAO vehiculoDAO = new VehiculoDAO();
-        LogDAO logDAO = new LogDAO(); 
 
         // Determinamos quien hace la petición a la accion actual
         int idUsuarioOperacion = (peticion.getIdUsuarioSender() > 0 ) ? peticion.getIdUsuarioSender() : this.idUsuarioActual;
@@ -82,6 +68,7 @@ public class HiloCliente extends Thread {
                 // ----- Módulo Usuario ------ //
                 case "LOGIN" -> {
                     Usuarios credenciales = (Usuarios) peticion.getPayload();
+                    UsuarioDAO usuarioDAO = new UsuarioDAO();
                     usuarioValidado = usuarioDAO.validarLogin(credenciales.getEmail(), credenciales.getPassword());
                     
                     if (usuarioValidado != null) {
@@ -102,6 +89,7 @@ public class HiloCliente extends Thread {
 
                 case "REGISTRAR_USUARIO" -> {
                     Usuarios u = (Usuarios) peticion.getPayload();
+                    UsuarioDAO usuarioDAO = new UsuarioDAO();
                     boolean guardado = usuarioDAO.registrarUsuario(u);
                     
                     if(guardado) {
@@ -115,7 +103,9 @@ public class HiloCliente extends Thread {
 
                 case "ALTERAR_ESTADO_USUARIO" -> {
                     int idUsuarioInactivado = (int) peticion.getPayload();
+                    UsuarioDAO usuarioDAO = new UsuarioDAO();
                     boolean cambioEstado = usuarioDAO.alternarEstadoUsuario(idUsuarioInactivado); // Llamamos al metodo del Dao y lo guardamos en una variable booleana
+                   
                     if (cambioEstado) { // Si es afirmativo entonces se inactivó el usuario y se registra el log, sino se registra un intento fallido
                         LoggerManager.log(idUsuarioOperacion, "ALTERAR_ESTADO_USUARIO", "ALTERAR_ESTADO_USUARIO exitosa del usuario ID: " + idUsuarioInactivado);
                         yield new MensajeRed("ALTERAR_ESTADO_USUARIO", true, true,  "Usuario a cambio a estado");
@@ -127,19 +117,25 @@ public class HiloCliente extends Thread {
 
                 case "EDITAR_USUARIO" -> { 
                     Usuarios uEditar = (Usuarios) peticion.getPayload();
+                    UsuarioDAO usuarioDAO = new UsuarioDAO();
                     boolean editado = usuarioDAO.editarUsuario(uEditar);
+
                     if(editado) {
                         LoggerManager.log(idUsuarioOperacion, "EDITAR_USUARIO", "Usuario " + uEditar.getId_usuario() + " editado un usuario");
                     }
                     yield new MensajeRed("EDITAR_USUARIO", editado, editado, editado ? "Usuario actualizado" : "Error al actualizar");
                 }
 
-                case "LISTAR_USUARIOS" -> new MensajeRed("LISTA_USUARIOS_RESPUESTA", usuarioDAO.listarUsuarios(), true, "Lista obtenida");
+                case "LISTAR_USUARIOS" -> {
+                    UsuarioDAO usuarioDAO = new UsuarioDAO();
+                    yield new MensajeRed("LISTA_USUARIOS_RESPUESTA", usuarioDAO.listarUsuarios(), true, "Lista obtenida");
+                }
 
                 // ----- Módulo Paquetes ------ //
                 case "CREAR_PAQUETE" -> {
                     Paquete pNuevo = (Paquete) peticion.getPayload();
-                    boolean creado = paqueteDAO.crearPaquete(pNuevo);
+                    PaqueteDAO paqueteDAO = new PaqueteDAO();
+                    boolean creado = paqueteDAO.crearPaquete(pNuevo);             
                     
                     if(creado) {
                         
@@ -149,12 +145,17 @@ public class HiloCliente extends Thread {
                         yield new MensajeRed("RESPUESTA_CREAR", null, false, "Error al insertar en la base de datos");
                     }
                 }
-
-                case "LISTAR_PAQUETES" -> new MensajeRed("LISTA_PAQUETES_RESPUESTA", paqueteDAO.listarPaquetes(), true, "Lista obtenida");
+                
+                case "LISTAR_PAQUETES" -> {
+                    PaqueteDAO paqueteDAO = new PaqueteDAO();
+                    yield new MensajeRed("LISTA_PAQUETES_RESPUESTA", paqueteDAO.listarPaquetes(), true, "Lista obtenida");
+                }
 
                 case "EDITAR_PAQUETE" -> {
                     Paquete pEditar = (Paquete) peticion.getPayload();
+                    PaqueteDAO paqueteDAO = new PaqueteDAO();
                     boolean editado = paqueteDAO.EditarPaquete(pEditar);
+
                     if(editado) {
                         LoggerManager.log(idUsuarioOperacion, "EDITAR_PAQUETE", "Paquete " + pEditar.getId_paquete() + " editado");
                     }
@@ -163,7 +164,9 @@ public class HiloCliente extends Thread {
                     
                 case "ELIMINAR_PAQUETE" -> {
                     int idEliminar = (int) peticion.getPayload();
+                    PaqueteDAO paqueteDAO = new PaqueteDAO();
                     boolean eliminado = paqueteDAO.eliminarPaquete(idEliminar);
+
                     if(eliminado) {
                         
                         LoggerManager.log(idUsuarioOperacion, "ELIMINAR_PAQUETE", "Paquete " + idEliminar + " eliminado");
@@ -172,10 +175,14 @@ public class HiloCliente extends Thread {
                 }
 
                 // ----- Módulo Vehículos ------ //
-                case "LISTAR_VEHICULOS" -> new MensajeRed("LISTAR_VEHICULOS_RESPUESTA", vehiculoDAO.listarVehiculos(), true, "Lista obtenida");
+                case "LISTAR_VEHICULOS" -> { 
+                    VehiculoDAO vehiculoDAO = new VehiculoDAO();
+                    yield new MensajeRed("LISTAR_VEHICULOS_RESPUESTA", vehiculoDAO.listarVehiculos(), true, "Lista obtenida");
+                }
                 
                 case "REGISTRAR_VEHICULO" -> {
                     Vehiculo v = (Vehiculo) peticion.getPayload();
+                    VehiculoDAO vehiculoDAO = new VehiculoDAO();
                     boolean registrado = vehiculoDAO.registrarVehiculo(v);
 
                     if(registrado) {
@@ -188,6 +195,7 @@ public class HiloCliente extends Thread {
 
                 case "EDITAR_VEHICULO" -> {
                     Vehiculo vEditar = (Vehiculo) peticion.getPayload();
+                    VehiculoDAO vehiculoDAO = new VehiculoDAO();
                     boolean editadoVehiculo = vehiculoDAO.editarVehiculo(vEditar);
 
                     if(editadoVehiculo) {
@@ -198,6 +206,7 @@ public class HiloCliente extends Thread {
                 
                 case "ELIMINAR_VEHICULO" -> {
                     int idEliminarVehiculo = (int) peticion.getPayload();
+                    VehiculoDAO vehiculoDAO = new VehiculoDAO();
                     boolean eliminadoVehiculo = vehiculoDAO.eliminarVehiculo(idEliminarVehiculo);
 
                     if(eliminadoVehiculo) {
@@ -209,6 +218,7 @@ public class HiloCliente extends Thread {
                 // ----- Módulo Asignaciones ------ //
                 case "ASIGNAR_PAQUETE" -> {
                     try {
+                        PaqueteDAO paqueteDAO = new PaqueteDAO();
                         String[] datos = peticion.getPayload().toString().split(":");
                         int idPkg = Integer.parseInt(datos[0]);
                         int idCond = Integer.parseInt(datos[1]);
@@ -225,7 +235,10 @@ public class HiloCliente extends Thread {
                 
                 // ----- Módulo logs ------ //
 
-                case "LISTAR_LOGS" -> new MensajeRed("LISTA_LOGS_RESPUESTA", logDAO.listarEventosSistema(), true, "Lista obtenida");
+                case "LISTAR_LOGS" -> {
+                    LogDAO logDAO = new LogDAO();
+                    yield new MensajeRed("LISTA_LOGS_RESPUESTA", logDAO.listarEventosSistema(), true, "Lista obtenida");
+                }
 
 
                 default -> new MensajeRed("DESCONOCIDO", null, false, "La acción no existe");

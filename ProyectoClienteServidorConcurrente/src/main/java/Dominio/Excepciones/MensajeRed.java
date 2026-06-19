@@ -3,6 +3,9 @@ package Dominio.Excepciones;
 import java.io.Serializable;
 
 public class MensajeRed implements Serializable {
+
+    private static final long serialVersionUID = 1L; 
+
     private String accion;
     private Object payload;
     private boolean estadoExito;

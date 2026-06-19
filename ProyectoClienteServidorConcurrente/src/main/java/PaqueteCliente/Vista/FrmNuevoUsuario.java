@@ -154,9 +154,34 @@ public class FrmNuevoUsuario extends JDialog {
             // 1. Captura de datos básicos
             String nombre = txtNombre.getText().trim();
             String apellido = txtApellido.getText().trim();
+
             String dni = txtDni.getText().trim();
+            if(!txtDni.getText().trim().matches("\\d+")){
+                JOptionPane.showMessageDialog(this, "El DNI debe contener solo números.");
+                return;
+            }
+            int CantidadLetras = dni.length();
+            if (CantidadLetras != 9){
+                JOptionPane.showMessageDialog(this, "El DNI debe tener 9 caracteres.");
+                return;
+            }
+
             String email = txtEmail.getText().trim();
+            String regexEmail = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+            if (!email.matches(regexEmail)) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese un email válido.");
+                return;
+            }
+            if (email.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Por favor complete las credenciales.");
+                return;
+            }
+
             String telefono = txtTelefono.getText().trim();
+            if(!txtTelefono.getText().trim().matches("\\d+")){
+                JOptionPane.showMessageDialog(this, "El teléfono debe contener solo números.");
+                return;
+            }
 
             char[] passwordArreglo = txtPass.getPassword();
             if (passwordArreglo.length == 0) {
